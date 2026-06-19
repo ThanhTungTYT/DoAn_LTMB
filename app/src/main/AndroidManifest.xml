@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="HealthCare"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LTMB_Nhom11">
+        android:theme="@style/Theme.HealthCareApp">
+
+        <!-- Màn hình chi tiết bác sĩ & Đặt lịch chính (đang đặt làm màn hình khởi chạy để test) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.DoctorDetailActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <!-- Màn hình Thanh toán -->
+        <activity
+            android:name=".ui.PaymentActivity"
+            android:exported="false" />
+
+        <!-- Màn hình Lịch sử khám bệnh -->
+        <activity
+            android:name=".ui.HistoryActivity"
+            android:exported="false" />
+
+        <!-- MainActivity mặc định của project (chưa dùng) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+    </application>
 </manifest>

@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Healthcare App Colors -->
+    <color name="colorPrimaryPrimary">#00685F</color>
+    <color name="colorPrimaryVariant">#006A61</color>
+    <color name="colorAccentBlue">#0051D5</color>
+    <color name="colorTextDark">#0B1C30</color>
+
+    <!-- State/Status Backgrounds -->
+    <color name="tealLightestBg">#F0FDFA</color>
+    <color name="blueLightestBg">#F1F5F9</color>
+    <color name="accentTealLight">#CCFBF1</color>
+    <color name="errorColor">#BA1A1A</color>
+
+    <!-- Secondary & Outlines -->
+    <color name="outlineColor">#6D7A77</color>
+    <color name="outlineVariantColor">#BCC9C6</color>
+    <color name="secondaryColor">#5C5F61</color>
+    <color name="surfaceColor">#F8F9FF</color>
 </resources>
