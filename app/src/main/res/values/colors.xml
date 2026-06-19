@@ -17,4 +17,9 @@
     <color name="outlineVariantColor">#BCC9C6</color>
     <color name="secondaryColor">#5C5F61</color>
     <color name="surfaceColor">#F8F9FF</color>
+
+    <!-- Material3-style aliases dùng bởi UI trang chủ/map (merge từ main) -->
+    <color name="primary">#00685F</color>
+    <color name="surface_container_lowest">#FFFFFF</color>
+    <color name="outline_variant">#BCC9C6</color>
 </resources>
