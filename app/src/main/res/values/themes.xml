@@ -31,4 +31,16 @@
     <style name="RoundedCorner16">
         <item name="cornerSize">16dp</item>
     </style>
+    <!-- Base application theme inheriting Material Design 3 -->
+    <style name="Theme.HealthCare" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">@color/primary_light</item>
+
+        <!-- Status bar and navigation bar tint. -->
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/background</item>
+    </style>
 </resources>

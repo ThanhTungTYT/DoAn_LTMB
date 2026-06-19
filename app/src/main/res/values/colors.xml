@@ -22,4 +22,17 @@
     <color name="primary">#00685F</color>
     <color name="surface_container_lowest">#FFFFFF</color>
     <color name="outline_variant">#BCC9C6</color>
+    <color name="primary_variant">#005049</color>
+    <color name="primary_light">#89F5E7</color>
+
+    <!-- Neutral Colors -->
+    <color name="background">#F8F9FF</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="text_main">#0B1C30</color>
+    <color name="text_secondary">#3D4947</color>
+    <color name="outline_gray">#BCC9C6</color>
+    <color name="outline_dark">#6D7A77</color>
+
+    <!-- Auxiliary Accent -->
+    <color name="blue_link">#316BF3</color>
 </resources>
