@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.tools.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F8F9FF">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <!-- Header Bar -->
+        <TextView
+            android:id="@+id/tvAppTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="HealthCare"
+            android:textColor="#00685F"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="12dp" />
+
+        <ImageButton
+            android:id="@+id/btnNotifications"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Notifications"
+            android:src="@drawable/ic_notifications"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#00685F" />
+
+        <!-- Registration Container Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:layout_constraintTop_toBottomOf="@+id/tvAppTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- User Add Icon -->
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_circle_icon"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_person_add"
+                    app:tint="#00685F" />
+
+                <!-- Title and Description -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Tạo tài khoản mới"
+                    android:textColor="#0B1C30"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center"
+                    android:text="Vui lòng điền thông tin để tham gia cộng đồng HealthCare"
+                    android:textColor="#3D4947"
+                    android:textSize="14sp" />
+
+                <!-- Form Fields -->
+                <!-- Họ và tên -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="4dp"
+                    android:text="Họ và tên"
+                    android:textColor="#0B1C30"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field">
+
+                    <ImageView
+                        android:id="@+id/ivBadgeIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="14dp"
+                        android:src="@drawable/ic_badge"
+                        app:tint="#6D7A77" />
+
+                    <EditText
+                        android:id="@+id/edtFullName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@id/ivBadgeIcon"
+                        android:background="@android:color/transparent"
+                        android:hint="Nguyễn Văn A"
+                        android:inputType="textPersonName"
+                        android:paddingHorizontal="12dp"
+                        android:textColor="#0B1C30"
+                        android:textColorHint="#6D7A77"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <!-- Số điện thoại -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="4dp"
+                    android:text="Số điện thoại"
+                    android:textColor="#0B1C30"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field">
+
+                    <ImageView
+                        android:id="@+id/ivPhoneIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="14dp"
+                        android:src="@drawable/ic_call"
+                        app:tint="#6D7A77" />
+
+                    <EditText
+                        android:id="@+id/edtPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@id/ivPhoneIcon"
+                        android:background="@android:color/transparent"
+                        android:hint="0123 456 789"
+                        android:inputType="phone"
+                        android:paddingHorizontal="12dp"
+                        android:textColor="#0B1C30"
+                        android:textColorHint="#6D7A77"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <!-- Email -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="4dp"
+                    android:text="Email"
+                    android:textColor="#0B1C30"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field">
+
+                    <ImageView
+                        android:id="@+id/ivMailIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="14dp"
+                        android:src="@drawable/ic_mail"
+                        app:tint="#6D7A77" />
+
+                    <EditText
+                        android:id="@+id/edtEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@id/ivMailIcon"
+                        android:background="@android:color/transparent"
+                        android:hint="example@health.vn"
+                        android:inputType="textEmailAddress"
+                        android:paddingHorizontal="12dp"
+                        android:textColor="#0B1C30"
+                        android:textColorHint="#6D7A77"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <!-- Mật khẩu -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="4dp"
+                    android:text="Mật khẩu"
+                    android:textColor="#0B1C30"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field">
+
+                    <ImageView
+                        android:id="@+id/ivLockIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="14dp"
+                        android:src="@drawable/ic_lock"
+                        app:tint="#6D7A77" />
+
+                    <EditText
+                        android:id="@+id/edtPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toStartOf="@+id/btnTogglePassword"
+                        android:layout_toEndOf="@id/ivLockIcon"
+                        android:background="@android:color/transparent"
+                        android:hint="••••••••"
+                        android:inputType="textPassword"
+                        android:paddingHorizontal="12dp"
+                        android:textColor="#0B1C30"
+                        android:textColorHint="#6D7A77"
+                        android:textSize="15sp" />
+
+                    <ImageButton
+                        android:id="@+id/btnTogglePassword"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_visibility"
+                        app:tint="#6D7A77" />
+                </RelativeLayout>
+
+                <!-- OTP Alert Banner -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_accent_info"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_info"
+                        app:tint="#00685F" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Một mã OTP sẽ được gửi đến email của bạn để xác thực tài khoản sau bước này."
+                        android:textColor="#005049"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <!-- Action Button -->
+                <Button
+                    android:id="@+id/btnRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/bg_button_primary"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Đăng ký tài khoản"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    app:icon="@drawable/ic_arrow_forward"
+                    app:iconGravity="textEnd"
+                    app:iconTint="#FFFFFF" />
+
+                <!-- Login Prompt -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đã có tài khoản? "
+                        android:textColor="#3D4947"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvLoginLink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Đăng nhập ngay"
+                        android:textColor="#00685F"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Dynamic Indicator Dots at Bottom -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/cardRegister"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <View
+                android:layout_width="60dp"
+                android:layout_height="4dp"
+                android:layout_marginHorizontal="4dp"
+                android:background="#00685F" />
+
+            <View
+                android:layout_width="60dp"
+                android:layout_height="4dp"
+                android:layout_marginHorizontal="4dp"
+                android:background="#3300685F" />
+
+            <View
+                android:layout_width="60dp"
+                android:layout_height="4dp"
+                android:layout_marginHorizontal="4dp"
+                android:background="#1100685F" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
