@@ -56,5 +56,16 @@
             android:name=".MainActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ui.PackageActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.AppointmentBookingActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.MedicalSummaryActivity"
+            android:exported="false"/>
     </application>
 </manifest>
