@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.ltmb_nhom11.ui.ImageLoader;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         ImageView imgUserAvatar = findViewById(R.id.imgUserAvatar);
         ImageView imgMapPreview = findViewById(R.id.imgMapPreview);
 
-       // ImageLoader.load(AVATAR_URL, imgUserAvatar);
-        //ImageLoader.load(MAP_PREVIEW_URL, imgMapPreview);
+        ImageLoader.load(AVATAR_URL, imgUserAvatar);
+        ImageLoader.load(MAP_PREVIEW_URL, imgMapPreview);
 
         // Bento quick action listeners
         LinearLayout btnQuickBook = findViewById(R.id.btnQuickBook);
