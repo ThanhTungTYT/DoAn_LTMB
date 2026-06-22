@@ -11,8 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCareApp">
 
+        <!-- Màn hình chào nhập khởi điểm (Launcher Activity) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,25 +21,51 @@
             </intent-filter>
         </activity>
 
+        <!-- Màn hình Đăng ký -->
         <activity
-            android:name=".ui.DoctorDetailActivity"
+            android:name=".RegisterActivity"
             android:exported="false" />
 
+        <!-- Màn hình xác nhận OTP -->
+        <activity
+            android:name=".OtpActivity"
+            android:exported="false" />
+
+        <!-- Màn hình chi tiết bác sĩ & Đặt lịch chính (đang đặt làm màn hình khởi chạy để test) -->
+        <activity
+            android:name=".ui.DoctorDetailActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Màn hình Thanh toán -->
         <activity
             android:name=".ui.PaymentActivity"
             android:exported="false" />
 
+        <!-- Màn hình Lịch sử khám bệnh -->
         <activity
             android:name=".ui.HistoryActivity"
             android:exported="false" />
 
+        <!-- MainActivity mặc định của project (chưa dùng) -->
         <activity
-            android:name=".ui.DirectionsActivity"
+            android:name=".MainActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ui.DoctorSearchActivity"
-            android:exported="false" />
+            android:name=".ui.PackageActivity"
+            android:exported="false"/>
 
+        <activity
+            android:name=".ui.AppointmentBookingActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.MedicalSummaryActivity"
+            android:exported="false"/>
     </application>
 </manifest>
