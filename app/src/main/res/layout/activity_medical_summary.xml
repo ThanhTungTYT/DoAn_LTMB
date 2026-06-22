@@ -102,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="#FFFFFF"
+            app:cardBackgroundColor="#F8F9FA"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp">
             <LinearLayout
@@ -541,7 +541,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="TAI LIỆU ĐÍNH KÈM"
+            android:text="TÀI LIỆU ĐÍNH KÈM"
             android:textColor="#757575"
             android:textSize="12sp"
             android:textStyle="bold" />
