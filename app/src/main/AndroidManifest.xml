@@ -11,9 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCareApp">
 
-        <!-- Màn hình chi tiết bác sĩ & Đặt lịch chính (đang đặt làm màn hình khởi chạy để test) -->
         <activity
-            android:name=".ui.DoctorDetailActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,19 +20,24 @@
             </intent-filter>
         </activity>
 
-        <!-- Màn hình Thanh toán -->
+        <activity
+            android:name=".ui.DoctorDetailActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.PaymentActivity"
             android:exported="false" />
 
-        <!-- Màn hình Lịch sử khám bệnh -->
         <activity
             android:name=".ui.HistoryActivity"
             android:exported="false" />
 
-        <!-- MainActivity mặc định của project (chưa dùng) -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.DirectionsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.DoctorSearchActivity"
             android:exported="false" />
 
     </application>
