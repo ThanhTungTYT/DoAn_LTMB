@@ -1,10 +1,13 @@
 package com.example.ltmb_nhom11.ui;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +31,8 @@ public class DoctorDetailActivity extends AppCompatActivity {
 
     private String selectedDate = "15";
     private String selectedTime = "08:00";
+    private String doctorName = "BS. Nguyễn Văn An";
+    private Button selectedTimeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +51,22 @@ public class DoctorDetailActivity extends AppCompatActivity {
         // Xử lý sự kiện nút back & đặt lịch chính thức
         btnBack.setOnClickListener(v -> finish());
 
+        // Nhận tên bác sĩ từ màn Tìm bác sĩ (nếu có) và hiển thị lên tiêu đề
+        String incomingDoctor = getIntent().getStringExtra("doctorName");
+        if (incomingDoctor != null) {
+            doctorName = incomingDoctor;
+            TextView txtDoctorName = findViewById(R.id.txtDoctorName);
+            if (txtDoctorName != null) txtDoctorName.setText(doctorName);
+        }
+
         btnBook.setOnClickListener(v -> {
-            // Chuyển hướng sang màn hình Thanh Toán (PaymentActivity)
+            // Chuyển hướng sang màn hình Thanh Toán (PaymentActivity), kèm dữ liệu đã chọn
             Intent intent = new Intent(DoctorDetailActivity.this, PaymentActivity.class);
-            intent.putExtra("selected_date", "Thứ Hai, 15/10/2023");
+            intent.putExtra("doctorId", "bs_default");
+            intent.putExtra("doctorName", doctorName);
+            intent.putExtra("selected_date", selectedDate);
             intent.putExtra("selected_time", selectedTime);
+            intent.putExtra("price", 460000L);
             startActivity(intent);
         });
     }
@@ -88,26 +104,22 @@ public class DoctorDetailActivity extends AppCompatActivity {
             @Override
             public void onItemClick(CalendarDate date) {
                 selectedDate = date.getDayValue();
-                Toast.makeText(DoctorDetailActivity.this, "Đã chọn ngày: " + date.getDayName() + " " + date.getDayValue(), Toast.LENGTH_SHORT).show();
+                // Bỏ Toast: ngày được chọn đã được tô sáng trong CalendarAdapter
             }
         });
         rvCalendarDates.setAdapter(adapter);
     }
 
     private void setupTimeSlotInteractions() {
-        View.OnClickListener timeSlotListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Đặt lại màu sắc của tất cả buttons giờ về mặc định (Xám/Slate)
-                resetAllTimeSlots();
-                Button clickedBtn = (Button) view;
-                selectedTime = clickedBtn.getText().toString();
-
-                // Đổi nút bấm đang được chọn thành màu xanh chủ đạo
-                clickedBtn.setTextColor(getResources().getColor(android.R.color.white));
-                clickedBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimaryPrimary));
-                // Trong Android thực tế: có thể dùng drawable selector hoặc set stroke màu sắc phù hợp
+        View.OnClickListener timeSlotListener = view -> {
+            Button clickedBtn = (Button) view;
+            // Bỏ tô nút đã chọn trước đó, rồi tô nút mới
+            if (selectedTimeButton != null && selectedTimeButton != clickedBtn) {
+                styleTimeSlot(selectedTimeButton, false);
             }
+            styleTimeSlot(clickedBtn, true);
+            selectedTimeButton = clickedBtn;
+            selectedTime = clickedBtn.getText().toString();
         };
 
         btnTime0800.setOnClickListener(timeSlotListener);
@@ -116,18 +128,23 @@ public class DoctorDetailActivity extends AppCompatActivity {
         btnTime1400.setOnClickListener(timeSlotListener);
         btnTime1500.setOnClickListener(timeSlotListener);
         btnTime1630.setOnClickListener(timeSlotListener);
+
+        // Mặc định tô sẵn khung 08:00
+        styleTimeSlot(btnTime0800, true);
+        selectedTimeButton = btnTime0800;
     }
 
-    private void resetAllTimeSlots() {
-        int defaultTextColor = getResources().getColor(android.R.color.black);
-        int defaultBgColor = getResources().getColor(android.R.color.transparent); // or customize
+    /** Tô màu (selected=true) hoặc trả về mặc định (false) cho một nút khung giờ. */
+    private void styleTimeSlot(Button button, boolean selected) {
+        int bgColor = selected ? Color.parseColor("#00685F") : Color.parseColor("#F1F5F9");
+        int textColor = selected ? Color.WHITE : Color.parseColor("#0B1C30");
+        int strokeColor = selected ? Color.parseColor("#00685F") : Color.parseColor("#E2E8F0");
 
-        // Reset state
-        btnTime0800.setTextColor(defaultTextColor);
-        btnTime0830.setTextColor(defaultTextColor);
-        btnTime0900.setTextColor(defaultTextColor);
-        btnTime1400.setTextColor(defaultTextColor);
-        btnTime1500.setTextColor(defaultTextColor);
-        btnTime1630.setTextColor(defaultTextColor);
+        button.setBackgroundTintList(ColorStateList.valueOf(bgColor));
+        button.setTextColor(textColor);
+        // Đổi cả viền để nút bỏ chọn không còn giữ viền teal
+        if (button instanceof MaterialButton) {
+            ((MaterialButton) button).setStrokeColor(ColorStateList.valueOf(strokeColor));
+        }
     }
 }

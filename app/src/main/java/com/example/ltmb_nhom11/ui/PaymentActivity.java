@@ -1,5 +1,6 @@
 package com.example.ltmb_nhom11.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -11,6 +12,8 @@ import androidx.cardview.widget.CardView;
 import com.google.android.material.button.MaterialButton;
 
 import com.example.ltmb_nhom11.R;
+import com.example.ltmb_nhom11.model.Appointment;
+import com.example.ltmb_nhom11.repository.AppointmentRepository;
 
 public class PaymentActivity extends AppCompatActivity {
 
@@ -35,13 +38,39 @@ public class PaymentActivity extends AppCompatActivity {
         // Lắng nghe sự kiện RadioButton & Card click
         setupPaymentSelections();
 
-        // Nút Thanh toán cuối cùng
-        btnConfirmPayment.setOnClickListener(v -> {
-            String selectedSummary = isOnlinePaymentSelected ? "Online qua: " + selectedMethodDetails : "Thanh toán trực tiếp tại bệnh viện";
-            Toast.makeText(PaymentActivity.this, "Đặt lịch thành công! " + selectedSummary, Toast.LENGTH_LONG).show();
+        // Nút Thanh toán cuối cùng -> ghi lịch hẹn vào Firestore
+        btnConfirmPayment.setOnClickListener(v -> saveAppointment());
+    }
 
-            // Xử lý logic nghiệp vụ, lưu cơ sở dữ liệu cloud Firestore hoặc backend API
-            // Mở màn hình lịch sử khám bệnh
+    /** Tạo lịch hẹn từ dữ liệu màn trước và lưu lên Firestore, rồi mở màn Lịch sử. */
+    private void saveAppointment() {
+        String userId = "test_user"; // TODO: đổi sang FirebaseAuth uid khi Auth của dat xong
+
+        Appointment a = new Appointment(
+                userId,
+                "doctor",
+                getIntent().getStringExtra("doctorId"),
+                getIntent().getStringExtra("doctorName"),
+                getIntent().getStringExtra("selected_date"),
+                getIntent().getStringExtra("selected_time"),
+                getIntent().getLongExtra("price", 0),
+                "upcoming"
+        );
+
+        btnConfirmPayment.setEnabled(false); // tránh bấm 2 lần tạo trùng
+        new AppointmentRepository().create(a, new AppointmentRepository.OnDone() {
+            @Override public void onSuccess() {
+                String method = isOnlinePaymentSelected
+                        ? "Online: " + selectedMethodDetails
+                        : "Thanh toán tại phòng khám";
+                Toast.makeText(PaymentActivity.this, "Đặt lịch thành công! (" + method + ")", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(PaymentActivity.this, HistoryActivity.class));
+                finish();
+            }
+            @Override public void onError(Exception e) {
+                btnConfirmPayment.setEnabled(true);
+                Toast.makeText(PaymentActivity.this, "Lỗi lưu lịch: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         });
     }
 

@@ -1,7 +1,10 @@
 package com.example.ltmb_nhom11.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.card.MaterialCardView;
@@ -46,21 +49,35 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void handleFilterTabChange(String filterName, MaterialCardView selectedChip) {
-        // Reset styles các tabs khác về màu mặc định (Trắng viền nhạt)
+        // Trả tất cả chip về mặc định (nền trắng + viền xám + chữ tối)
         resetAllFilterChips();
 
-        // Highlight tab được chọn
+        // Tô chip được chọn: nền xanh chủ đạo, bỏ viền, chữ trắng
         selectedChip.setCardBackgroundColor(getResources().getColor(R.color.colorPrimaryPrimary));
-        // Đổi màu text của chip thông qua FindView, v.v.
+        selectedChip.setStrokeWidth(0);
+        setChipTextColor(selectedChip, Color.WHITE);
 
-        Toast.makeText(this, "Lọc danh sách: " + filterName, Toast.LENGTH_SHORT).show();
+        // TODO (PHA 5): lọc danh sách lịch hẹn theo filterName
     }
 
     private void resetAllFilterChips() {
-        int whiteColor = getResources().getColor(android.R.color.white);
+        int white = getResources().getColor(android.R.color.white);
+        int darkText = Color.parseColor("#3D4947");
+        int strokeGray = Color.parseColor("#BCC9C6");
+        int strokePx = Math.round(getResources().getDisplayMetrics().density); // 1dp
 
-        chipAll.setCardBackgroundColor(whiteColor);
-        chipUpcoming.setCardBackgroundColor(whiteColor);
-        chipDone.setCardBackgroundColor(whiteColor);
+        for (MaterialCardView chip : new MaterialCardView[]{chipAll, chipUpcoming, chipDone}) {
+            chip.setCardBackgroundColor(white);
+            chip.setStrokeColor(strokeGray);
+            chip.setStrokeWidth(strokePx);
+            setChipTextColor(chip, darkText);
+        }
+    }
+
+    /** Đổi màu chữ của TextView bên trong chip (con đầu tiên của MaterialCardView). */
+    private void setChipTextColor(MaterialCardView chip, int color) {
+        if (chip.getChildCount() > 0 && chip.getChildAt(0) instanceof TextView) {
+            ((TextView) chip.getChildAt(0)).setTextColor(color);
+        }
     }
 }
