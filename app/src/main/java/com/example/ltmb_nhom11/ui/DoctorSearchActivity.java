@@ -34,28 +34,13 @@ public class DoctorSearchActivity extends AppCompatActivity {
 
         // Doctor booking quick listeners
         Button btnBookLan = findViewById(R.id.btnBookLan);
-        btnBookLan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(DoctorSearchActivity.this, "Đặt lịch thành công với BS. Nguyễn Thị Lan!", Toast.LENGTH_LONG).show();
-            }
-        });
+        btnBookLan.setOnClickListener(v -> openDoctorDetail("BS. Nguyễn Thị Lan"));
 
         Button btnBookHung = findViewById(R.id.btnBookHung);
-        btnBookHung.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(DoctorSearchActivity.this, "Đặt lịch thành công với TS.BS. Trần Văn Hùng!", Toast.LENGTH_LONG).show();
-            }
-        });
+        btnBookHung.setOnClickListener(v -> openDoctorDetail("TS.BS. Trần Văn Hùng"));
 
         Button btnBookDuy = findViewById(R.id.btnBookDuy);
-        btnBookDuy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(DoctorSearchActivity.this, "Đặt lịch thành công với ThS.BS. Lê Minh Duy!", Toast.LENGTH_LONG).show();
-            }
-        });
+        btnBookDuy.setOnClickListener(v -> openDoctorDetail("ThS.BS. Lê Minh Duy"));
 
         // Bottom navigation handlers
         LinearLayout navHome = findViewById(R.id.navHome);
@@ -104,5 +89,12 @@ public class DoctorSearchActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();
+    }
+
+    // Mở màn chi tiết đặt lịch (DoctorDetailActivity) khi chọn 1 bác sĩ
+    private void openDoctorDetail(String doctorName) {
+        Intent intent = new Intent(DoctorSearchActivity.this, DoctorDetailActivity.class);
+        intent.putExtra("doctorName", doctorName);
+        startActivity(intent);
     }
 }

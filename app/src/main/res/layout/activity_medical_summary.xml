@@ -338,7 +338,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_paddingVertical="8dp">
+                    android:paddingVertical="8dp">
                     <ImageView
                         android:id="@+id/icMed1"
                         android:layout_width="20dp"
@@ -374,7 +374,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_paddingVertical="8dp">
+                    android:paddingVertical="8dp">
                     <ImageView
                         android:id="@+id/icMed2"
                         android:layout_width="20dp"
@@ -410,7 +410,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_paddingVertical="8dp">
+                    android:paddingVertical="8dp">
                     <ImageView
                         android:id="@+id/icMed3"
                         android:layout_width="20dp"

@@ -49,5 +49,11 @@
     <color name="white">#FFFFFF</color>
     <color name="dark_card">#111827</color>
 
+    <!-- Bổ sung để build được các màn mới (thiếu trên main) -->
+    <color name="surface_bg">#F8F9FF</color>
+    <color name="surface_container">#F1F5F9</color>
+    <color name="on_surface_variant">#475569</color>
+    <color name="green_dot">#00685F</color>
+    <color name="green_indicator">#1A853A</color>
 
 </resources>
