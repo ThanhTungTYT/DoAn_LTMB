@@ -11,61 +11,42 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCareApp">
 
-        <!-- Màn hình chào nhập khởi điểm (Launcher Activity) -->
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!-- Màn hình Đăng ký -->
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
-
-        <!-- Màn hình xác nhận OTP -->
-        <activity
-            android:name=".OtpActivity"
-            android:exported="false" />
-
-        <!-- Màn hình chi tiết bác sĩ & Đặt lịch chính (đang đặt làm màn hình khởi chạy để test) -->
-        <activity
-            android:name=".ui.DoctorDetailActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <!-- Màn hình Thanh toán -->
-        <activity
-            android:name=".ui.PaymentActivity"
-            android:exported="false" />
-
-        <!-- Màn hình Lịch sử khám bệnh -->
-        <activity
-            android:name=".ui.HistoryActivity"
-            android:exported="false" />
-
-        <!-- MainActivity mặc định của project (chưa dùng) -->
+        <!-- ===== Màn hình khởi chạy: Trang chủ ===== -->
+        <!-- Tạm để Home làm launcher. Khi dat làm xong LoginActivity thì đổi
+             launcher sang Login và bỏ intent-filter ở đây. -->
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-        <activity
-            android:name=".ui.PackageActivity"
-            android:exported="false"/>
+        <!-- ===== Luồng đặt lịch khám bác sĩ cá nhân (Bao) ===== -->
+        <activity android:name=".ui.DoctorDetailActivity" android:exported="false" />
+        <activity android:name=".ui.PaymentActivity" android:exported="false" />
+        <activity android:name=".ui.HistoryActivity" android:exported="false" />
 
-        <activity
-            android:name=".ui.AppointmentBookingActivity"
-            android:exported="false"/>
+        <!-- ===== Gói khám / Tóm tắt khám (phu) ===== -->
+        <activity android:name=".ui.PackageActivity" android:exported="false" />
+        <activity android:name=".ui.AppointmentBookingActivity" android:exported="false" />
+        <activity android:name=".ui.MedicalSummaryActivity" android:exported="false" />
 
-        <activity
-            android:name=".ui.MedicalSummaryActivity"
-            android:exported="false"/>
+        <!-- ===== Tìm bác sĩ / Bản đồ chỉ đường (Sinh) ===== -->
+        <activity android:name=".ui.DoctorSearchActivity" android:exported="false" />
+        <activity android:name=".ui.DirectionsActivity" android:exported="false" />
+
+        <!-- ===== Vai trò bác sĩ / quản trị (tung) ===== -->
+        <activity android:name=".ui.adminRoleDoctor.AdminOverviewActivity" android:exported="false" />
+        <activity android:name=".ui.adminRoleDoctor.DoctorScheduleActivity" android:exported="false" />
+        <activity android:name=".ui.adminRoleDoctor.MyScheduleActivity" android:exported="false" />
+
+        <!-- ===== CHƯA CÓ CODE JAVA (dat mới làm layout) - thêm lại khi xong =====
+        <activity android:name=".LoginActivity" android:exported="true" />
+        <activity android:name=".RegisterActivity" android:exported="false" />
+        <activity android:name=".OtpActivity" android:exported="false" />
+        -->
+
     </application>
 </manifest>
