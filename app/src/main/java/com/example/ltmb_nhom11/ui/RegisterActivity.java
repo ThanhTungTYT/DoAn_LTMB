@@ -17,10 +17,6 @@ import com.example.ltmb_nhom11.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText edtFullName, edtPhone, edtEmail, edtPassword;
@@ -95,7 +91,15 @@ public class RegisterActivity extends AppCompatActivity {
                     User newUser = new User(uid, fullName, phone, email, "user");
 
                     db.collection("users").document(uid).set(newUser)
-                            .addOnSuccessListener(unused -> generateAndSendOtp(email, uid))
+                            .addOnSuccessListener(unused -> {
+                                btnRegister.setEnabled(true);
+                                Toast.makeText(this, "Đăng ký thành công! Vui lòng đăng nhập.", Toast.LENGTH_LONG).show();
+
+                                // TẠM BỎ QUA OTP — chuyển thẳng sang màn Đăng nhập
+                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            })
                             .addOnFailureListener(e -> {
                                 btnRegister.setEnabled(true);
                                 Toast.makeText(this, "Lỗi lưu hồ sơ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -104,29 +108,6 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     btnRegister.setEnabled(true);
                     Toast.makeText(this, "Đăng ký thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void generateAndSendOtp(String email, String uid) {
-        String code = String.valueOf(100000 + new Random().nextInt(900000));
-
-        Map<String, Object> otpData = new HashMap<>();
-        otpData.put("code", code);
-        otpData.put("uid", uid);
-        otpData.put("expiresAt", System.currentTimeMillis() + 5 * 60 * 1000);
-
-        db.collection("otp_codes").document(email).set(otpData)
-                .addOnSuccessListener(unused -> {
-                    btnRegister.setEnabled(true);
-                    Toast.makeText(this, "Mã OTP đã được gửi đến email: " + email, Toast.LENGTH_LONG).show();
-
-                    Intent intent = new Intent(RegisterActivity.this, OtpActivity.class);
-                    intent.putExtra("USER_EMAIL", email);
-                    startActivity(intent);
-                })
-                .addOnFailureListener(e -> {
-                    btnRegister.setEnabled(true);
-                    Toast.makeText(this, "Lỗi tạo OTP: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 }
