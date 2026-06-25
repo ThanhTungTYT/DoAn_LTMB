@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.ViewHolder> {
 
-    private final List<Doctor> doctors;
+    private  List<Doctor> doctors;
     private OnBookClickListener listener;
 
     public interface OnBookClickListener {
@@ -69,5 +69,9 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.ViewHolder
             tvDept = itemView.findViewById(R.id.tvDoctorDept);
             btnBook = itemView.findViewById(R.id.btnBook);
         }
+    }
+    public void updateList(List<Doctor> newList) {
+        this.doctors = newList;
+        notifyDataSetChanged();
     }
 }
