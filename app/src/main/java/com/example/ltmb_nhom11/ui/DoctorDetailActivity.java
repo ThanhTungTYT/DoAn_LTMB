@@ -18,8 +18,11 @@ import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.model.CalendarDate;
 import com.example.ltmb_nhom11.ui.adapter.CalendarAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class DoctorDetailActivity extends AppCompatActivity {
 
@@ -29,7 +32,7 @@ public class DoctorDetailActivity extends AppCompatActivity {
     private Button btnTime1400, btnTime1500, btnTime1630;
     private MaterialButton btnBook;
 
-    private String selectedDate = "15";
+    private String selectedDate = "";
     private String selectedTime = "08:00";
     private String doctorName = "BS. Nguyễn Văn An";
     private Button selectedTimeButton;
@@ -88,25 +91,36 @@ public class DoctorDetailActivity extends AppCompatActivity {
     }
 
     private void setupCalendarRecyclerView() {
-        // Thiết kế Layout Manager dạng chiều ngang cuộn (Horizontal)
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rvCalendarDates.setLayoutManager(layoutManager);
 
-        // Mock dates tự dựng
+        // Sinh 14 ngày bắt đầu từ NGÀY MAI; Chủ nhật không cho chọn
         List<CalendarDate> dateList = new ArrayList<>();
-        dateList.add(new CalendarDate("Th2", "15", true));
-        dateList.add(new CalendarDate("Th3", "16", false));
-        dateList.add(new CalendarDate("Th4", "17", false));
-        dateList.add(new CalendarDate("Th5", "18", false));
-        dateList.add(new CalendarDate("Th6", "19", false));
+        String[] vnDays = {"CN", "T2", "T3", "T4", "T5", "T6", "T7"}; // index = DAY_OF_WEEK - 1
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
-        CalendarAdapter adapter = new CalendarAdapter(dateList, new CalendarAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(CalendarDate date) {
-                selectedDate = date.getDayValue();
-                // Bỏ Toast: ngày được chọn đã được tô sáng trong CalendarAdapter
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, 1); // bắt đầu từ ngày mai
+        for (int i = 0; i < 14; i++) {
+            int dow = cal.get(Calendar.DAY_OF_WEEK);
+            String dayName = vnDays[dow - 1];
+            String dayValue = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+            String fullDate = sdf.format(cal.getTime());
+            boolean selectable = dow != Calendar.SUNDAY;
+            dateList.add(new CalendarDate(dayName, dayValue, fullDate, selectable));
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        // Mặc định chọn ngày đầu tiên có thể đặt
+        for (CalendarDate d : dateList) {
+            if (d.isSelectable()) {
+                selectedDate = d.getDayName() + ", " + d.getFullDate();
+                break;
             }
-        });
+        }
+
+        CalendarAdapter adapter = new CalendarAdapter(dateList,
+                date -> selectedDate = date.getDayName() + ", " + date.getFullDate());
         rvCalendarDates.setAdapter(adapter);
     }
 

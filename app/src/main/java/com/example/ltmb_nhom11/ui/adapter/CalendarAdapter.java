@@ -17,8 +17,8 @@ import com.example.ltmb_nhom11.model.CalendarDate;
 import java.util.List;
 
 /**
- * Adapter cho danh sách chọn ngày khám (RecyclerView cuộn ngang).
- * Tự quản lý trạng thái ngày đang được chọn để highlight.
+ * Adapter danh sách chọn ngày khám (cuộn ngang).
+ * Chủ nhật (selectable=false) hiển thị viền đỏ và không cho chọn.
  */
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DateViewHolder> {
 
@@ -28,14 +28,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DateVi
 
     private final List<CalendarDate> dateList;
     private final OnItemClickListener listener;
-    private int selectedPosition = 0;
+    private int selectedPosition = -1;
 
     public CalendarAdapter(List<CalendarDate> dateList, OnItemClickListener listener) {
         this.dateList = dateList;
         this.listener = listener;
-        // Đặt vị trí chọn ban đầu theo cờ isSelected (nếu có)
+        // Chọn sẵn ngày đầu tiên có thể đặt (bỏ qua Chủ nhật)
         for (int i = 0; i < dateList.size(); i++) {
-            if (dateList.get(i).isSelected()) {
+            if (dateList.get(i).isSelectable()) {
                 selectedPosition = i;
                 break;
             }
@@ -56,8 +56,22 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DateVi
         holder.txtDayName.setText(date.getDayName());
         holder.txtDayValue.setText(date.getDayValue());
 
-        boolean isSelected = position == selectedPosition;
+        if (!date.isSelectable()) {
+            // Chủ nhật: viền đỏ, mờ, không bấm được
+            holder.cardDateHolder.setCardBackgroundColor(Color.WHITE);
+            holder.lytDateItem.setBackgroundResource(R.drawable.bg_date_sunday);
+            holder.txtDayName.setTextColor(Color.parseColor("#BA1A1A"));
+            holder.txtDayValue.setTextColor(Color.parseColor("#BA1A1A"));
+            holder.itemView.setAlpha(0.6f);
+            holder.itemView.setClickable(false);
+            holder.itemView.setOnClickListener(null);
+            return;
+        }
 
+        holder.itemView.setAlpha(1f);
+        holder.itemView.setClickable(true);
+
+        boolean isSelected = position == selectedPosition;
         if (isSelected) {
             holder.cardDateHolder.setCardBackgroundColor(Color.parseColor("#00685F"));
             holder.lytDateItem.setBackgroundColor(Color.parseColor("#00685F"));

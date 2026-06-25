@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -32,6 +33,9 @@ public class PaymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_payment);
 
         initViews();
+
+        // Hiển thị thông tin lịch hẹn thật từ màn trước
+        bindAppointmentInfo();
 
         btnBackPayment.setOnClickListener(v -> finish());
 
@@ -87,6 +91,37 @@ public class PaymentActivity extends AppCompatActivity {
         btnMomo = findViewById(R.id.btnMomo);
         btnATM = findViewById(R.id.btnATM);
         btnConfirmPayment = findViewById(R.id.btnConfirmPayment);
+    }
+
+    /** Đổ tên bác sĩ / ngày giờ / tổng tiền nhận từ Intent vào giao diện. */
+    private void bindAppointmentInfo() {
+        String doctorName = getIntent().getStringExtra("doctorName");
+        String date = getIntent().getStringExtra("selected_date");
+        String time = getIntent().getStringExtra("selected_time");
+        long price = getIntent().getLongExtra("price", 0);
+
+        TextView tvDoctor = findViewById(R.id.tvPayDoctorName);
+        TextView tvDateTime = findViewById(R.id.tvPayDateTime);
+        TextView tvTotal = findViewById(R.id.tvPayTotal);
+        TextView tvTotalBottom = findViewById(R.id.tvPayTotalBottom);
+
+        if (doctorName != null && !doctorName.isEmpty()) {
+            tvDoctor.setText(doctorName);
+        }
+        String dateTime = ((time != null ? time : "") + "  •  " + (date != null ? date : "")).trim();
+        if (!dateTime.equals("•")) {
+            tvDateTime.setText(dateTime);
+        }
+        if (price > 0) {
+            String formatted = formatPrice(price);
+            tvTotal.setText(formatted);
+            tvTotalBottom.setText(formatted);
+        }
+    }
+
+    /** 460000 -> "460.000đ" */
+    private String formatPrice(long price) {
+        return String.format("%,d", price).replace(",", ".") + "đ";
     }
 
     private void setupPaymentSelections() {
