@@ -94,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                             .addOnSuccessListener(unused -> {
                                 btnRegister.setEnabled(true);
                                 Toast.makeText(this, "Đăng ký thành công! Vui lòng đăng nhập.", Toast.LENGTH_LONG).show();
+                                mAuth.signOut();
 
                                 // TẠM BỎ QUA OTP — chuyển thẳng sang màn Đăng nhập
                                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
