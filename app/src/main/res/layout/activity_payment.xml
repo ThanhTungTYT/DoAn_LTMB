@@ -49,29 +49,16 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageButton
+                    android:id="@+id/btnNotificationsPayment"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/ic_verified"
-                        app:tint="#0D9488" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:text="SECURE"
-                        android:textColor="#0D9488"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Thông báo"
+                    android:src="@drawable/ic_notifications"
+                    app:tint="#00685F" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

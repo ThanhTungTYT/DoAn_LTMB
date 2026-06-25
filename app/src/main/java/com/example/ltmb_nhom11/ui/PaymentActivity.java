@@ -35,6 +35,9 @@ public class PaymentActivity extends AppCompatActivity {
 
         btnBackPayment.setOnClickListener(v -> finish());
 
+        findViewById(R.id.btnNotificationsPayment).setOnClickListener(v ->
+                Toast.makeText(this, "Không có thông báo mới", Toast.LENGTH_SHORT).show());
+
         // Lắng nghe sự kiện RadioButton & Card click
         setupPaymentSelections();
 
