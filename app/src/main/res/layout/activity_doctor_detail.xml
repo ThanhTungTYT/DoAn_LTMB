@@ -34,7 +34,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Quay lại"
                     android:src="@drawable/ic_arrow_back"
-                    app:tint="#00685F" />
+                    app:tint="#0B1C30" />
 
                 <TextView
                     android:id="@+id/appTitle"

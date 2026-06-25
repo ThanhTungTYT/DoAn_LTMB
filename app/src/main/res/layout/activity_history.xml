@@ -33,8 +33,9 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_menu"
-                    app:tint="#00685F" />
+                    android:contentDescription="Quay lại"
+                    android:src="@drawable/ic_arrow_back"
+                    app:tint="#0B1C30" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -55,13 +56,14 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerInParent="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Thông báo"
                     android:src="@drawable/ic_notifications"
                     app:tint="#00685F" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Main Content nested scroll -->
+    <!-- Nội dung cuộn -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -75,7 +77,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Title header of history -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,14 +94,13 @@
                 android:textColor="#3D4947"
                 android:textSize="14sp" />
 
-            <!-- Filter Categories horizontally -->
+            <!-- Bộ lọc -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="20dp">
 
-                <!-- Chip "Tất cả" -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/chipAll"
                     android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
                     app:cardCornerRadius="20dp"
                     app:cardElevation="1dp"
                     app:strokeWidth="0dp"
-                    app:cardBackgroundColor="#00685F" > <!-- Selected style -->
+                    app:cardBackgroundColor="#00685F">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -124,7 +124,6 @@
                         android:textSize="14sp" />
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Chip "Sắp tới" -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/chipUpcoming"
                     android:layout_width="wrap_content"
@@ -134,7 +133,7 @@
                     app:cardElevation="0dp"
                     app:strokeColor="#BCC9C6"
                     app:strokeWidth="1dp"
-                    app:cardBackgroundColor="#FFFFFF" >
+                    app:cardBackgroundColor="#FFFFFF">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -148,17 +147,15 @@
                         android:textSize="14sp" />
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Chip "Đã xong" -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/chipDone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="0dp"
                     app:strokeColor="#BCC9C6"
                     app:strokeWidth="1dp"
-                    app:cardBackgroundColor="#FFFFFF" >
+                    app:cardBackgroundColor="#FFFFFF">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -173,486 +170,29 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- Sắp tới Section -->
-            <LinearLayout
+            <!-- Danh sách lịch hẹn (đọc từ Firestore) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvAppointments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="24dp">
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_appointment" />
 
-                <!-- Header indicator -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <View
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:background="@drawable/green_dot" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Sắp tới"
-                        android:textColor="#00685F"
-                        android:textStyle="bold"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <!-- Upcoming Doctor Card (Green left-side bar) -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="1dp"
-                    app:cardBackgroundColor="#E5FFFFFF"> <!-- Glass blend style -->
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <!-- Left primary colored accent slice -->
-                        <View
-                            android:id="@+id/leftSliceAccent"
-                            android:layout_width="4dp"
-                            android:layout_height="80dp"
-                            android:layout_alignParentStart="true"
-                            android:background="#00685F" />
-
-                        <!-- Doctor block info -->
-                        <RelativeLayout
-                            android:id="@+id/lytDocHeaderBlock"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/leftSliceAccent"
-                            android:layout_marginStart="12dp">
-
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/imgHistoryDoc"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/doctor_placeholder"
-                                app:shapeAppearanceOverlay="@style/CircleImageView" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@id/imgHistoryDoc"
-                                android:layout_marginStart="16dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="BS. Nguyễn Văn An"
-                                    android:textColor="#0B1C30"
-                                    android:textStyle="bold"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="2dp"
-                                    android:text="Chuyên khoa Nội tổng quát"
-                                    android:textColor="#3D4947"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-                            <!-- Badge status status indicator right side -->
-                            <FrameLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:background="@drawable/bg_badge_primary_light"
-                                android:paddingStart="12dp"
-                                android:paddingEnd="12dp"
-                                android:paddingTop="6dp"
-                                android:paddingBottom="6dp">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Sắp diễn ra"
-                                    android:textColor="#00685F"
-                                    android:textStyle="bold"
-                                    android:textSize="12sp" />
-                            </FrameLayout>
-                        </RelativeLayout>
-
-                        <!-- Horizontal date summary area -->
-                        <LinearLayout
-                            android:id="@+id/lytDateTimeUpcoming"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/lytDocHeaderBlock"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginBottom="16dp"
-                            android:background="@drawable/bg_stat_box"
-                            android:orientation="horizontal"
-                            android:padding="12dp">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="NGÀY"
-                                    android:textColor="#3D4947"
-                                    android:textSize="11sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="15 Thg 10, 2023"
-                                    android:textColor="#0B1C30"
-                                    android:textStyle="bold"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-
-                            <View
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:background="#BCC9C6" />
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="GIỜ"
-                                    android:textColor="#3D4947"
-                                    android:textSize="11sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="09:30 AM"
-                                    android:textColor="#0B1C30"
-                                    android:textStyle="bold"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Action Details Button -->
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnViewDetails"
-                            android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:layout_below="@id/lytDateTimeUpcoming"
-                            android:backgroundTint="#00685F"
-                            android:text="Xem chi tiết"
-                            android:textAllCaps="false"
-                            android:textColor="@android:color/white"
-                            android:textStyle="bold"
-                            app:cornerRadius="8dp" />
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <!-- Đã qua Section -->
-            <LinearLayout
+            <!-- Trạng thái rỗng -->
+            <TextView
+                android:id="@+id/tvEmpty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="16dp">
-
-                    <View
-                        android:layout_width="6dp"
-                        android:layout_height="6dp"
-                        android:background="@drawable/gray_dot" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Đã qua"
-                        android:textColor="#5C5F61"
-                        android:textStyle="bold"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <!-- History Item 1: Complete with recall recommendation badge -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="1dp"
-                    app:cardBackgroundColor="#FFFFFF">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="16dp">
-
-                            <com.google.android.material.imageview.ShapeableImageView
-                                android:id="@+id/imgHistPassed"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/doctor_placeholder"
-                                app:shapeAppearanceOverlay="@style/CircleImageView" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@id/imgHistPassed"
-                                android:layout_marginStart="16dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="BS. Trần Thị B"
-                                    android:textColor="#0B1C30"
-                                    android:textStyle="bold"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Nhi khoa"
-                                    android:textColor="#3D4947"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:gravity="end"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
-                                    android:orientation="horizontal">
-
-                                    <View
-                                        android:layout_width="6dp"
-                                        android:layout_height="6dp"
-                                        android:background="@drawable/bright_green_dot" />
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="6dp"
-                                        android:text="Đã hoàn thành"
-                                        android:textColor="#059669"
-                                        android:textStyle="bold"
-                                        android:textSize="12sp" />
-                                </LinearLayout>
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="4dp"
-                                    android:text="02 Thg 09, 2023"
-                                    android:textColor="#3D4947"
-                                    android:textSize="11sp" />
-                            </LinearLayout>
-                        </RelativeLayout>
-
-                        <!-- Recommended recall item alert block -->
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_accent_teal_lightest"
-                            android:layout_marginBottom="16dp"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:id="@+id/icRepeat"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_centerVertical="true"
-                                android:src="@drawable/ic_repeat"
-                                app:tint="#0D9488" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@id/icRepeat"
-                                android:layout_toStartOf="@id/btnSchedulePrompt"
-                                android:layout_marginStart="12dp"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Lịch tái khám đề xuất"
-                                    android:textColor="#0F766E"
-                                    android:textSize="11sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="2dp"
-                                    android:text="12 Thg 11, 2023"
-                                    android:textColor="#0D9488"
-                                    android:textStyle="bold"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:id="@+id/btnSchedulePrompt"
-                                android:layout_width="36dp"
-                                android:layout_height="36dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:backgroundTint="#0D9488"
-                                app:fabSize="mini"
-                                android:src="@drawable/ic_add_task"
-                                app:tint="@android:color/white"
-                                app:borderWidth="0dp"
-                                app:elevation="2dp" />
-                        </RelativeLayout>
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:text="Xem tóm tắt khám bệnh"
-                            android:textAllCaps="false"
-                            android:textColor="#3D4947"
-                            app:strokeColor="#CBD5E1" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- History Item 2: Cancelled card representation -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="#CBD5E1"
-                    app:strokeWidth="1dp"
-                    android:alpha="0.75"
-                    app:cardBackgroundColor="#1AFFFFFF">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <FrameLayout
-                            android:id="@+id/iconHistService"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_circle_secondary_light"
-                            android:layout_alignParentStart="true">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_medical"
-                                app:tint="#5C5F61" />
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/iconHistService"
-                            android:layout_marginStart="16dp">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Xét nghiệm tổng quát"
-                                    android:textColor="#3D4947"
-                                    android:textStyle="bold"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Trung tâm Xét nghiệm A"
-                                    android:textColor="#5C5F61"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:gravity="end"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <View
-                                    android:layout_width="6dp"
-                                    android:layout_height="6dp"
-                                    android:background="@drawable/red_dot" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="6dp"
-                                    android:text="Đã hủy"
-                                    android:textColor="#BA1A1A"
-                                    android:textStyle="bold"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="15 Thg 08, 2023"
-                                android:textColor="#3D4947"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-                    </RelativeLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:text="Chưa có lịch hẹn nào."
+                android:textColor="#5C5F61"
+                android:textSize="14sp"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Floating Action Button for Adding New Appointment -->
+    <!-- FAB thêm lịch hẹn -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddAppointment"
         android:layout_width="wrap_content"
@@ -662,18 +202,129 @@
         android:layout_marginBottom="90dp"
         android:backgroundTint="#00685F"
         android:src="@drawable/ic_add"
+        android:contentDescription="Đặt lịch mới"
         app:elevation="6dp"
         app:tint="@android:color/white"
         app:borderWidth="0dp"
         app:shapeAppearanceOverlay="@style/RoundedCorner16" />
 
-    <!-- Solid Bottom navigation mock representing system view -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+    <!-- Bottom navigation — đồng bộ với Trang chủ (LinearLayout 4 mục) -->
+    <LinearLayout
+        android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:layout_gravity="bottom"
-        android:background="@android:color/white"
-        app:elevation="8dp"
-        app:menu="@menu/bottom_nav_menu" />
+        android:background="@color/surface_container_lowest"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="4dp"
+        android:paddingHorizontal="16dp">
+
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_home"
+                app:tint="@color/secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Home"
+                android:textColor="@color/secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- Mục Appointments = đang ở (active) -->
+        <LinearLayout
+            android:id="@+id/navAppointments"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="@color/primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Appointments"
+                android:textColor="@color/primary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navPackages"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_packages"
+                app:tint="@color/secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Packages"
+                android:textColor="@color/secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/navProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_profile"
+                app:tint="@color/secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Profile"
+                android:textColor="@color/secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
