@@ -11,8 +11,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.ltmb_nhom11.R;
 
+import com.example.ltmb_nhom11.MainActivity;
+import com.example.ltmb_nhom11.R;
+import com.example.ltmb_nhom11.util.SessionManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -23,12 +28,24 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvRegisterLink, tvForgotPassword;
     private boolean isPasswordVisible = false;
 
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        if (SessionManager.isLoggedIn()) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_login);
 
-        // Ánh xạ các View từ XML Layout
         edtPhone = findViewById(R.id.edtPhone);
         edtPassword = findViewById(R.id.edtPassword);
         btnTogglePassword = findViewById(R.id.btnTogglePassword);
@@ -39,69 +56,69 @@ public class LoginActivity extends AppCompatActivity {
         tvRegisterLink = findViewById(R.id.tvRegisterLink);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
 
-        // Toggle mật khẩu ẩn/hiện
-        btnTogglePassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isPasswordVisible = !isPasswordVisible;
-                if (isPasswordVisible) {
-                    edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    btnTogglePassword.setImageResource(R.drawable.ic_visibility_off);
-                } else {
-                    edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    btnTogglePassword.setImageResource(R.drawable.ic_visibility);
-                }
-                edtPassword.setSelection(edtPassword.getText().length());
+        btnTogglePassword.setOnClickListener(v -> {
+            isPasswordVisible = !isPasswordVisible;
+            if (isPasswordVisible) {
+                edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                btnTogglePassword.setImageResource(R.drawable.ic_visibility_off);
+            } else {
+                edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                btnTogglePassword.setImageResource(R.drawable.ic_visibility);
             }
+            edtPassword.setSelection(edtPassword.getText().length());
         });
 
-        // Xử lý click đăng nhập
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String phone = edtPhone.getText().toString().trim();
-                String password = edtPassword.getText().toString().trim();
+        btnLogin.setOnClickListener(v -> doLogin());
 
-                if (phone.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "Vui lòng điền đủ Số điện thoại và Mật khẩu!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        tvRegisterLink.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
 
-                String rememberStatus = cbRememberMe.isChecked() ? "có ghi nhớ" : "không ghi nhớ";
-                Toast.makeText(LoginActivity.this, "Đang đăng nhập hệ thống (" + rememberStatus + ")...", Toast.LENGTH_SHORT).show();
-            }
-        });
+        tvForgotPassword.setOnClickListener(v ->
+                startActivity(new Intent(this, ForgotPasswordActivity.class)));
 
-        // Liên kết mở rộng sang màn Đăng ký
-        tvRegisterLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
-        });
+        btnGoogle.setOnClickListener(v ->
+                Toast.makeText(this, "Đăng nhập Google sẽ được tích hợp sau!", Toast.LENGTH_SHORT).show());
+        btnFacebook.setOnClickListener(v ->
+                Toast.makeText(this, "Đăng nhập Facebook sẽ được tích hợp sau!", Toast.LENGTH_SHORT).show());
+    }
 
-        // Quên mật khẩu
-        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Chức năng khôi phục đang được xử lý!", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void doLogin() {
+        String phone = edtPhone.getText().toString().trim();
+        String password = edtPassword.getText().toString().trim();
 
-        // Click Google / Facebook
-        btnGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Đăng nhập bằng tài khoản Google...", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (phone.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Vui lòng điền đủ Số điện thoại và Mật khẩu!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        btnFacebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Đăng nhập bằng tài khoản Facebook...", Toast.LENGTH_SHORT).show();
-            }
-        });
+        btnLogin.setEnabled(false);
+
+        db.collection("users").whereEqualTo("phone", phone).limit(1).get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (querySnapshot.isEmpty()) {
+                        btnLogin.setEnabled(true);
+                        Toast.makeText(this, "Số điện thoại chưa được đăng ký!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    QueryDocumentSnapshot doc = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
+                    String email = doc.getString("email");
+                    String role = doc.getString("role");
+
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnSuccessListener(authResult -> {
+                                btnLogin.setEnabled(true);
+                                Toast.makeText(this, "Đăng nhập thành công! Vai trò: " + role, Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                btnLogin.setEnabled(true);
+                                Toast.makeText(this, "Sai mật khẩu hoặc tài khoản không hợp lệ!", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    btnLogin.setEnabled(true);
+                    Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

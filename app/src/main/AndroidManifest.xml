@@ -11,11 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthCareApp">
 
-        <!-- ===== Màn hình khởi chạy: Trang chủ ===== -->
-        <!-- Tạm để Home làm launcher. Khi dat làm xong LoginActivity thì đổi
-             launcher sang Login và bỏ intent-filter ở đây. -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,15 +20,21 @@
             </intent-filter>
         </activity>
 
+        <!-- ===== Trang chủ (vẫn cần khai báo dù không phải launcher) ===== -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
         <!-- ===== Luồng đặt lịch khám bác sĩ cá nhân (Bao) ===== -->
         <activity android:name=".ui.DoctorDetailActivity" android:exported="false" />
         <activity android:name=".ui.PaymentActivity" android:exported="false" />
         <activity android:name=".ui.HistoryActivity" android:exported="false" />
 
-        <!-- ===== Gói khám / Tóm tắt khám (phu) ===== -->
+        <!-- ===== Gói khám / Tóm tắt khám (phu) =====
         <activity android:name=".ui.PackageActivity" android:exported="false" />
         <activity android:name=".ui.AppointmentBookingActivity" android:exported="false" />
         <activity android:name=".ui.MedicalSummaryActivity" android:exported="false" />
+        -->
 
         <!-- ===== Tìm bác sĩ / Bản đồ chỉ đường (Sinh) ===== -->
         <activity android:name=".ui.DoctorSearchActivity" android:exported="false" />
@@ -42,11 +45,9 @@
         <activity android:name=".ui.adminRoleDoctor.DoctorScheduleActivity" android:exported="false" />
         <activity android:name=".ui.adminRoleDoctor.MyScheduleActivity" android:exported="false" />
 
-        <!-- ===== CHƯA CÓ CODE JAVA (dat mới làm layout) - thêm lại khi xong =====
-        <activity android:name=".LoginActivity" android:exported="true" />
-        <activity android:name=".RegisterActivity" android:exported="false" />
-        <activity android:name=".OtpActivity" android:exported="false" />
-        -->
+        <activity android:name=".ui.RegisterActivity" android:exported="true" />
+        <activity android:name=".ui.OtpActivity" android:exported="false" />
+        <activity android:name=".ui.ForgotPasswordActivity" android:exported="false" />
 
     </application>
 </manifest>
