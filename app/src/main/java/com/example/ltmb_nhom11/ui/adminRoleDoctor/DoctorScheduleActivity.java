@@ -29,7 +29,7 @@ public class DoctorScheduleActivity extends AppCompatActivity {
         doctorList.add(new Doctor("Dr. Marcus Thorne", "Neurology", "On Leave"));
         doctorList.add(new Doctor("Dr. Kevin Zhang", "Pediatrics", "Available"));
 
-        adapter = new DoctorAdapter(doctorList);
+        adapter = new DoctorAdapter(doctorList, null);
         rvDoctors.setAdapter(adapter);
     }
 }
