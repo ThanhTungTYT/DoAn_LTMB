@@ -29,19 +29,51 @@ public class DoctorSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_search);
 
-        // Ánh xạ RecyclerView từ layout mới sửa
+
         recyclerDoctors = findViewById(R.id.recyclerDoctors);
         recyclerDoctors.setLayoutManager(new LinearLayoutManager(this));
 
-        // Khởi tạo danh sách bác sĩ ảo (Sau này Tùng lấy từ Firebase đổ vô đây)
+
         initMockData();
 
-        // Cài đặt adapter động
+
         doctorAdapter = new DoctorAdapter(doctorList, doctor -> openDoctorDetail(doctor.getName()));
         recyclerDoctors.setAdapter(doctorAdapter);
 
-        // Giữ nguyên các chức năng Bottom Navigation của nhóm
+
         setupBottomNavigation();
+
+        android.widget.EditText etSearch = findViewById(R.id.etSearch);
+
+
+        etSearch.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                filterDoctors(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+    }
+    private void filterDoctors(String text) {
+        List<Doctor> filteredList = new ArrayList<>();
+
+
+        for (Doctor doc : doctorList) {
+
+            if (doc.getName().toLowerCase().contains(text.toLowerCase()) ||
+                    doc.getDept().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(doc);
+            }
+        }
+
+
+        doctorAdapter.updateList(filteredList);
     }
 
     private void initMockData() {
