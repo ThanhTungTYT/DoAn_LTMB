@@ -30,11 +30,10 @@
         <activity android:name=".ui.PaymentActivity" android:exported="false" />
         <activity android:name=".ui.HistoryActivity" android:exported="false" />
 
-        <!-- ===== Gói khám / Tóm tắt khám (phu) =====
+        <!-- ===== Gói khám / Tóm tắt khám (phu) ===== -->
         <activity android:name=".ui.PackageActivity" android:exported="false" />
         <activity android:name=".ui.AppointmentBookingActivity" android:exported="false" />
         <activity android:name=".ui.MedicalSummaryActivity" android:exported="false" />
-        -->
 
         <!-- ===== Tìm bác sĩ / Bản đồ chỉ đường (Sinh) ===== -->
         <activity android:name=".ui.DoctorSearchActivity" android:exported="false" />

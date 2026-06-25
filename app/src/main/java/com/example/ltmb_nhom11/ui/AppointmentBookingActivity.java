@@ -1,4 +1,15 @@
 package com.example.ltmb_nhom11.ui;
 
-public class AppointmentBookingActivity {
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.ltmb_nhom11.R;
+
+public class AppointmentBookingActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_appointment_booking);
+    }
 }
