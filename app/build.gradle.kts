@@ -1,7 +1,16 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
 }
+
+// Đọc SEPAY_TOKEN từ local.properties (file này đã được .gitignore, không lên git)
+val sepayToken: String = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) load(FileInputStream(f))
+}.getProperty("SEPAY_TOKEN") ?: ""
 
 android {
     namespace = "com.example.ltmb_nhom11"
@@ -15,6 +24,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "SEPAY_TOKEN", "\"$sepayToken\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
