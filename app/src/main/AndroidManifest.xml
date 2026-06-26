@@ -13,7 +13,8 @@
 
         <activity
             android:name=".ui.LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -45,9 +46,15 @@
         <activity android:name=".ui.adminRoleDoctor.DoctorScheduleActivity" android:exported="false" />
         <activity android:name=".ui.adminRoleDoctor.MyScheduleActivity" android:exported="false" />
 
-        <activity android:name=".ui.RegisterActivity" android:exported="false" />
+        <activity
+            android:name=".ui.RegisterActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.OtpActivity" android:exported="false" />
-        <activity android:name=".ui.ForgotPasswordActivity" android:exported="false" />
+        <activity
+            android:name=".ui.ForgotPasswordActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 </manifest>

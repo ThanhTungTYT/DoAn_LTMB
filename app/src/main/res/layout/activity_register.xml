@@ -283,7 +283,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Một mã OTP sẽ được gửi đến email của bạn để xác thực tài khoản sau bước này."
+                        android:text="Một email xác minh sẽ được gửi đến địa chỉ email của bạn để xác thực tài khoản sau bước này."
                         android:textColor="#005049"
                         android:textSize="13sp" />
                 </LinearLayout>

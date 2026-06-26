@@ -16,6 +16,7 @@ import com.example.ltmb_nhom11.MainActivity;
 import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.util.SessionManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -38,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        if (SessionManager.isLoggedIn()) {
+        if (SessionManager.isLoggedIn() && mAuth.getCurrentUser().isEmailVerified()) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
             return;
@@ -107,6 +108,13 @@ public class LoginActivity extends AppCompatActivity {
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnSuccessListener(authResult -> {
                                 btnLogin.setEnabled(true);
+                                FirebaseUser user = authResult.getUser();
+
+                                if (!user.isEmailVerified()) {
+                                    showVerifyEmailPrompt(user);
+                                    return;
+                                }
+
                                 Toast.makeText(this, "Đăng nhập thành công! Vai trò: " + role, Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 finish();
@@ -119,6 +127,23 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     btnLogin.setEnabled(true);
                     Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void showVerifyEmailPrompt(FirebaseUser user) {
+        Toast.makeText(this,
+                "Email của bạn chưa được xác minh! Đang gửi lại email xác minh...",
+                Toast.LENGTH_LONG).show();
+
+        user.sendEmailVerification()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Đã gửi lại email xác minh, vui lòng kiểm tra hộp thư!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Gửi lại email xác minh thất bại!", Toast.LENGTH_SHORT).show();
+                    }
+                    // Đăng xuất vì chưa được xác minh, không cho vào MainActivity
+                    mAuth.signOut();
                 });
     }
 }
