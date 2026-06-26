@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="#F8F9FA">
 
-    <!-- THANH TIÊU ĐỀ (ActionBar/Toolbar) -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,11 +16,6 @@
             android:id="@+id/toolbarPackages"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_menu"
-                android:layout_gravity="start"/> <!-- Icon menu bên trái -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,7 +47,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- 1. BANNER XANH NGỌC -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="140dp"

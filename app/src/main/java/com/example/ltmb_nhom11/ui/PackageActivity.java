@@ -1,7 +1,7 @@
 package com.example.ltmb_nhom11.ui;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,7 +34,25 @@ public class PackageActivity extends AppCompatActivity {
         );
 
         PackageAdapter adapter =
-                new PackageAdapter(packages);
+                new PackageAdapter(packages, medicalPackage -> {
+
+                    Intent intent = new Intent(
+                            PackageActivity.this,
+                            AppointmentBookingActivity.class
+                    );
+
+                    intent.putExtra(
+                            "packageName",
+                            medicalPackage.getName()
+                    );
+
+                    intent.putExtra(
+                            "price",
+                            medicalPackage.getPrice()
+                    );
+
+                    startActivity(intent);
+                });
 
         rvMedicalPackages.setAdapter(adapter);
     }

@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,9 +18,16 @@ public class PackageAdapter
         extends RecyclerView.Adapter<PackageAdapter.ViewHolder> {
 
     private final List<Package> packageList;
+    private final OnPackageClickListener listener;
 
-    public PackageAdapter(List<Package> packageList) {
+    public interface OnPackageClickListener {
+        void onRegisterClick(Package medicalPackage);
+    }
+
+    public PackageAdapter(List<Package> packageList,
+                          OnPackageClickListener listener) {
         this.packageList = packageList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -50,6 +58,9 @@ public class PackageAdapter
         holder.tvPrice.setText(
                 String.valueOf((long)p.getPrice()) + " VNĐ"
         );
+        holder.btnRegister.setOnClickListener(v -> {
+            listener.onRegisterClick(p);
+        });
     }
 
     @Override
@@ -64,6 +75,8 @@ public class PackageAdapter
         TextView tvDescription;
         TextView tvPrice;
 
+        Button btnRegister;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -72,6 +85,8 @@ public class PackageAdapter
                     itemView.findViewById(R.id.tvPackageDescription);
             tvPrice =
                     itemView.findViewById(R.id.tvPackagePrice);
+            btnRegister =
+                    itemView.findViewById(R.id.btnRegister);
         }
     }
 }
