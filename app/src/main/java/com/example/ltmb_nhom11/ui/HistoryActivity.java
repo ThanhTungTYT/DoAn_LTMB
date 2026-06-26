@@ -88,7 +88,7 @@ public class HistoryActivity extends AppCompatActivity {
         navPackages.setOnClickListener(v ->
                 Toast.makeText(this, "Chức năng Gói khám đang được xây dựng!", Toast.LENGTH_SHORT).show());
         navProfile.setOnClickListener(v ->
-                Toast.makeText(this, "Chức năng Cá nhân đang được xây dựng!", Toast.LENGTH_SHORT).show());
+                startActivity(new Intent(this, ProfileActivity.class)));
     }
 
     @Override

@@ -107,8 +107,7 @@ public class DoctorSearchActivity extends AppCompatActivity {
 
         LinearLayout navProfile = findViewById(R.id.navProfile);
         navProfile.setOnClickListener(v ->
-                Toast.makeText(DoctorSearchActivity.this, "Chức năng Cá nhân (Profile) đang được xây dựng!", Toast.LENGTH_SHORT).show()
-        );
+                startActivity(new Intent(DoctorSearchActivity.this, ProfileActivity.class)));
 
         ImageView btnNotification = findViewById(R.id.btnNotification);
         btnNotification.setOnClickListener(v ->
