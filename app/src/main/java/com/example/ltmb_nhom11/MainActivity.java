@@ -14,6 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.ltmb_nhom11.ui.ImageLoader;
+import com.google.firebase.auth.FirebaseUser;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,17 +25,41 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 1. BẮT BUỘC PHẢI CÓ 2 DÒNG NÀY ĐẦU TIÊN
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Bind and Load images
+        // 2. KIỂM TRA ĐĂNG NHẬP TRƯỚC TIÊN
+        FirebaseUser currentUser = SessionManager.getCurrentUser();
+        if (currentUser == null) {
+            // Chưa đăng nhập thì đá về Login và DỪNG ngang luôn
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return; // Lệnh return cực kỳ quan trọng để không chạy code bên dưới
+        }
+
+        // 3. ĐÃ ĐĂNG NHẬP THÌ XỬ LÝ GIAO DIỆN HIỂN THỊ TÊN (Đã sửa TTextView thành TextView)
+        TextView tvUserName = findViewById(R.id.tvUserName);
+        String userName = currentUser.getDisplayName();
+
+        if (userName == null || userName.isEmpty()) {
+            String email = currentUser.getEmail();
+            if (email != null && email.contains("@")) {
+                userName = email.substring(0, email.indexOf('@'));
+            } else {
+                userName = "Bệnh nhân";
+            }
+        }
+        tvUserName.setText(userName + " 👋");
+
+        // 4. TIẾP TỤC BIND CÁC THÀNH PHẦN KHÁC (Giữ nguyên code cũ của ông)
         ImageView imgUserAvatar = findViewById(R.id.imgUserAvatar);
         ImageView imgMapPreview = findViewById(R.id.imgMapPreview);
 
         ImageLoader.load(AVATAR_URL, imgUserAvatar);
         ImageLoader.load(MAP_PREVIEW_URL, imgMapPreview);
 
-        // Bento quick action listeners
         LinearLayout btnQuickBook = findViewById(R.id.btnQuickBook);
         btnQuickBook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // "Xem tất cả" list filter action
         TextView btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
         btnViewAllAppointments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Clinic Location interactions (Direct to Screen 2)
         LinearLayout cardLocation = findViewById(R.id.cardLocation);
         cardLocation.setOnClickListener(new View.OnClickListener() {
             @Override
