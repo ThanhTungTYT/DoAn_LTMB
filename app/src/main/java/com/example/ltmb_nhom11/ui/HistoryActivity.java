@@ -16,6 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.example.ltmb_nhom11.MainActivity;
 import com.example.ltmb_nhom11.R;
+import com.example.ltmb_nhom11.util.SessionManager;
 import com.example.ltmb_nhom11.model.Appointment;
 import com.example.ltmb_nhom11.repository.AppointmentRepository;
 import com.example.ltmb_nhom11.ui.adapter.AppointmentAdapter;
@@ -24,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
-
-    // TODO: đổi sang FirebaseAuth uid khi Auth của dat xong
-    private static final String USER_ID = "test_user";
 
     private ImageButton btnMenuHistory, btnNotificationsHistory;
     private MaterialCardView chipAll, chipUpcoming, chipDone;
@@ -100,7 +98,9 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void loadAppointments() {
-        new AppointmentRepository().getByUser(USER_ID, new AppointmentRepository.OnList() {
+        String userId = SessionManager.getCurrentUser() != null
+                ? SessionManager.getCurrentUser().getUid() : "test_user";
+        new AppointmentRepository().getByUser(userId, new AppointmentRepository.OnList() {
             @Override
             public void onLoaded(List<Appointment> list) {
                 allAppointments.clear();

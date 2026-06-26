@@ -2,12 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC">
 
-    <!-- Top AppBar Style -->
+    <!-- Top AppBar -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarPayment"
         android:layout_width="match_parent"
@@ -17,7 +16,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarPayment"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:paddingStart="4dp"
@@ -34,6 +32,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Quay lại"
                     android:src="@drawable/ic_arrow_back"
                     app:tint="#0F172A" />
 
@@ -63,7 +62,6 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -78,7 +76,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Title Section -->
+            <!-- Chi tiết lịch hẹn -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,7 +86,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Doctor Ticket Box -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,8 +107,8 @@
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/imgDoctorPay"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
                             android:scaleType="centerCrop"
                             android:src="@drawable/doctor_placeholder"
                             app:shapeAppearanceOverlay="@style/RoundedCorner12" />
@@ -126,16 +123,16 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="BÁC SĨ CHUYÊN KHOA"
-                                android:textColor="#0D9488"
+                                android:textColor="#00685F"
                                 android:textSize="11sp"
                                 android:textStyle="bold"
-                                android:layout_marginBottom="4dp"/>
+                                android:layout_marginBottom="4dp" />
 
                             <TextView
                                 android:id="@+id/tvPayDoctorName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="BS. Nguyễn Minh Anh"
+                                android:text="BS. Nguyễn Văn An"
                                 android:textColor="#0F172A"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -143,7 +140,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Chuyên khoa Tim mạch • 15 năm KN"
+                                android:text="Phòng khám HealthCare"
                                 android:textColor="#475569"
                                 android:textSize="13sp" />
                         </LinearLayout>
@@ -156,7 +153,6 @@
                         android:layout_marginBottom="20dp"
                         android:background="@drawable/dash_line" />
 
-                    <!-- Date and Location info -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -174,7 +170,7 @@
                                 android:text="Thời gian"
                                 android:textColor="#475569"
                                 android:textSize="12sp"
-                                android:layout_marginBottom="4dp"/>
+                                android:layout_marginBottom="4dp" />
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -186,14 +182,14 @@
                                     android:layout_width="14dp"
                                     android:layout_height="14dp"
                                     android:src="@drawable/ic_calendar"
-                                    app:tint="#0D9488" />
+                                    app:tint="#00685F" />
 
                                 <TextView
                                     android:id="@+id/tvPayDateTime"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="4dp"
-                                    android:text="14:30, 25/10/2023"
+                                    android:text="08:00 • 15/10/2023"
                                     android:textColor="#0F172A"
                                     android:textStyle="bold"
                                     android:textSize="13sp" />
@@ -212,7 +208,7 @@
                                 android:text="Địa điểm"
                                 android:textColor="#475569"
                                 android:textSize="12sp"
-                                android:layout_marginBottom="4dp"/>
+                                android:layout_marginBottom="4dp" />
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -224,7 +220,7 @@
                                     android:layout_width="14dp"
                                     android:layout_height="14dp"
                                     android:src="@drawable/ic_location"
-                                    app:tint="#0D9488" />
+                                    app:tint="#00685F" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -240,7 +236,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Methods Title -->
+            <!-- Phương thức thanh toán -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -250,9 +246,9 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Option 1: At Clinic -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardPayAtClinic"
+            <!-- Lựa chọn 1: Trực tiếp -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPayDirect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -260,35 +256,36 @@
                 android:focusable="true"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="#F0FDFA"> <!-- Default Selected color -->
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:background="@drawable/border_selected_teal">
+                    android:padding="16dp">
 
                     <FrameLayout
-                        android:id="@+id/iconClinicBox"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:id="@+id/iconDirectBox"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:background="@drawable/bg_rounded_teal_lighter"
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true">
 
                         <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_hospital"
-                            app:tint="#0D9488" />
+                            app:tint="#00685F" />
                     </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/iconClinicBox"
-                        android:layout_toStartOf="@id/radioAtClinic"
+                        android:layout_toEndOf="@id/iconDirectBox"
+                        android:layout_toStartOf="@id/radioDirect"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="16dp"
                         android:orientation="vertical">
@@ -296,7 +293,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Thanh toán tại phòng khám"
+                            android:text="Thanh toán trực tiếp"
                             android:textColor="#0F172A"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -304,25 +301,97 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Thanh toán bằng tiền mặt hoặc thẻ khi đến nơi"
+                            android:text="Trả tại quầy sau khi khám xong"
                             android:textColor="#475569"
                             android:textSize="12sp" />
                     </LinearLayout>
 
                     <RadioButton
-                        android:id="@+id/radioAtClinic"
+                        android:id="@+id/radioDirect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:clickable="false"
+                        android:buttonTint="#00685F" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Lựa chọn 2: Chuyển khoản (mặc định) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPayBank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#F0FDFA"
+                app:strokeColor="#00685F"
+                app:strokeWidth="1.5dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <FrameLayout
+                        android:id="@+id/iconBankBox"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_rounded_teal_lighter"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_card"
+                            app:tint="#00685F" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/iconBankBox"
+                        android:layout_toStartOf="@id/radioBank"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chuyển khoản ngân hàng"
+                            android:textColor="#0F172A"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Quét QR đặt cọc trước, nhanh chóng"
+                            android:textColor="#475569"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <RadioButton
+                        android:id="@+id/radioBank"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:checked="true"
-                        android:buttonTint="#0D9488" />
+                        android:clickable="false"
+                        android:buttonTint="#00685F" />
                 </RelativeLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Option 2: Online Container -->
+            <!-- Khu vực QR (hiện khi chọn chuyển khoản) -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardPayOnline"
+                android:id="@+id/layoutQrSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
@@ -333,136 +402,64 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
-                    <!-- Inner Online Header Option -->
-                    <RelativeLayout
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quét mã để chuyển khoản đặt cọc"
+                        android:textColor="#0F172A"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <ImageView
+                        android:id="@+id/imgQr"
+                        android:layout_width="220dp"
+                        android:layout_height="220dp"
+                        android:contentDescription="Mã QR chuyển khoản"
+                        android:src="@drawable/ic_qrcode"
+                        app:tint="#CBD5E1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="MB Bank • 0933652267"
+                        android:textColor="#0F172A"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NGUYEN HUY BAO"
+                        android:textColor="#475569"
+                        android:textSize="12sp" />
+
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:id="@+id/layoutOnlineHeader">
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="Nội dung CK (đã điền sẵn trong mã):"
+                        android:textColor="#475569"
+                        android:textSize="12sp" />
 
-                        <FrameLayout
-                            android:id="@+id/iconCardBox"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@drawable/bg_rounded_blue_lighter"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:src="@drawable/ic_wallet"
-                                app:tint="#2563EB" />
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/iconCardBox"
-                            android:layout_toStartOf="@id/radioOnline"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="16dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Thanh toán online"
-                                android:textColor="#0F172A"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Nhanh chóng &amp; Bảo mật"
-                                android:textColor="#475569"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <RadioButton
-                            android:id="@+id/radioOnline"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:checked="false"
-                            android:buttonTint="#0D9488" />
-                    </RelativeLayout>
-
-                    <!-- Online Suboptions grid area -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvQrContent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="#FAFDFD"
-                        android:orientation="horizontal"
-                        android:padding="12dp">
-
-                        <LinearLayout
-                            android:id="@+id/btnMomo"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_margin="4dp"
-                            android:background="@drawable/bg_subpay_btn"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:src="@drawable/ic_qrcode"
-                                app:tint="#EC4899" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Ví MoMo"
-                                android:textColor="#0F172A"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/btnATM"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_margin="4dp"
-                            android:background="@drawable/bg_subpay_btn"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:src="@drawable/ic_card"
-                                app:tint="#3B82F6" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="Thẻ ATM / Bank"
-                                android:textColor="#0F172A"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </LinearLayout>
+                        android:text="..."
+                        android:textColor="#00685F"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Price breakdown component -->
+            <!-- Tổng tiền -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -470,133 +467,53 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="1dp">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Line Row 1 -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp">
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="Phí đặt cọc"
+                        android:textColor="#0F172A"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Phí khám"
-                            android:textColor="#475569"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:text="500.000đ"
-                            android:textColor="#0F172A"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-
-                    <!-- Line Row 2 -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvPayTotal"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Ưu đãi"
-                            android:textColor="#475569"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:text="- 50.000đ"
-                            android:textColor="#EF4444"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-
-                    <!-- Line Row 3 -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Phí dịch vụ"
-                            android:textColor="#475569"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:text="10.000đ"
-                            android:textColor="#0F172A"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#E2E8F0"
-                        android:layout_marginBottom="16dp" />
-
-                    <!-- Total Row -->
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tổng cộng"
-                            android:textColor="#0F172A"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvPayTotal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:text="460.000đ"
-                            android:textColor="#0D9488"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-                </LinearLayout>
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="200.000đ"
+                        android:textColor="#00685F"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Info text warning box -->
+            <!-- Ghi chú -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_accent_teal_lightest"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp">
+                android:padding="16dp">
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_info"
-                    app:tint="#0D9488" />
+                    app:tint="#00685F" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Bằng cách xác nhận thanh toán, bạn đồng ý với các Điều khoản dịch vụ và Chính sách bảo mật của HealthCare. Lịch hẹn có thể được hủy miễn phí trước 24 giờ."
+                    android:text="Sau khi chuyển khoản đúng nội dung, hệ thống sẽ tự xác nhận lịch hẹn. Lịch có thể hủy miễn phí trước 24 giờ."
                     android:textColor="#134E4A"
                     android:textSize="12sp"
                     android:lineSpacingMultiplier="1.1" />
@@ -604,7 +521,7 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom confirmation footer sticky box -->
+    <!-- Footer xác nhận -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -614,49 +531,46 @@
         android:padding="16dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:layout_marginEnd="12dp">
 
-            <!-- Price overview (left, optional) -->
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="16dp">
+                android:text="TỔNG TIỀN"
+                android:textColor="#475569"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TỔNG TIỀN"
-                    android:textColor="#475569"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvPayTotalBottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="460.000đ"
-                    android:textColor="#0F172A"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnConfirmPayment"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="Xác nhận đặt lịch"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:cornerRadius="16dp"
-                app:backgroundTint="#0D9488"
-                app:icon="@drawable/ic_arrow_forward"
-                app:iconGravity="textEnd" />
+            <TextView
+                android:id="@+id/tvPayTotalBottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="200.000đ"
+                android:textColor="#0F172A"
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmPayment"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="Xác nhận đặt lịch"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#00685F"
+            app:icon="@drawable/ic_arrow_forward"
+            app:iconGravity="textEnd"
+            app:iconTint="@android:color/white" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -45,6 +45,10 @@ public class AppointmentRepository {
                     for (QueryDocumentSnapshot doc : snap) {
                         Appointment a = doc.toObject(Appointment.class);
                         a.setId(doc.getId());
+                        if (a.getCreatedAt() == 0) {
+                            // Lịch đặt trước đây chưa có createdAt -> mặc định thời điểm hiện tại
+                            a.setCreatedAt(System.currentTimeMillis());
+                        }
                         list.add(a);
                     }
                     cb.onLoaded(list);

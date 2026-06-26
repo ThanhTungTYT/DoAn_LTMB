@@ -15,6 +15,7 @@ public class Appointment {
     private String time;        // vd "08:00"
     private long price;
     private String status;      // "upcoming" | "done" | "cancelled"
+    private long createdAt;     // thời điểm đặt lịch (millis)
 
     public Appointment() {}     // BẮT BUỘC cho Firestore
 
@@ -28,6 +29,7 @@ public class Appointment {
         this.time = time;
         this.price = price;
         this.status = status;
+        this.createdAt = System.currentTimeMillis();
     }
 
     public String getId() { return id; }
@@ -56,4 +58,7 @@ public class Appointment {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public long getCreatedAt() { return createdAt; }
+    public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
 }
