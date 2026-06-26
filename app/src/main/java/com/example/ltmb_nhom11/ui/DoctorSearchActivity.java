@@ -20,6 +20,9 @@ import java.util.List;
 
 public class DoctorSearchActivity extends AppCompatActivity {
 
+    private android.os.Handler searchHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private Runnable searchRunnable;
+
     private RecyclerView recyclerDoctors;
     private DoctorAdapter doctorAdapter;
     private List<Doctor> doctorList;
@@ -48,30 +51,56 @@ public class DoctorSearchActivity extends AppCompatActivity {
 
         etSearch.addTextChangedListener(new android.text.TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                filterDoctors(s.toString());
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Không làm gì ở đây
             }
 
             @Override
-            public void afterTextChanged(android.text.Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // HỦY (ClearTimeout): Nếu có một tiến trình search đang chờ chạy thì hủy nó đi
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+
+                searchRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+
+                        filterDoctors(s.toString());
+                    }
+                };
+
+
+                searchHandler.postDelayed(searchRunnable, 400);
+            }
         });
     }
+
+    private String removeAccent(String s) {
+        String temp = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD);
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
+    }
+
     private void filterDoctors(String text) {
         List<Doctor> filteredList = new ArrayList<>();
 
 
+        String queryClean = removeAccent(text).toLowerCase();
+
         for (Doctor doc : doctorList) {
 
-            if (doc.getName().toLowerCase().contains(text.toLowerCase()) ||
-                    doc.getDept().toLowerCase().contains(text.toLowerCase())) {
+            String nameClean = removeAccent(doc.getName()).toLowerCase();
+            String deptClean = removeAccent(doc.getDept()).toLowerCase();
+
+            if (nameClean.contains(queryClean) || deptClean.contains(queryClean)) {
                 filteredList.add(doc);
             }
         }
-
 
         doctorAdapter.updateList(filteredList);
     }
