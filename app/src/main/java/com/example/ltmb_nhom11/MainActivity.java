@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         navProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Chức năng Cá nhân (Profile) đang được xây dựng!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, com.example.ltmb_nhom11.ui.ProfileActivity.class));
             }
         });
 
