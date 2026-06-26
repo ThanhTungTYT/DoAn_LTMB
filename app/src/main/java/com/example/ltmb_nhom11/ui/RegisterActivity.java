@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.model.User;
@@ -32,6 +34,13 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            int imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            v.setPadding(0, 0, 0, imeBottom);
+            return insets;
+        });
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -91,16 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                     User newUser = new User(uid, fullName, phone, email, "user");
 
                     db.collection("users").document(uid).set(newUser)
-                            .addOnSuccessListener(unused -> {
-                                btnRegister.setEnabled(true);
-                                Toast.makeText(this, "Đăng ký thành công! Vui lòng đăng nhập.", Toast.LENGTH_LONG).show();
-                                mAuth.signOut();
-
-                                // TẠM BỎ QUA OTP — chuyển thẳng sang màn Đăng nhập
-                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                            })
+                            .addOnSuccessListener(unused -> sendVerificationAndRedirect(email))
                             .addOnFailureListener(e -> {
                                 btnRegister.setEnabled(true);
                                 Toast.makeText(this, "Lỗi lưu hồ sơ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -109,6 +109,29 @@ public class RegisterActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     btnRegister.setEnabled(true);
                     Toast.makeText(this, "Đăng ký thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void sendVerificationAndRedirect(String email) {
+        mAuth.getCurrentUser().sendEmailVerification()
+                .addOnCompleteListener(task -> {
+                    btnRegister.setEnabled(true);
+                    mAuth.signOut();
+
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this,
+                                "Đăng ký thành công! Vui lòng kiểm tra email " + email +
+                                        " để xác minh tài khoản, sau đó đăng nhập.",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this,
+                                "Đăng ký thành công nhưng gửi email xác minh thất bại. Bạn vẫn có thể đăng nhập.",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
                 });
     }
 }
