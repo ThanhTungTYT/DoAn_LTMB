@@ -39,8 +39,6 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "Đổi thông tin cá nhân — đang phát triển", Toast.LENGTH_SHORT).show());
         findViewById(R.id.rowChangePassword).setOnClickListener(v ->
                 startActivity(new Intent(this, ChangePasswordActivity.class)));
-        findViewById(R.id.btnChangeAvatar).setOnClickListener(v ->
-                Toast.makeText(this, "Upload ảnh đại diện — sẽ làm sau", Toast.LENGTH_SHORT).show());
 
         setupBottomNav();
     }

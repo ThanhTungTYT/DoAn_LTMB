@@ -1,6 +1,8 @@
 package com.example.ltmb_nhom11.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -127,13 +129,46 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void buildQr() {
+        tvQrContent.setText(transferCode);
+        imgQr.setImageTintList(null); // bỏ tint xám của ảnh placeholder
+
         String url = "https://img.vietqr.io/image/" + BANK_ID + "-" + ACCOUNT_NO + "-compact2.png"
                 + "?amount=" + DEPOSIT
                 + "&addInfo=" + Uri.encode(transferCode)
                 + "&accountName=" + Uri.encode(ACCOUNT_NAME);
-        imgQr.setImageTintList(null);
-        ImageLoader.load(url, imgQr);
-        tvQrContent.setText(transferCode);
+
+        Request req = new Request.Builder()
+                .url(url)
+                .header("User-Agent", "Mozilla/5.0")
+                .get()
+                .build();
+
+        httpClient.newCall(req).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() -> Toast.makeText(PaymentActivity.this,
+                        "Không tải được mã QR (mạng). Vui lòng thử lại.", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                Bitmap bmp = null;
+                if (response.isSuccessful() && response.body() != null) {
+                    byte[] data = response.body().bytes();
+                    bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                }
+                final Bitmap qr = bmp;
+                runOnUiThread(() -> {
+                    if (qr != null) {
+                        imgQr.setImageBitmap(qr);
+                    } else {
+                        Toast.makeText(PaymentActivity.this,
+                                "Không tải được mã QR. Kiểm tra mạng/giờ hệ thống của máy rồi thử lại.",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
     }
 
     private void selectBank() {
