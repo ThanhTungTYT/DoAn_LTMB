@@ -83,6 +83,10 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(this, "Vui lòng nhập đầy đủ tất cả thông tin!", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (!isValidVietnamesePhone(phone)) {
+            Toast.makeText(this, "Số điện thoại không hợp lệ! (VD: 0912345678)", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Email không hợp lệ!", Toast.LENGTH_SHORT).show();
             return;
@@ -94,6 +98,25 @@ public class RegisterActivity extends AppCompatActivity {
 
         btnRegister.setEnabled(false);
 
+        // Kiểm tra SĐT đã được dùng chưa TRƯỚC khi tạo tài khoản Firebase Auth
+        db.collection("users").whereEqualTo("phone", phone).limit(1).get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        btnRegister.setEnabled(true);
+                        Toast.makeText(this, "Số điện thoại này đã được sử dụng để đăng ký!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // SĐT chưa tồn tại -> tiến hành tạo tài khoản
+                    createAccount(fullName, phone, email, password);
+                })
+                .addOnFailureListener(e -> {
+                    btnRegister.setEnabled(true);
+                    Toast.makeText(this, "Lỗi kiểm tra số điện thoại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void createAccount(String fullName, String phone, String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String uid = authResult.getUser().getUid();
@@ -133,5 +156,8 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 });
+    }
+    private boolean isValidVietnamesePhone(String phone) {
+        return phone.matches("^0[35789][0-9]{8}$");
     }
 }
