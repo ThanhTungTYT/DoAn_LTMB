@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText edtFullName, edtPhone, edtEmail, edtPassword;
+    private TextView tvErrorFullName, tvErrorPhone, tvErrorEmail, tvErrorPassword;
     private ImageButton btnTogglePassword;
     private Button btnRegister;
     private TextView tvLoginLink;
@@ -49,6 +50,12 @@ public class RegisterActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.edtPhone);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
+
+        tvErrorFullName = findViewById(R.id.tvErrorFullName);
+        tvErrorPhone = findViewById(R.id.tvErrorPhone);
+        tvErrorEmail = findViewById(R.id.tvErrorEmail);
+        tvErrorPassword = findViewById(R.id.tvErrorPassword);
+
         btnTogglePassword = findViewById(R.id.btnTogglePassword);
         btnRegister = findViewById(R.id.btnRegister);
         tvLoginLink = findViewById(R.id.tvLoginLink);
@@ -73,41 +80,72 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    private void showError(TextView errorView, String message) {
+        errorView.setText(message);
+        errorView.setVisibility(View.VISIBLE);
+    }
+
+    private void clearError(TextView errorView) {
+        errorView.setVisibility(View.GONE);
+    }
+
+    private void clearAllErrors() {
+        clearError(tvErrorFullName);
+        clearError(tvErrorPhone);
+        clearError(tvErrorEmail);
+        clearError(tvErrorPassword);
+    }
+
     private void doRegister() {
+        clearAllErrors();
+
         String fullName = edtFullName.getText().toString().trim();
         String phone = edtPhone.getText().toString().trim();
         String email = edtEmail.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
 
-        if (fullName.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ tất cả thông tin!", Toast.LENGTH_SHORT).show();
-            return;
+        boolean hasError = false;
+
+        if (fullName.isEmpty()) {
+            showError(tvErrorFullName, "Vui lòng nhập họ và tên!");
+            hasError = true;
         }
-        if (!isValidVietnamesePhone(phone)) {
-            Toast.makeText(this, "Số điện thoại không hợp lệ! (VD: 0912345678)", Toast.LENGTH_SHORT).show();
-            return;
+
+        if (phone.isEmpty()) {
+            showError(tvErrorPhone, "Vui lòng nhập số điện thoại!");
+            hasError = true;
+        } else if (!isValidVietnamesePhone(phone)) {
+            showError(tvErrorPhone, "Số điện thoại không hợp lệ! (VD: 0912345678)");
+            hasError = true;
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Email không hợp lệ!", Toast.LENGTH_SHORT).show();
-            return;
+
+        if (email.isEmpty()) {
+            showError(tvErrorEmail, "Vui lòng nhập email!");
+            hasError = true;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showError(tvErrorEmail, "Email không hợp lệ!");
+            hasError = true;
         }
-        if (password.length() < 6) {
-            Toast.makeText(this, "Mật khẩu phải có ít nhất 6 ký tự!", Toast.LENGTH_SHORT).show();
-            return;
+
+        if (password.isEmpty()) {
+            showError(tvErrorPassword, "Vui lòng nhập mật khẩu!");
+            hasError = true;
+        } else if (!isStrongPassword(password)) {
+            showError(tvErrorPassword, "Mật khẩu cần ít nhất 8 ký tự, gồm chữ in hoa, số và ký tự đặc biệt!");
+            hasError = true;
         }
+
+        if (hasError) return;
 
         btnRegister.setEnabled(false);
 
-        // Kiểm tra SĐT đã được dùng chưa TRƯỚC khi tạo tài khoản Firebase Auth
         db.collection("users").whereEqualTo("phone", phone).limit(1).get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
                         btnRegister.setEnabled(true);
-                        Toast.makeText(this, "Số điện thoại này đã được sử dụng để đăng ký!", Toast.LENGTH_SHORT).show();
+                        showError(tvErrorPhone, "Số điện thoại này đã được sử dụng để đăng ký!");
                         return;
                     }
-
-                    // SĐT chưa tồn tại -> tiến hành tạo tài khoản
                     createAccount(fullName, phone, email, password);
                 })
                 .addOnFailureListener(e -> {
@@ -131,7 +169,8 @@ public class RegisterActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     btnRegister.setEnabled(true);
-                    Toast.makeText(this, "Đăng ký thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    // Lỗi từ Firebase (ví dụ email đã tồn tại) -> hiện ngay dưới ô Email
+                    showError(tvErrorEmail, "Đăng ký thất bại: " + e.getMessage());
                 });
     }
 
@@ -159,5 +198,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
     private boolean isValidVietnamesePhone(String phone) {
         return phone.matches("^0[35789][0-9]{8}$");
+    }
+
+    private boolean isStrongPassword(String password) {
+        String pattern = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?\":{}|<>_\\-+=]).{8,}$";
+        return password.matches(pattern);
     }
 }
