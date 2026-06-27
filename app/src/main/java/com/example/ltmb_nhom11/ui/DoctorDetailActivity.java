@@ -17,6 +17,8 @@ import com.google.android.material.button.MaterialButton;
 import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.model.CalendarDate;
 import com.example.ltmb_nhom11.ui.adapter.CalendarAdapter;
+import com.example.ltmb_nhom11.util.SessionManager;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,6 +74,25 @@ public class DoctorDetailActivity extends AppCompatActivity {
             intent.putExtra("price", 460000L);
             startActivity(intent);
         });
+
+        // Thông tin người dùng (bệnh nhân) + nút Thay đổi -> màn Cá nhân
+        loadPatientInfo();
+        findViewById(R.id.btnChangePatient).setOnClickListener(v ->
+                startActivity(new Intent(this, ProfileActivity.class)));
+    }
+
+    private void loadPatientInfo() {
+        com.google.firebase.auth.FirebaseUser user = SessionManager.getCurrentUser();
+        if (user == null) return;
+        FirebaseFirestore.getInstance().collection("users").document(user.getUid()).get()
+                .addOnSuccessListener(doc -> {
+                    String name = doc.getString("fullName");
+                    String phone = doc.getString("phone");
+                    TextView txtName = findViewById(R.id.txtPatientName);
+                    TextView txtInfo = findViewById(R.id.txtPatientInfo);
+                    if (name != null && !name.isEmpty()) txtName.setText(name);
+                    if (phone != null && !phone.isEmpty()) txtInfo.setText("Hồ sơ cá nhân • " + phone);
+                });
     }
 
     private void initViews() {

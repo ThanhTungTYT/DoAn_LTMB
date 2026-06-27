@@ -124,117 +124,16 @@
                     android:textStyle="bold"
                     android:textSize="16sp" />
 
-                <!-- Star and Experience Info Layout -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/ic_star"
-                        app:tint="#316BF3" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:text="4.9 (120+ đánh giá)"
-                        android:textColor="#0B1C30"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="•"
-                        android:textColor="#6D7A77" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="12 năm kinh nghiệm"
-                        android:textColor="#0B1C30"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <!-- Quick Stats -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal">
-
-                    <!-- Patients Box -->
-                    <LinearLayout
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bg_stat_box"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="BỆNH NHÂN"
-                            android:textColor="#5C5F61"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="2,500+"
-                            android:textColor="#00685F"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- Experience Box -->
-                    <LinearLayout
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_stat_box"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="KINH NGHIỆM"
-                            android:textColor="#5C5F61"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="12 Năm"
-                            android:textColor="#00685F"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
             </LinearLayout>
 
-            <!-- Biography Section (Glass Panel Replica Style) -->
+            <!-- Giới thiệu dịch vụ khi đặt khám (chung) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="1dp"
-                app:cardBackgroundColor="#CCFFFFFF">
+                app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -245,9 +144,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Giới thiệu"
+                        android:text="Dịch vụ khi đặt khám"
                         android:textColor="#0B1C30"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp" />
 
@@ -255,9 +154,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:lineSpacingMultiplier="1.2"
-                        android:text="Bác sĩ Nguyễn Văn An là chuyên gia hàng đầu trong lĩnh vực Nội tổng quát với hơn 12 năm kinh nghiệm làm việc tại các bệnh viện lớn. Ông luôn tận tâm và thấu hiểu tâm lý bệnh nhân, chuyên điều trị các bệnh mãn tính và tư vấn lối sống lành mạnh."
+                        android:text="Khi đặt lịch, bạn sẽ được bác sĩ trực tiếp thăm khám, tư vấn tình trạng sức khỏe, chẩn đoán và đưa ra hướng điều trị hoặc kê đơn thuốc phù hợp. Vui lòng đến trước giờ hẹn 10 phút và mang theo giấy tờ tùy thân."
                         android:textColor="#3D4947"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -319,7 +218,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="4dp"
-                    android:text="08:30"
+                    android:text="09:00"
                     android:textColor="#0B1C30"
                     app:backgroundTint="#F1F5F9"
                     app:strokeColor="#E2E8F0" />
@@ -331,7 +230,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="4dp"
-                    android:text="09:00"
+                    android:text="10:00"
                     android:textColor="#0B1C30"
                     app:backgroundTint="#F1F5F9"
                     app:strokeColor="#E2E8F0" />
@@ -385,7 +284,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:layout_margin="4dp"
-                    android:text="16:30"
+                    android:text="16:00"
                     android:textColor="#0B1C30"
                     app:backgroundTint="#F1F5F9"
                     app:strokeColor="#E2E8F0" />
@@ -439,22 +338,25 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/txtPatientName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Trần Văn Tú"
+                            android:text="Đang tải..."
                             android:textColor="#0B1C30"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/txtPatientInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Hồ sơ cá nhân • Nam • 28 tuổi"
+                            android:text="Hồ sơ cá nhân"
                             android:textColor="#5C5F61"
                             android:textSize="12sp" />
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/btnChangePatient"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"

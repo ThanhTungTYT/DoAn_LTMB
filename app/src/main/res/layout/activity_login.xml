@@ -133,6 +133,16 @@
                             android:textSize="15sp" />
                     </RelativeLayout>
 
+                    <TextView
+                        android:id="@+id/tvErrorPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginStart="4dp"
+                        android:textColor="#E53935"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
                     <!-- Password Title + Forget Password Link -->
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -199,6 +209,16 @@
                             android:src="@drawable/ic_visibility"
                             app:tint="#6D7A77" />
                     </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/tvErrorPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginStart="4dp"
+                        android:textColor="#E53935"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                     <!-- Remember Login Checkbox -->
                     <CheckBox

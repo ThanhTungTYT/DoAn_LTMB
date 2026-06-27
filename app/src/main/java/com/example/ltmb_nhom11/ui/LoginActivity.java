@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ltmb_nhom11.MainActivity;
 import com.example.ltmb_nhom11.R;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText edtPhone, edtPassword;
+    private TextView tvErrorPhone, tvErrorPassword;
     private ImageButton btnTogglePassword;
     private CheckBox cbRememberMe;
     private Button btnLogin, btnGoogle, btnFacebook;
@@ -54,8 +57,17 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            int imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            v.setPadding(0, 0, 0, imeBottom);
+            return insets;
+        });
+
         edtPhone = findViewById(R.id.edtPhone);
         edtPassword = findViewById(R.id.edtPassword);
+        tvErrorPhone = findViewById(R.id.tvErrorPhone);
+        tvErrorPassword = findViewById(R.id.tvErrorPassword);
         btnTogglePassword = findViewById(R.id.btnTogglePassword);
         cbRememberMe = findViewById(R.id.cbRememberMe);
         btnLogin = findViewById(R.id.btnLogin);
@@ -81,63 +93,115 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword.setOnClickListener(v -> startActivity(new Intent(this, ForgotPasswordActivity.class)));
     }
 
-    private void doLogin() {
-        String phoneRaw = edtPhone.getText().toString().trim();
-        String password = edtPassword.getText().toString().trim();
-
-        if (phoneRaw.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Vui lòng điền đủ Số điện thoại và Mật khẩu!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Loại bỏ mọi ký tự không phải số (khoảng trắng, dấu -, +84, ký tự ẩn...)
-        String phoneInput = phoneRaw.replaceAll("[^0-9]", "");
-
-        btnLogin.setEnabled(false);
-
-        String phoneWithZero = phoneInput.startsWith("0") ? phoneInput : "0" + phoneInput;
-        String phoneWithoutZero = phoneInput.startsWith("0") ? phoneInput.substring(1) : phoneInput;
-
-        android.util.Log.d("LOGIN_DEBUG", "raw=[" + phoneRaw + "] cleaned=[" + phoneInput
-                + "] withZero=[" + phoneWithZero + "] withoutZero=[" + phoneWithoutZero + "]");
-
-        db.collection("users")
-                .whereIn("phone", java.util.Arrays.asList(phoneWithZero, phoneWithoutZero))
-                .limit(1)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    android.util.Log.d("LOGIN_DEBUG", "Query size=" + querySnapshot.size());
-
-                    if (querySnapshot.isEmpty()) {
-                        btnLogin.setEnabled(true);
-                        Toast.makeText(this, "Số điện thoại chưa được đăng ký!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    QueryDocumentSnapshot doc = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
-                    String email = doc.getString("email");
-                    String role = doc.getString("role");
-
-                    android.util.Log.d("LOGIN_DEBUG", "Found doc id=" + doc.getId() + " email=" + email + " role=" + role);
-
-                    mAuth.signInWithEmailAndPassword(email, password)
-                            .addOnSuccessListener(authResult -> {
-                                btnLogin.setEnabled(true);
-                                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                                navigateToDashboardBasedOnRole(role);
-                            })
-                            .addOnFailureListener(e -> {
-                                android.util.Log.e("LOGIN_DEBUG", "Auth sign-in failed", e);
-                                btnLogin.setEnabled(true);
-                                Toast.makeText(this, "Sai mật khẩu hoặc tài khoản không hợp lệ!", Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    android.util.Log.e("LOGIN_DEBUG", "Firestore query failed", e);
-                    btnLogin.setEnabled(true);
-                    Toast.makeText(this, "Lỗi kết nối: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+    private void showError(TextView errorView, String message) {
+        errorView.setText(message);
+        errorView.setVisibility(View.VISIBLE);
     }
+
+    private void clearError(TextView errorView) {
+        errorView.setVisibility(View.GONE);
+    }
+
+    private void clearAllErrors() {
+        clearError(tvErrorPhone);
+        clearError(tvErrorPassword);
+    }
+
+    private void doLogin() {
+    clearAllErrors();
+
+    String phoneRaw = edtPhone.getText().toString().trim();
+    String password = edtPassword.getText().toString().trim();
+
+    boolean hasError = false;
+
+    if (phoneRaw.isEmpty()) {
+        showError(tvErrorPhone, "Vui lòng nhập số điện thoại!");
+        hasError = true;
+    }
+
+    if (password.isEmpty()) {
+        showError(tvErrorPassword, "Vui lòng nhập mật khẩu!");
+        hasError = true;
+    }
+
+    if (hasError) return;
+
+    // Loại bỏ mọi ký tự không phải số
+    String phoneInput = phoneRaw.replaceAll("[^0-9]", "");
+
+    btnLogin.setEnabled(false);
+
+    String phoneWithZero = phoneInput.startsWith("0") ? phoneInput : "0" + phoneInput;
+    String phoneWithoutZero = phoneInput.startsWith("0") ? phoneInput.substring(1) : phoneInput;
+
+    android.util.Log.d("LOGIN_DEBUG",
+            "raw=[" + phoneRaw + "] cleaned=[" + phoneInput
+                    + "] withZero=[" + phoneWithZero + "] withoutZero=[" + phoneWithoutZero + "]");
+
+    db.collection("users")
+            .whereIn("phone", java.util.Arrays.asList(phoneWithZero, phoneWithoutZero))
+            .limit(1)
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+
+                android.util.Log.d("LOGIN_DEBUG", "Query size=" + querySnapshot.size());
+
+                if (querySnapshot.isEmpty()) {
+                    btnLogin.setEnabled(true);
+                    showError(tvErrorPhone, "Số điện thoại chưa được đăng ký!");
+                    return;
+                }
+
+                QueryDocumentSnapshot doc =
+                        (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
+
+                String email = doc.getString("email");
+                String role = doc.getString("role");
+
+                android.util.Log.d("LOGIN_DEBUG",
+                        "Found doc id=" + doc.getId()
+                                + " email=" + email
+                                + " role=" + role);
+
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnSuccessListener(authResult -> {
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+
+                            if (user != null && !user.isEmailVerified()) {
+                                btnLogin.setEnabled(true);
+                                showVerifyEmailPrompt(user);
+                                return;
+                            }
+
+                            btnLogin.setEnabled(true);
+                            Toast.makeText(this,
+                                    "Đăng nhập thành công!",
+                                    Toast.LENGTH_SHORT).show();
+
+                            navigateToDashboardBasedOnRole(role);
+                        })
+                        .addOnFailureListener(e -> {
+                            android.util.Log.e("LOGIN_DEBUG",
+                                    "Auth sign-in failed", e);
+
+                            btnLogin.setEnabled(true);
+                            showError(tvErrorPassword,
+                                    "Sai mật khẩu hoặc tài khoản không hợp lệ!");
+                        });
+
+            })
+            .addOnFailureListener(e -> {
+                android.util.Log.e("LOGIN_DEBUG",
+                        "Firestore query failed", e);
+
+                btnLogin.setEnabled(true);
+                Toast.makeText(this,
+                        "Lỗi kết nối: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            });
+}
 
     private void navigateToDashboardBasedOnRole(String role) {
         if (role == null) role = "user";
@@ -155,5 +219,20 @@ public class LoginActivity extends AppCompatActivity {
         }
         startActivity(intent);
         finish();
+    }
+    private void showVerifyEmailPrompt(FirebaseUser user) {
+        Toast.makeText(this,
+                "Email của bạn chưa được xác minh! Đang gửi lại email xác minh...",
+                Toast.LENGTH_LONG).show();
+
+        user.sendEmailVerification()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Đã gửi lại email xác minh, vui lòng kiểm tra hộp thư!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, "Gửi lại email xác minh thất bại!", Toast.LENGTH_SHORT).show();
+                    }
+                    mAuth.signOut();
+                });
     }
 }
