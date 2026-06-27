@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout 
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@android:color/white"
     tools:context=".ui.adminRoleDoctor.MyScheduleActivity">
 
-    <!-- Top Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/surface"
+        android:background="@android:color/white"
         app:elevation="1dp">
 
         <androidx.appcompat.widget.Toolbar
@@ -32,7 +32,7 @@
                     android:layout_centerVertical="true"
                     android:fontFamily="sans-serif-black"
                     android:text="Lịch trình của tôi"
-                    android:textColor="@color/primary"
+                    android:textColor="@android:color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -44,8 +44,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="16dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@android:drawable/ic_popup_reminder"
-                    app:tint="@color/on_surface_muted" />
+                    android:src="@android:drawable/ic_popup_reminder" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -62,7 +61,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Upcoming Section Header -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
                     android:text="Lịch hẹn sắp tới"
-                    android:textColor="@color/on_surface"
+                    android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -84,19 +82,17 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:text="Xem tất cả"
-                    android:textColor="@color/primary"
+                    android:textColor="@android:color/holo_blue_dark"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </RelativeLayout>
 
-            <!-- Card Lịch Hẹn -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:cardMaxElevation="4dp">
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -108,7 +104,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <!-- Avatar Mockup -->
                         <ImageView
                             android:id="@+id/imgAvatar"
                             android:layout_width="48dp"
@@ -128,7 +123,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Nguyễn Văn An"
-                                android:textColor="@color/on_surface"
+                                android:textColor="@android:color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
 
@@ -136,20 +131,19 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Khám tổng quát"
-                                android:textColor="@color/on_surface_muted"
+                                android:textColor="@android:color/darker_gray"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
-                        <!-- Status Badge -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:background="@color/primary_light"
+                            android:background="@android:color/holo_blue_light"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="4dp"
                             android:text="SẮP TỚI"
-                            android:textColor="@color/primary"
+                            android:textColor="@android:color/white"
                             android:textSize="10sp"
                             android:textStyle="bold" />
                     </RelativeLayout>
@@ -158,7 +152,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginVertical="12dp"
-                        android:background="@color/outline" />
+                        android:background="@android:color/darker_gray" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -175,15 +169,14 @@
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:src="@android:drawable/ic_menu_myplaces"
-                                app:tint="@color/on_surface_muted" />
+                                android:src="@android:drawable/ic_menu_myplaces" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:text="08:30 - 09:00"
-                                android:textColor="@color/on_surface_muted"
+                                android:textColor="@android:color/darker_gray"
                                 android:textSize="14sp" />
                         </LinearLayout>
 
@@ -197,22 +190,20 @@
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
-                                android:src="@android:drawable/ic_menu_today"
-                                app:tint="@color/on_surface_muted" />
+                                android:src="@android:drawable/ic_menu_today" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:text="Hôm nay"
-                                android:textColor="@color/on_surface_muted"
+                                android:textColor="@android:color/darker_gray"
                                 android:textSize="14sp" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Lịch tháng 05 -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -234,8 +225,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Lịch tháng 05"
-                            android:textColor="@color/on_surface"
+                            android:text="Điều chỉnh ngày khám"
+                            android:textColor="@android:color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -249,20 +240,17 @@
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
-                                android:src="@android:drawable/ic_media_previous"
-                                app:tint="@color/on_surface_muted" />
+                                android:src="@android:drawable/ic_media_previous" />
 
                             <ImageButton
                                 android:id="@+id/btnNextMonth"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
-                                android:src="@android:drawable/ic_media_next"
-                                app:tint="@color/on_surface_muted" />
+                                android:src="@android:drawable/ic_media_next" />
                         </LinearLayout>
                     </RelativeLayout>
 
-                    <!-- Danh sách thứ -->
                     <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -270,54 +258,49 @@
                         android:alignmentMode="alignBounds"
                         android:rowCount="1">
 
-                        <!-- T2->CN Headers -->
-                        <TextView android:text="T2" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/on_surface_muted"/>
-                        <TextView android:text="T3" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/on_surface_muted"/>
-                        <TextView android:text="T4" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/on_surface_muted"/>
-                        <TextView android:text="T5" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/on_surface_muted"/>
-                        <TextView android:text="T6" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/on_surface_muted"/>
-                        <TextView android:text="T7" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/on_surface_muted"/>
-                        <TextView android:text="CN" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/on_surface_muted"/>
+                        <TextView android:text="T2" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+                        <TextView android:text="T3" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+                        <TextView android:text="T4" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+                        <TextView android:text="T5" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+                        <TextView android:text="T6" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+                        <TextView android:text="T7" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+                        <TextView android:text="CN" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
                     </GridLayout>
 
-                    <!-- Custom Grid View / RecyclerView can be loaded here dynamically -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="16dp"
                         android:gravity="center"
-                        android:text="[Khu vực lịch 31 ngày - Cấu hình trong Activity bằng GridView]"
-                        android:textColor="@color/primary"
+                        android:text="[Sử dụng hai nút mũi tên ở trên để chuyển ngày]"
+                        android:textColor="@android:color/holo_blue_dark"
                         android:textStyle="italic"
                         android:textSize="12sp" />
 
-                    <!-- Custom Legends -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingTop="12dp"
-                        android:background="@drawable/border_top_outline">
+                        android:paddingTop="12dp">
 
                         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginEnd="12dp" android:gravity="center_vertical">
-                            <View android:layout_width="8dp" android:layout_height="8dp" android:background="@color/primary" android:backgroundTint="@color/primary"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Có lịch hẹn" android:textSize="10sp" android:textColor="@color/on_surface_muted"/>
+                            <View android:layout_width="8dp" android:layout_height="8dp" android:background="@android:color/holo_blue_dark" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Có lịch hẹn" android:textSize="10sp" android:textColor="@android:color/darker_gray"/>
                         </LinearLayout>
 
                         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginEnd="12dp" android:gravity="center_vertical">
-                            <View android:layout_width="8dp" android:layout_height="8dp" android:background="@color/primary_light" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Cao điểm" android:textSize="10sp" android:textColor="@color/on_surface_muted"/>
+                            <View android:layout_width="8dp" android:layout_height="8dp" android:background="@android:color/holo_blue_light" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Cao điểm" android:textSize="10sp" android:textColor="@android:color/darker_gray"/>
                         </LinearLayout>
 
                         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
                             <View android:layout_width="8dp" android:layout_height="8dp" android:background="#E2E8F0" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Đã khóa" android:textSize="10sp" android:textColor="@color/on_surface_muted"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Đã khóa" android:textSize="10sp" android:textColor="@android:color/darker_gray"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Quản lý thời gian -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -334,21 +317,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Quản lý thời gian"
-                        android:textColor="@color/on_surface"
+                        android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvScheduleDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_gravity="center_vertical"
-                        android:text="— Thứ 6, 03/05"
-                        android:textColor="@color/on_surface_muted"
+                        android:text="— Thứ 7, 27/06"
+                        android:textColor="@android:color/darker_gray"
                         android:textSize="13sp" />
                 </LinearLayout>
 
-                <!-- Box danh sách giờ Slot -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -356,129 +339,34 @@
                     app:cardCornerRadius="24dp">
 
                     <LinearLayout
+                        android:id="@+id/containerSlots"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:divider="?android:attr/dividerHorizontal"
                         android:showDividers="middle"
                         android:orientation="vertical">
-
-                        <!-- Item Slot 08:00 (Mở lịch) -->
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="16dp"
-                            android:background="#0500796B">
-
-                            <TextView
-                                android:id="@+id/tvTime1"
-                                android:layout_width="50dp"
-                                android:layout_height="wrap_content"
-                                android:text="08:00"
-                                android:textColor="@color/primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@id/tvTime1"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Mở lịch"
-                                    android:textColor="@color/on_surface"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Khả dụng cho bệnh nhân"
-                                    android:textStyle="italic"
-                                    android:textColor="@color/on_surface_muted"
-                                    android:textSize="10sp" />
-                            </LinearLayout>
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switch1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:checked="true" />
-                        </RelativeLayout>
-
-                        <!-- Item Slot 09:00 (Đã khóa) -->
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="16dp">
-
-                            <TextView
-                                android:id="@+id/tvTime2"
-                                android:layout_width="50dp"
-                                android:layout_height="wrap_content"
-                                android:alpha="0.5"
-                                android:text="09:00"
-                                android:textColor="@color/on_surface"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_toEndOf="@id/tvTime2"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Đã khóa"
-                                    android:textColor="@color/on_surface"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Hộp chuyên môn"
-                                    android:textColor="@color/error"
-                                    android:textStyle="bold"
-                                    android:textSize="10sp" />
-                            </LinearLayout>
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switch2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:checked="false" />
-                        </RelativeLayout>
                     </LinearLayout>
+
                 </androidx.cardview.widget.CardView>
 
-                <!-- Button Lưu thay đổi -->
                 <Button
                     android:id="@+id/btnSave"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:backgroundTint="@color/primary"
-                    android:text="Lưu thay đổi ngày hôm nay"
-                    android:textColor="@color/white"
+                    android:text="Lưu thay đổi"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold"
                     app:cornerRadius="16dp"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Navigation Bar simulated -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_gravity="bottom"
-        android:background="@color/surface"
+        android:background="@android:color/white"
         app:elevation="8dp"
         app:menu="@menu/bottom_navigation_menu" />
 
