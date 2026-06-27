@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ltmb_nhom11.MainActivity;
 import com.example.ltmb_nhom11.R;
@@ -23,6 +25,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText edtPhone, edtPassword;
+    private TextView tvErrorPhone, tvErrorPassword;
     private ImageButton btnTogglePassword;
     private CheckBox cbRememberMe;
     private Button btnLogin, btnGoogle, btnFacebook;
@@ -47,8 +50,17 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
+        View rootView = findViewById(android.R.id.content);
+        ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
+            int imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            v.setPadding(0, 0, 0, imeBottom);
+            return insets;
+        });
+
         edtPhone = findViewById(R.id.edtPhone);
         edtPassword = findViewById(R.id.edtPassword);
+        tvErrorPhone = findViewById(R.id.tvErrorPhone);
+        tvErrorPassword = findViewById(R.id.tvErrorPassword);
         btnTogglePassword = findViewById(R.id.btnTogglePassword);
         cbRememberMe = findViewById(R.id.cbRememberMe);
         btnLogin = findViewById(R.id.btnLogin);
@@ -82,14 +94,38 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Đăng nhập Facebook sẽ được tích hợp sau!", Toast.LENGTH_SHORT).show());
     }
 
+    private void showError(TextView errorView, String message) {
+        errorView.setText(message);
+        errorView.setVisibility(View.VISIBLE);
+    }
+
+    private void clearError(TextView errorView) {
+        errorView.setVisibility(View.GONE);
+    }
+
+    private void clearAllErrors() {
+        clearError(tvErrorPhone);
+        clearError(tvErrorPassword);
+    }
+
     private void doLogin() {
+        clearAllErrors();
+
         String phone = edtPhone.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
 
-        if (phone.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Vui lòng điền đủ Số điện thoại và Mật khẩu!", Toast.LENGTH_SHORT).show();
-            return;
+        boolean hasError = false;
+
+        if (phone.isEmpty()) {
+            showError(tvErrorPhone, "Vui lòng nhập số điện thoại!");
+            hasError = true;
         }
+        if (password.isEmpty()) {
+            showError(tvErrorPassword, "Vui lòng nhập mật khẩu!");
+            hasError = true;
+        }
+
+        if (hasError) return;
 
         btnLogin.setEnabled(false);
 
@@ -97,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(querySnapshot -> {
                     if (querySnapshot.isEmpty()) {
                         btnLogin.setEnabled(true);
-                        Toast.makeText(this, "Số điện thoại chưa được đăng ký!", Toast.LENGTH_SHORT).show();
+                        showError(tvErrorPhone, "Số điện thoại chưa được đăng ký!");
                         return;
                     }
 
@@ -121,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                             })
                             .addOnFailureListener(e -> {
                                 btnLogin.setEnabled(true);
-                                Toast.makeText(this, "Sai mật khẩu hoặc tài khoản không hợp lệ!", Toast.LENGTH_SHORT).show();
+                                showError(tvErrorPassword, "Sai mật khẩu hoặc tài khoản không hợp lệ!");
                             });
                 })
                 .addOnFailureListener(e -> {
@@ -142,7 +178,6 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(this, "Gửi lại email xác minh thất bại!", Toast.LENGTH_SHORT).show();
                     }
-                    // Đăng xuất vì chưa được xác minh, không cho vào MainActivity
                     mAuth.signOut();
                 });
     }
