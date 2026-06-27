@@ -32,6 +32,7 @@
         <activity android:name=".ui.HistoryActivity" android:exported="false" />
         <activity android:name=".ui.ProfileActivity" android:exported="false" />
         <activity android:name=".ui.ChangePasswordActivity" android:exported="false" />
+        <activity android:name=".ui.EditProfileActivity" android:exported="false" />
 
         <!-- ===== Gói khám / Tóm tắt khám (phu) ===== -->
         <activity android:name=".ui.PackageActivity" android:exported="false" />

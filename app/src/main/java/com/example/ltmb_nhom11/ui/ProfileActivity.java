@@ -27,20 +27,23 @@ public class ProfileActivity extends AppCompatActivity {
         tvPhone = findViewById(R.id.tvPhone);
         tvEmail = findViewById(R.id.tvEmail);
 
-        loadUserInfo();
-
         findViewById(R.id.rowViewHistory).setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
 
         findViewById(R.id.rowLogout).setOnClickListener(v -> logout());
 
-        // Các chức năng làm dần sau
         findViewById(R.id.rowEditInfo).setOnClickListener(v ->
-                Toast.makeText(this, "Đổi thông tin cá nhân — đang phát triển", Toast.LENGTH_SHORT).show());
+                startActivity(new Intent(this, EditProfileActivity.class)));
         findViewById(R.id.rowChangePassword).setOnClickListener(v ->
                 startActivity(new Intent(this, ChangePasswordActivity.class)));
 
         setupBottomNav();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadUserInfo(); // refresh để hiện thông tin mới sau khi sửa
     }
 
     private void setupBottomNav() {
