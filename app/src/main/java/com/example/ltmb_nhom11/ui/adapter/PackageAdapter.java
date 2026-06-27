@@ -13,6 +13,9 @@ import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.model.Package;
 
 import java.util.List;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 
 public class PackageAdapter
         extends RecyclerView.Adapter<PackageAdapter.ViewHolder> {
@@ -55,8 +58,10 @@ public class PackageAdapter
 
         holder.tvName.setText(p.getName());
         holder.tvDescription.setText(p.getDescription());
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+
         holder.tvPrice.setText(
-                String.valueOf((long)p.getPrice()) + " VNĐ"
+                formatter.format((long) p.getPrice()) + " VNĐ"
         );
         holder.btnRegister.setOnClickListener(v -> {
             listener.onRegisterClick(p);

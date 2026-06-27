@@ -1,12 +1,14 @@
 package com.example.ltmb_nhom11.ui;
 
-import android.os.Bundle;
 import android.content.Intent;
+import android.os.Bundle;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ltmb_nhom11.MainActivity;
 import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.model.Package;
 import com.example.ltmb_nhom11.repository.PackageRepository;
@@ -23,18 +25,17 @@ public class PackageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_package);
 
+
         rvMedicalPackages = findViewById(R.id.rvMedicalPackages);
 
         PackageRepository repository = new PackageRepository();
         List<Package> packages = repository.getPackages();
 
+        rvMedicalPackages.setLayoutManager(new LinearLayoutManager(this));
 
-        rvMedicalPackages.setLayoutManager(
-                new LinearLayoutManager(this)
-        );
-
-        PackageAdapter adapter =
-                new PackageAdapter(packages, medicalPackage -> {
+        PackageAdapter adapter = new PackageAdapter(
+                packages,
+                medicalPackage -> {
 
                     Intent intent = new Intent(
                             PackageActivity.this,
@@ -55,6 +56,38 @@ public class PackageActivity extends AppCompatActivity {
                 });
 
         rvMedicalPackages.setAdapter(adapter);
-    }
 
+
+        LinearLayout navHome = findViewById(R.id.navHome);
+        LinearLayout navAppointments = findViewById(R.id.navAppointments);
+        LinearLayout navPackages = findViewById(R.id.navPackages);
+        LinearLayout navProfile = findViewById(R.id.navProfile);
+
+        navHome.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    PackageActivity.this,
+                    MainActivity.class
+            ));
+            finish();
+        });
+
+        navAppointments.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    PackageActivity.this,
+                    AppointmentBookingActivity.class
+            ));
+            finish();
+        });
+
+        navPackages.setOnClickListener(v -> {
+        });
+
+        navProfile.setOnClickListener(v -> {
+            startActivity(new Intent(
+                    PackageActivity.this,
+                    ProfileActivity.class
+            ));
+            finish();
+        });
+    }
 }
