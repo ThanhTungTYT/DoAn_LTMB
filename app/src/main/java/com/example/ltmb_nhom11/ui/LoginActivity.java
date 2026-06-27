@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ltmb_nhom11.MainActivity;
 import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.util.SessionManager;
+import com.example.ltmb_nhom11.ui.adminRoleDoctor.MyScheduleActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,11 +40,17 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        if (SessionManager.isLoggedIn() && mAuth.getCurrentUser().isEmailVerified()) {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-            return;
-        }
+        android.util.Log.d("LOGIN_DEBUG", "FirebaseApp name=" + db.getApp().getName()
+                + " projectId=" + db.getApp().getOptions().getProjectId()
+                + " appId=" + db.getApp().getOptions().getApplicationId());
+
+        db.collection("users").get(com.google.firebase.firestore.Source.SERVER)
+                .addOnSuccessListener(snapshot -> {
+                    android.util.Log.d("LOGIN_DEBUG", "SERVER Get-all SUCCESS, count=" + snapshot.size());
+                })
+                .addOnFailureListener(e -> {
+                    android.util.Log.e("LOGIN_DEBUG", "SERVER Get-all FAILED: " + e.getMessage(), e);
+                });
 
         setContentView(R.layout.activity_login);
 
@@ -70,31 +77,37 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         btnLogin.setOnClickListener(v -> doLogin());
-
         tvRegisterLink.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
-
-        tvForgotPassword.setOnClickListener(v ->
-                startActivity(new Intent(this, ForgotPasswordActivity.class)));
-
-        btnGoogle.setOnClickListener(v ->
-                Toast.makeText(this, "Đăng nhập Google sẽ được tích hợp sau!", Toast.LENGTH_SHORT).show());
-        btnFacebook.setOnClickListener(v ->
-                Toast.makeText(this, "Đăng nhập Facebook sẽ được tích hợp sau!", Toast.LENGTH_SHORT).show());
+        tvForgotPassword.setOnClickListener(v -> startActivity(new Intent(this, ForgotPasswordActivity.class)));
     }
 
     private void doLogin() {
-        String phone = edtPhone.getText().toString().trim();
+        String phoneRaw = edtPhone.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
 
-        if (phone.isEmpty() || password.isEmpty()) {
+        if (phoneRaw.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Vui lòng điền đủ Số điện thoại và Mật khẩu!", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Loại bỏ mọi ký tự không phải số (khoảng trắng, dấu -, +84, ký tự ẩn...)
+        String phoneInput = phoneRaw.replaceAll("[^0-9]", "");
+
         btnLogin.setEnabled(false);
 
-        db.collection("users").whereEqualTo("phone", phone).limit(1).get()
+        String phoneWithZero = phoneInput.startsWith("0") ? phoneInput : "0" + phoneInput;
+        String phoneWithoutZero = phoneInput.startsWith("0") ? phoneInput.substring(1) : phoneInput;
+
+        android.util.Log.d("LOGIN_DEBUG", "raw=[" + phoneRaw + "] cleaned=[" + phoneInput
+                + "] withZero=[" + phoneWithZero + "] withoutZero=[" + phoneWithoutZero + "]");
+
+        db.collection("users")
+                .whereIn("phone", java.util.Arrays.asList(phoneWithZero, phoneWithoutZero))
+                .limit(1)
+                .get()
                 .addOnSuccessListener(querySnapshot -> {
+                    android.util.Log.d("LOGIN_DEBUG", "Query size=" + querySnapshot.size());
+
                     if (querySnapshot.isEmpty()) {
                         btnLogin.setEnabled(true);
                         Toast.makeText(this, "Số điện thoại chưa được đăng ký!", Toast.LENGTH_SHORT).show();
@@ -105,45 +118,42 @@ public class LoginActivity extends AppCompatActivity {
                     String email = doc.getString("email");
                     String role = doc.getString("role");
 
+                    android.util.Log.d("LOGIN_DEBUG", "Found doc id=" + doc.getId() + " email=" + email + " role=" + role);
+
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnSuccessListener(authResult -> {
                                 btnLogin.setEnabled(true);
-                                FirebaseUser user = authResult.getUser();
-
-                                if (!user.isEmailVerified()) {
-                                    showVerifyEmailPrompt(user);
-                                    return;
-                                }
-
-                                Toast.makeText(this, "Đăng nhập thành công! Vai trò: " + role, Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                finish();
+                                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                                navigateToDashboardBasedOnRole(role);
                             })
                             .addOnFailureListener(e -> {
+                                android.util.Log.e("LOGIN_DEBUG", "Auth sign-in failed", e);
                                 btnLogin.setEnabled(true);
                                 Toast.makeText(this, "Sai mật khẩu hoặc tài khoản không hợp lệ!", Toast.LENGTH_SHORT).show();
                             });
                 })
                 .addOnFailureListener(e -> {
+                    android.util.Log.e("LOGIN_DEBUG", "Firestore query failed", e);
                     btnLogin.setEnabled(true);
-                    Toast.makeText(this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Lỗi kết nối: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void showVerifyEmailPrompt(FirebaseUser user) {
-        Toast.makeText(this,
-                "Email của bạn chưa được xác minh! Đang gửi lại email xác minh...",
-                Toast.LENGTH_LONG).show();
+    private void navigateToDashboardBasedOnRole(String role) {
+        if (role == null) role = "user";
 
-        user.sendEmailVerification()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(this, "Đã gửi lại email xác minh, vui lòng kiểm tra hộp thư!", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, "Gửi lại email xác minh thất bại!", Toast.LENGTH_SHORT).show();
-                    }
-                    // Đăng xuất vì chưa được xác minh, không cho vào MainActivity
-                    mAuth.signOut();
-                });
+        Intent intent;
+        switch (role.toLowerCase().trim()) {
+            case "doctor":
+                intent = new Intent(LoginActivity.this, MyScheduleActivity.class);
+                break;
+            case "admin":
+            case "user":
+            default:
+                intent = new Intent(LoginActivity.this, MainActivity.class);
+                break;
+        }
+        startActivity(intent);
+        finish();
     }
 }
