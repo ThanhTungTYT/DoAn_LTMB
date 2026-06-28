@@ -81,6 +81,96 @@
                 android:textColorHint="#94A3B8"
                 android:textSize="15sp" />
 
+            <!-- Giới tính (sửa được) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Giới tính"
+                android:textColor="#0B1C30"
+                android:textSize="13sp"
+                android:layout_marginBottom="6dp" />
+
+            <RadioGroup
+                android:id="@+id/rgGender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rbMale"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="#00685F"
+                    android:text="Nam"
+                    android:textColor="#0B1C30"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/rbFemale"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="#00685F"
+                    android:text="Nữ"
+                    android:textColor="#0B1C30"
+                    android:textSize="15sp" />
+
+                <RadioButton
+                    android:id="@+id/rbOther"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="#00685F"
+                    android:text="Khác"
+                    android:textColor="#0B1C30"
+                    android:textSize="15sp" />
+            </RadioGroup>
+
+            <!-- Ngày sinh (sửa được) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Ngày sinh"
+                android:textColor="#0B1C30"
+                android:textSize="13sp"
+                android:layout_marginBottom="6dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_input_field">
+
+                <EditText
+                    android:id="@+id/edtDob"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toStartOf="@+id/btnPickDob"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="dd/MM/yyyy"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="#0B1C30"
+                    android:textColorHint="#94A3B8"
+                    android:textSize="15sp" />
+
+                <ImageButton
+                    android:id="@+id/btnPickDob"
+                    android:layout_width="44dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Chọn ngày sinh"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="#00685F" />
+            </RelativeLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
