@@ -73,8 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_toEndOf="@id/imgSearchIcon"
-                    android:layout_toStartOf="@+id/btnSearchFilter"
-                    android:layout_marginHorizontal="12dp"
+                    android:layout_toStartOf="@+id/btnClearText" android:layout_marginHorizontal="12dp"
                     android:background="@null"
                     android:hint="Tìm kiếm bác sĩ, chuyên khoa..."
                     android:textColor="@color/on_surface"
@@ -83,23 +82,19 @@
                     android:inputType="textPersonName"
                     android:singleLine="true" />
 
-                <FrameLayout
-                    android:id="@+id/btnSearchFilter"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                <ImageView
+                    android:id="@+id/btnClearText"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/button_primary_bg"
+                    android:padding="6dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:visibility="gone"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_tune"
-                        app:tint="@color/white" />
-                </FrameLayout>
+                    android:focusable="true"
+                    app:tint="@color/outline" />
             </RelativeLayout>
 
             <TextView
