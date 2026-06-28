@@ -1,5 +1,6 @@
 package com.example.ltmb_nhom11.ui;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,11 +22,15 @@ import com.example.ltmb_nhom11.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText edtFullName, edtPhone, edtEmail, edtPassword;
-    private TextView tvErrorFullName, tvErrorPhone, tvErrorEmail, tvErrorPassword;
-    private ImageButton btnTogglePassword;
+    private EditText edtFullName, edtPhone, edtEmail, edtPassword, edtDob;
+    private TextView tvErrorFullName, tvErrorPhone, tvErrorEmail, tvErrorPassword, tvErrorGender, tvErrorDob;
+    private RadioGroup rgGender;
+    private ImageButton btnTogglePassword, btnPickDob;
     private Button btnRegister;
     private TextView tvLoginLink;
     private boolean isPasswordVisible = false;
@@ -50,11 +57,17 @@ public class RegisterActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.edtPhone);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
+        edtDob = findViewById(R.id.edtDob);
 
         tvErrorFullName = findViewById(R.id.tvErrorFullName);
         tvErrorPhone = findViewById(R.id.tvErrorPhone);
         tvErrorEmail = findViewById(R.id.tvErrorEmail);
         tvErrorPassword = findViewById(R.id.tvErrorPassword);
+        tvErrorGender = findViewById(R.id.tvErrorGender);
+        tvErrorDob = findViewById(R.id.tvErrorDob);
+
+        rgGender = findViewById(R.id.rgGender);
+        btnPickDob = findViewById(R.id.btnPickDob);
 
         btnTogglePassword = findViewById(R.id.btnTogglePassword);
         btnRegister = findViewById(R.id.btnRegister);
@@ -72,12 +85,34 @@ public class RegisterActivity extends AppCompatActivity {
             edtPassword.setSelection(edtPassword.getText().length());
         });
 
+        // Bấm icon lịch -> mở DatePickerDialog, nhưng vẫn có thể tự gõ tay vào edtDob
+        btnPickDob.setOnClickListener(v -> showDatePicker());
+        edtDob.setOnClickListener(v -> showDatePicker());
+
         btnRegister.setOnClickListener(v -> doRegister());
 
         tvLoginLink.setOnClickListener(v -> {
             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             finish();
         });
+    }
+
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR) - 18; // gợi ý mặc định 18 tuổi
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePicker = new DatePickerDialog(this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    String formattedDate = String.format(Locale.getDefault(),
+                            "%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear);
+                    edtDob.setText(formattedDate);
+                }, year, month, day);
+
+        // Không cho chọn ngày trong tương lai
+        datePicker.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePicker.show();
     }
 
     private void showError(TextView errorView, String message) {
@@ -94,6 +129,8 @@ public class RegisterActivity extends AppCompatActivity {
         clearError(tvErrorPhone);
         clearError(tvErrorEmail);
         clearError(tvErrorPassword);
+        clearError(tvErrorGender);
+        clearError(tvErrorDob);
     }
 
     private void doRegister() {
@@ -103,6 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
         String phone = edtPhone.getText().toString().trim();
         String email = edtEmail.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
+        String dob = edtDob.getText().toString().trim();
 
         boolean hasError = false;
 
@@ -135,7 +173,23 @@ public class RegisterActivity extends AppCompatActivity {
             hasError = true;
         }
 
+        int selectedGenderId = rgGender.getCheckedRadioButtonId();
+        if (selectedGenderId == -1) {
+            showError(tvErrorGender, "Vui lòng chọn giới tính!");
+            hasError = true;
+        }
+
+        if (dob.isEmpty()) {
+            showError(tvErrorDob, "Vui lòng chọn hoặc nhập ngày sinh!");
+            hasError = true;
+        } else if (!isValidDob(dob)) {
+            showError(tvErrorDob, "Ngày sinh không hợp lệ! (Định dạng: dd/MM/yyyy)");
+            hasError = true;
+        }
+
         if (hasError) return;
+
+        String gender = ((RadioButton) findViewById(selectedGenderId)).getText().toString();
 
         btnRegister.setEnabled(false);
 
@@ -146,7 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
                         showError(tvErrorPhone, "Số điện thoại này đã được sử dụng để đăng ký!");
                         return;
                     }
-                    createAccount(fullName, phone, email, password);
+                    createAccount(fullName, phone, email, password, gender, dob);
                 })
                 .addOnFailureListener(e -> {
                     btnRegister.setEnabled(true);
@@ -154,11 +208,12 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private void createAccount(String fullName, String phone, String email, String password) {
+    private void createAccount(String fullName, String phone, String email, String password,
+                               String gender, String dob) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String uid = authResult.getUser().getUid();
-                    User newUser = new User(uid, fullName, phone, email, "user");
+                    User newUser = new User(uid, fullName, phone, email, gender, dob, "user");
 
                     db.collection("users").document(uid).set(newUser)
                             .addOnSuccessListener(unused -> sendVerificationAndRedirect(email))
@@ -169,7 +224,6 @@ public class RegisterActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     btnRegister.setEnabled(true);
-                    // Lỗi từ Firebase (ví dụ email đã tồn tại) -> hiện ngay dưới ô Email
                     showError(tvErrorEmail, "Đăng ký thất bại: " + e.getMessage());
                 });
     }
@@ -203,5 +257,25 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean isStrongPassword(String password) {
         String pattern = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?\":{}|<>_\\-+=]).{8,}$";
         return password.matches(pattern);
+    }
+
+    private boolean isValidDob(String dob) {
+        if (!dob.matches("^\\d{2}/\\d{2}/\\d{4}$")) return false;
+
+        try {
+            String[] parts = dob.split("/");
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int year = Integer.parseInt(parts[2]);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setLenient(false);
+            cal.set(year, month - 1, day);
+            cal.getTime();
+            Calendar now = Calendar.getInstance();
+            return cal.before(now);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
