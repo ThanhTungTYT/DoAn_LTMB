@@ -17,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import android.util.Log;
 
 public class DoctorSearchActivity extends AppCompatActivity {
 
@@ -37,27 +40,45 @@ public class DoctorSearchActivity extends AppCompatActivity {
         recyclerDoctors.setLayoutManager(new LinearLayoutManager(this));
 
 
-        initMockData();
+
+        doctorList = new ArrayList<>();
 
 
-        doctorAdapter = new DoctorAdapter(doctorList, doctor -> openDoctorDetail(doctor.getName()));
+
+        doctorAdapter = new DoctorAdapter(doctorList, doctor -> openDoctorDetail(doctor));
         recyclerDoctors.setAdapter(doctorAdapter);
+
+        loadDoctorsFromFirestore();
+
+
+
 
 
         setupBottomNavigation();
 
         android.widget.EditText etSearch = findViewById(R.id.etSearch);
+        ImageView btnClearText = findViewById(R.id.btnClearText);
+        btnClearText.setOnClickListener(v -> {
+            etSearch.setText("");
+            etSearch.clearFocus();
+        });
 
 
         etSearch.addTextChangedListener(new android.text.TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Không làm gì ở đây
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // HỦY (ClearTimeout): Nếu có một tiến trình search đang chờ chạy thì hủy nó đi
+
+                if (s.toString().trim().length() > 0) {
+                    btnClearText.setVisibility(View.VISIBLE);
+                } else {
+                    btnClearText.setVisibility(View.GONE);
+                }
+
                 if (searchRunnable != null) {
                     searchHandler.removeCallbacks(searchRunnable);
                 }
@@ -105,21 +126,49 @@ public class DoctorSearchActivity extends AppCompatActivity {
         doctorAdapter.updateList(filteredList);
     }
 
-    private void initMockData() {
-        doctorList = new ArrayList<>();
+    private void loadDoctorsFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        Doctor doc1 = new Doctor("BS. Nguyễn Thị Lan", "Khoa Sản", "12 năm KN");
-        doc1.setAvatarUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuD08wC_qL6hOm4NWjF-iBFy7uJzXvQDdk9FyfPDZVueVKIHaaUMv41vJduGXuqPN-CKfhf9ZODzcob2Lmm-U9bWSu224MTXp3uX0aeDiYbC_qijJNtUq-nvDal5GahLEPcN_yVmaxVpWvQzwQ6rv4FVplc3XOBqXLvesaVKMYo9VFoNppKlyUR9luluThNmGloEtCA1sm_UF_QZP1FHbHtwH8zAlGiwlveFzi4dLCAOcnA86e8sBu9TgG0QrmNBlt09yUw1azm8d8au");
 
-        Doctor doc2 = new Doctor("TS.BS. Trần Văn Hùng", "Khoa Tim Mạch", "20 năm KN");
-        doc2.setAvatarUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuDe12CPPIh3L-kFXLLJwkQ8QUOFmmLfSxauKAt8qNBAVe6y1kBcEKZj1Fd51KpT5Aoa6VneZ1DW4IPBt7COGy-0xU3ZPJqWfg5lelPOw9zO2NHgT1AHEDMNx15XhrrOOY8pE_NRsykVhXNaJpvtStQcodZmBU_URGO6GuuaisZP_rFJxdv-IotLr_1SZ-AHv4lbECCtLQZaCzGm_r6ZtyF0Tyis8LesHNk77fpO4Axd-aVpJqtVxnd0gsghJ2niKCq3Y3v07EF6ebzC");
+        db.collection("users")
+                .whereEqualTo("role", "doctor")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    doctorList.clear();
 
-        Doctor doc3 = new Doctor("ThS.BS. Lê Minh Duy", "Khoa Nhi", "8 năm KN");
-        doc3.setAvatarUrl("https://lh3.googleusercontent.com/aida-public/AB6AXuBUjlRrybqQgLPekTNjPNh5OygP0rKWH4DqDCcSNuLUl12OVeRF5niuuyRsgl2JkTGpMp3f_uOQs9fWNh-AeP3jrKO4sFVyLjAjkP_wRGvTsdXAAaF2HBP7OpYMqmkz9twVbWwBiWjvDxTsq8NbRrbZhxR-xSigMx4Qmn_SlPJEf86ZNns-qcNt2aeyntHQ-6I4WyukNmX-Lc_vPF9-cqO2ZkbZAs7kRHtyaBxBruDpzFl0MFuzT16gnRZs4QCVGmokJpQCNE5z9nun");
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        try {
 
-        doctorList.add(doc1);
-        doctorList.add(doc2);
-        doctorList.add(doc3);
+                            String name = document.getString("fullName");
+                            if (name == null || name.isEmpty()) {
+                                name = document.getString("name");
+                            }
+
+                            String dept = document.getString("dept");
+                            String status = document.getString("status");
+                            String avatarUrl = document.getString("avatarUrl");
+                            String uid = document.getString("uid");
+
+// Tạo đối tượng Doctor
+                            Doctor doctor = new Doctor(name, dept, status);
+                            doctor.setAvatarUrl(avatarUrl != null ? avatarUrl : "");
+                            doctor.setUid(uid != null ? uid : document.getId());
+
+                            doctorList.add(doctor);
+// ...
+                        } catch (Exception e) {
+                            Log.e("DoctorSearch", "Lỗi parse dữ liệu bác sĩ: " + e.getMessage());
+                        }
+                    }
+
+
+                    doctorAdapter.updateList(doctorList);
+                    Toast.makeText(DoctorSearchActivity.this, "Đã tải " + doctorList.size() + " bác sĩ", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(DoctorSearchActivity.this, "Lỗi kết nối máy chủ: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("DoctorSearch", "Firestore Error: ", e);
+                });
     }
 
     private void setupBottomNavigation() {
@@ -127,7 +176,7 @@ public class DoctorSearchActivity extends AppCompatActivity {
         navHome.setOnClickListener(v -> navigateToHome());
 
         LinearLayout navAppointments = findViewById(R.id.navAppointments);
-        navAppointments.setOnClickListener(v -> { /* Đang ở màn hình này */ });
+        navAppointments.setOnClickListener(v -> { });
 
         LinearLayout navPackages = findViewById(R.id.navPackages);
         navPackages.setOnClickListener(v ->
@@ -151,9 +200,10 @@ public class DoctorSearchActivity extends AppCompatActivity {
         finish();
     }
 
-    private void openDoctorDetail(String doctorName) {
+    private void openDoctorDetail(Doctor doctor) {
         Intent intent = new Intent(DoctorSearchActivity.this, DoctorDetailActivity.class);
-        intent.putExtra("doctorName", doctorName);
+        intent.putExtra("doctorUid", doctor.getUid());
+        intent.putExtra("doctorName", doctor.getName());
         startActivity(intent);
     }
 }

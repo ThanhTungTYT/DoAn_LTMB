@@ -29,9 +29,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // ==========================================
-        // 1. CHỐT CHẶN BẢO MẬT & XỬ LÝ TÊN NGƯỜI DÙNG
-        // ==========================================
+
         FirebaseUser currentUser = SessionManager.getCurrentUser();
 
         if (currentUser == null) {
@@ -56,9 +54,7 @@ public class MainActivity extends AppCompatActivity {
         }
         tvUserName.setText(userName + " 👋");
 
-        // ==========================================
-        // 2. KHỞI TẠO CÁC GIAO DIỆN KHÁC (ẢNH, NÚT BẤM)
-        // ==========================================
+
         ImageView imgUserAvatar = findViewById(R.id.imgUserAvatar);
         ImageView imgMapPreview = findViewById(R.id.imgMapPreview);
 
@@ -83,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // "Xem tất cả" list filter action
+
         TextView btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
         btnViewAllAppointments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,4 +168,5 @@ public class MainActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
+
 }
