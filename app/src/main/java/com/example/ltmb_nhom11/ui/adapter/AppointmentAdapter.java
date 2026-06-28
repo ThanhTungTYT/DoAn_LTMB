@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.model.Appointment;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,17 @@ import java.util.List;
 /** Hiển thị danh sách lịch hẹn trong màn Lịch sử khám. */
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.VH> {
 
+    /** Sự kiện bấm nút "Hủy lịch khám". */
+    public interface OnCancelClick {
+        void onCancel(Appointment appointment);
+    }
+
     private final List<Appointment> items = new ArrayList<>();
+    private OnCancelClick cancelListener;
+
+    public void setOnCancelClickListener(OnCancelClick listener) {
+        this.cancelListener = listener;
+    }
 
     public void setData(List<Appointment> data) {
         items.clear();
@@ -61,6 +72,17 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         h.tvStatus.setText(label);
         h.tvStatus.setTextColor(color);
         h.viewAccent.setBackgroundColor(color);
+
+        // Nút hủy chỉ hiện với lịch sắp tới
+        if ("upcoming".equals(status)) {
+            h.btnCancel.setVisibility(View.VISIBLE);
+            h.btnCancel.setOnClickListener(v -> {
+                if (cancelListener != null) cancelListener.onCancel(a);
+            });
+        } else {
+            h.btnCancel.setVisibility(View.GONE);
+            h.btnCancel.setOnClickListener(null);
+        }
     }
 
     @Override
@@ -71,6 +93,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     static class VH extends RecyclerView.ViewHolder {
         TextView tvDoctorName, tvDateTime, tvStatus;
         View viewAccent;
+        MaterialButton btnCancel;
 
         VH(@NonNull View itemView) {
             super(itemView);
@@ -78,6 +101,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             tvDateTime = itemView.findViewById(R.id.tvDateTime);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             viewAccent = itemView.findViewById(R.id.viewAccent);
+            btnCancel = itemView.findViewById(R.id.btnCancelAppointment);
         }
     }
 }

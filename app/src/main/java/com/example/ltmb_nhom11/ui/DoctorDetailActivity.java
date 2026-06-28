@@ -37,6 +37,7 @@ public class DoctorDetailActivity extends AppCompatActivity {
     private String selectedDate = "";
     private String selectedTime = "08:00";
     private String doctorName = "BS. Nguyễn Văn An";
+    private String doctorId = "";
     private Button selectedTimeButton;
 
     @Override
@@ -56,7 +57,7 @@ public class DoctorDetailActivity extends AppCompatActivity {
         // Xử lý sự kiện nút back & đặt lịch chính thức
         btnBack.setOnClickListener(v -> finish());
 
-        // Nhận tên bác sĩ từ màn Tìm bác sĩ (nếu có) và hiển thị lên tiêu đề
+        // Nhận thông tin bác sĩ từ màn Tìm bác sĩ (nếu có) và hiển thị lên tiêu đề
         String incomingDoctor = getIntent().getStringExtra("doctorName");
         if (incomingDoctor != null) {
             doctorName = incomingDoctor;
@@ -64,10 +65,15 @@ public class DoctorDetailActivity extends AppCompatActivity {
             if (txtDoctorName != null) txtDoctorName.setText(doctorName);
         }
 
+        // Lấy thông tin bác sĩ thật từ Firestore theo uid được truyền sang
+        doctorId = getIntent().getStringExtra("doctorUid");
+        if (doctorId == null) doctorId = "";
+        loadDoctorInfo();
+
         btnBook.setOnClickListener(v -> {
             // Chuyển hướng sang màn hình Thanh Toán (PaymentActivity), kèm dữ liệu đã chọn
             Intent intent = new Intent(DoctorDetailActivity.this, PaymentActivity.class);
-            intent.putExtra("doctorId", "bs_default");
+            intent.putExtra("doctorId", doctorId);
             intent.putExtra("doctorName", doctorName);
             intent.putExtra("selected_date", selectedDate);
             intent.putExtra("selected_time", selectedTime);
@@ -79,6 +85,34 @@ public class DoctorDetailActivity extends AppCompatActivity {
         loadPatientInfo();
         findViewById(R.id.btnChangePatient).setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class)));
+    }
+
+    private void loadDoctorInfo() {
+        if (doctorId.isEmpty()) return;
+        FirebaseFirestore.getInstance().collection("users").document(doctorId).get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) return;
+
+                    String name = doc.getString("fullName");
+                    if (name == null || name.isEmpty()) name = doc.getString("name");
+                    String dept = doc.getString("dept");
+                    String avatarUrl = doc.getString("avatarUrl");
+
+                    TextView txtDoctorName = findViewById(R.id.txtDoctorName);
+                    TextView txtSpecialty = findViewById(R.id.txtSpecialty);
+                    android.widget.ImageView imgDoctor = findViewById(R.id.imgDoctor);
+
+                    if (name != null && !name.isEmpty()) {
+                        doctorName = name;
+                        txtDoctorName.setText(name);
+                    }
+                    if (dept != null && !dept.isEmpty()) {
+                        txtSpecialty.setText("Chuyên khoa " + dept);
+                    }
+                    if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                        ImageLoader.load(avatarUrl, imgDoctor);
+                    }
+                });
     }
 
     private void loadPatientInfo() {
