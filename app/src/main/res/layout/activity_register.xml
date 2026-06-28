@@ -243,6 +243,116 @@
                     android:textSize="12sp"
                     android:visibility="gone" />
 
+                <!-- Giới tính -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="4dp"
+                    android:text="Giới tính"
+                    android:textColor="#0B1C30"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/rgGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rbMale"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Nam"
+                        android:textColor="#0B1C30"
+                        android:textSize="15sp"
+                        android:buttonTint="#00685F" />
+
+                    <RadioButton
+                        android:id="@+id/rbFemale"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Nữ"
+                        android:textColor="#0B1C30"
+                        android:textSize="15sp"
+                        android:buttonTint="#00685F" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/tvErrorGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="4dp"
+                    android:textColor="#E53935"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <!-- Ngày sinh -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="4dp"
+                    android:text="Ngày sinh"
+                    android:textColor="#0B1C30"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_input_field">
+
+                    <ImageView
+                        android:id="@+id/ivCalendarIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="14dp"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="#6D7A77" />
+
+                    <EditText
+                        android:id="@+id/edtDob"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toStartOf="@+id/btnPickDob"
+                        android:layout_toEndOf="@id/ivCalendarIcon"
+                        android:background="@android:color/transparent"
+                        android:hint="dd/MM/yyyy"
+                        android:inputType="date"
+                        android:paddingHorizontal="12dp"
+                        android:textColor="#0B1C30"
+                        android:textColorHint="#6D7A77"
+                        android:textSize="15sp" />
+
+                    <ImageButton
+                        android:id="@+id/btnPickDob"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="#6D7A77" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tvErrorDob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="4dp"
+                    android:textColor="#E53935"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
                 <!-- Mật khẩu -->
                 <TextView
                     android:layout_width="wrap_content"

@@ -5,17 +5,22 @@ public class User {
     private String fullName;
     private String phone;
     private String email;
+    private String gender;
+    private String dob;
     private String role; // "user" hoặc "doctor"
     private boolean verified;
     private long createdAt;
 
     public User() {} // cần constructor rỗng cho Firestore
 
-    public User(String uid, String fullName, String phone, String email, String role) {
+    public User(String uid, String fullName, String phone, String email,
+                String gender, String dob, String role) {
         this.uid = uid;
         this.fullName = fullName;
         this.phone = phone;
         this.email = email;
+        this.gender = gender;
+        this.dob = dob;
         this.role = role;
         this.verified = false;
         this.createdAt = System.currentTimeMillis();
@@ -29,6 +34,10 @@ public class User {
     public void setPhone(String phone) { this.phone = phone; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+    public String getDob() { return dob; }
+    public void setDob(String dob) { this.dob = dob; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
     public boolean isVerified() { return verified; }
