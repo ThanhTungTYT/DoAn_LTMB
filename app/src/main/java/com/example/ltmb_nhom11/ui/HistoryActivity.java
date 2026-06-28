@@ -1,13 +1,25 @@
 package com.example.ltmb_nhom11.ui;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,6 +65,7 @@ public class HistoryActivity extends AppCompatActivity {
         // RecyclerView + adapter
         rvAppointments.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AppointmentAdapter();
+        adapter.setOnCancelClickListener(this::confirmCancel);
         rvAppointments.setAdapter(adapter);
 
         // Sự kiện lọc
@@ -111,6 +124,69 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
                 Toast.makeText(HistoryActivity.this, "Lỗi tải lịch sử: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private static final String SUPPORT_PHONE = "0933652267";
+
+    /** Hộp thoại xác nhận hủy lịch, có số điện thoại hỗ trợ bấm để sao chép. */
+    private void confirmCancel(@NonNull Appointment a) {
+        String prefix = "Bạn có chắc muốn hủy đặt lịch?\n\nNếu đã đặt cọc trước, hãy liên hệ với chúng tôi qua số điện thoại ";
+        String suffix = " để được hỗ trợ hoàn trả.";
+        String full = prefix + SUPPORT_PHONE + suffix;
+
+        SpannableString sp = new SpannableString(full);
+        int start = prefix.length();
+        int end = start + SUPPORT_PHONE.length();
+        sp.setSpan(new ForegroundColorSpan(Color.parseColor("#00685F")), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sp.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        sp.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                copyPhone();
+            }
+        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        TextView message = new TextView(this);
+        message.setText(sp);
+        message.setMovementMethod(LinkMovementMethod.getInstance());
+        message.setTextColor(Color.parseColor("#3D4947"));
+        message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        int pad = Math.round(20 * getResources().getDisplayMetrics().density);
+        message.setPadding(pad, pad, pad, 0);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Hủy lịch khám")
+                .setView(message)
+                .setNegativeButton("Không", null)
+                .setPositiveButton("Hủy lịch", (d, w) -> doCancel(a))
+                .show();
+    }
+
+    private void copyPhone() {
+        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (cm != null) {
+            cm.setPrimaryClip(ClipData.newPlainText("phone", SUPPORT_PHONE));
+            Toast.makeText(this, "Đã sao chép số điện thoại " + SUPPORT_PHONE, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void doCancel(@NonNull Appointment a) {
+        if (a.getId() == null) {
+            Toast.makeText(this, "Không tìm thấy mã lịch hẹn.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new AppointmentRepository().updateStatus(a.getId(), "cancelled", new AppointmentRepository.OnDone() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(HistoryActivity.this, "Đã hủy lịch khám.", Toast.LENGTH_SHORT).show();
+                loadAppointments();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(HistoryActivity.this, "Hủy lịch thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
