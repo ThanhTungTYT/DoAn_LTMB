@@ -14,7 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private TextView tvName, tvEmailHeader, tvFullName, tvPhone, tvEmail;
+    private TextView tvName, tvEmailHeader, tvFullName, tvPhone, tvEmail, tvGender, tvDob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +26,8 @@ public class ProfileActivity extends AppCompatActivity {
         tvFullName = findViewById(R.id.tvFullName);
         tvPhone = findViewById(R.id.tvPhone);
         tvEmail = findViewById(R.id.tvEmail);
+        tvGender = findViewById(R.id.tvGender);
+        tvDob = findViewById(R.id.tvDob);
 
         findViewById(R.id.rowViewHistory).setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
@@ -69,6 +71,8 @@ public class ProfileActivity extends AppCompatActivity {
                     String name = doc.getString("fullName");
                     String phone = doc.getString("phone");
                     String email = doc.getString("email");
+                    String gender = doc.getString("gender");
+                    String dob = doc.getString("dob");
                     if (name != null && !name.isEmpty()) {
                         tvName.setText(name);
                         tvFullName.setText(name);
@@ -79,6 +83,12 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     if (phone != null && !phone.isEmpty()) {
                         tvPhone.setText(phone);
+                    }
+                    if (gender != null && !gender.isEmpty()) {
+                        tvGender.setText(gender);
+                    }
+                    if (dob != null && !dob.isEmpty()) {
+                        tvDob.setText(dob);
                     }
                 })
                 .addOnFailureListener(e ->
