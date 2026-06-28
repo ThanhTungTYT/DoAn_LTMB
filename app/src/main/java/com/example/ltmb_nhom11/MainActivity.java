@@ -16,7 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-// Import thêm Firebase
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,26 +34,47 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = SessionManager.getCurrentUser();
 
         if (currentUser == null) {
-            // Chưa đăng nhập thì đá về Login và DỪNG ngang luôn
+
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
         }
 
-        // Đã đăng nhập thì lấy tên hiển thị ra màn hình
         TextView tvUserName = findViewById(R.id.tvUserName);
-        String userName = currentUser.getDisplayName();
 
-        if (userName == null || userName.isEmpty()) {
-            String email = currentUser.getEmail();
-            if (email != null && email.contains("@")) {
-                userName = email.substring(0, email.indexOf('@'));
-            } else {
-                userName = "Bệnh nhân";
-            }
-        }
-        tvUserName.setText(userName + " 👋");
+        tvUserName.setText("Đang tải... 👋");
+
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(currentUser.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+
+                        String fullName = documentSnapshot.getString("fullName");
+
+                        if (fullName != null && !fullName.isEmpty()) {
+
+                            String[] nameParts = fullName.trim().split(" ");
+                            String shortName = nameParts[nameParts.length - 1];
+
+                            tvUserName.setText(shortName + " 👋");
+                        } else {
+
+                            String email = currentUser.getEmail();
+                            if (email != null && email.contains("@")) {
+                                tvUserName.setText(email.substring(0, email.indexOf('@')) + " 👋");
+                            } else {
+                                tvUserName.setText("Bệnh nhân 👋");
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    tvUserName.setText("Bệnh nhân 👋");
+                });
+        // ==========================================
 
 
         ImageView imgUserAvatar = findViewById(R.id.imgUserAvatar);
@@ -61,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         ImageLoader.load(AVATAR_URL, imgUserAvatar);
         ImageLoader.load(MAP_PREVIEW_URL, imgMapPreview);
 
-        // Bento quick action listeners
+
         LinearLayout btnQuickBook = findViewById(R.id.btnQuickBook);
         btnQuickBook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Appointment Card interactions
+
         LinearLayout cardAppointment = findViewById(R.id.cardAppointment);
         cardAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Clinic Location interactions (Direct to Screen 2)
+
         LinearLayout cardLocation = findViewById(R.id.cardLocation);
         cardLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,12 +136,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Bottom navigation routing
+
         LinearLayout navHome = findViewById(R.id.navHome);
         navHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Already on Home
+
             }
         });
 
@@ -131,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Chuyển trang của Phú
+
         LinearLayout navPackages = findViewById(R.id.navPackages);
         navPackages.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,5 +190,4 @@ public class MainActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
-
 }
