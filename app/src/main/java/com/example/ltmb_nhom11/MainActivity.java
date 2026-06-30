@@ -1,40 +1,49 @@
 package com.example.ltmb_nhom11;
 
-import com.example.ltmb_nhom11.ui.DirectionsActivity;
-import com.example.ltmb_nhom11.ui.DoctorSearchActivity;
-import com.example.ltmb_nhom11.util.SessionManager;
-import com.example.ltmb_nhom11.ui.LoginActivity;
-import com.example.ltmb_nhom11.ui.PackageActivity;
-import com.example.ltmb_nhom11.ui.ImageLoader;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.DocumentSnapshot;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.ltmb_nhom11.ui.DirectionsActivity;
+import com.example.ltmb_nhom11.ui.DoctorSearchActivity;
+import com.example.ltmb_nhom11.ui.LoginActivity;
+import com.example.ltmb_nhom11.ui.PackageActivity;
+import com.example.ltmb_nhom11.ui.ProfileActivity;
+import com.example.ltmb_nhom11.ui.ImageLoader;
+import com.example.ltmb_nhom11.ui.adapter.HomeCalendarAdapter;
+import com.example.ltmb_nhom11.util.SessionManager;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String AVATAR_URL = "https://lh3.googleusercontent.com/aida-public/AB6AXuDKtHZNQvkPdeno_hqoa1P2yqfCVxfxJzkUxhzH68ujn0iBGAuZH5S6aQekLDTqFZZmvIlaWI9tlU9LYdX7b5OOpon1CaQSw8WG8kGtJ2Xo8clkqdBmIKS88h2NX1CRusDGwESHsE6khHIGyZdZqaPpdOH2rzMUodmchBkh4zMsKhblnE82rmPEHk4TE0nFJbykQAy08LpoqcRDC_9_q-YHZpPkbni-AueCe7Jf1b1rc8XTWBjUl3INntWeQ1tJ2DATvBgNuXj50l6t";
     private static final String MAP_PREVIEW_URL = "https://lh3.googleusercontent.com/aida-public/AB6AXuCBM3GfSf4XeLhBw3yRGTsG8YAbkkWM31cdIpkiqmIhUO2x-nkApumb6TSklwSrT8lu4QV0Z4pGauJlJ8djhQiFoHk24CSFM-wdcTKddy9S_RAvi8JXIvX9pecvNBhQMtdExv3uvcfllzlylyiWWGxDZsgH879x3APmAEPEPT2UjXdcgSACMSmvG9phLaAFiqXTBW3FDo1WfntQUr481xUc5BKlFYbv8X6y23OrmEzhVogKo-WXlJeIggBBg1Hm2IbzzRjQKMh_P1Q2";
+    private Calendar currentMonth;
+    private HomeCalendarAdapter calendarAdapter;
+    private List<String> daysInMonth;
+    private List<String> bookedDays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         FirebaseUser currentUser = SessionManager.getCurrentUser();
 
         if (currentUser == null) {
-
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -42,26 +51,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView tvUserName = findViewById(R.id.tvUserName);
-
         tvUserName.setText("Đang tải... 👋");
-
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users").document(currentUser.getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-
                         String fullName = documentSnapshot.getString("fullName");
-
                         if (fullName != null && !fullName.isEmpty()) {
-
                             String[] nameParts = fullName.trim().split(" ");
                             String shortName = nameParts[nameParts.length - 1];
-
                             tvUserName.setText(shortName + " 👋");
                         } else {
-
                             String email = currentUser.getEmail();
                             if (email != null && email.contains("@")) {
                                 tvUserName.setText(email.substring(0, email.indexOf('@')) + " 👋");
@@ -71,113 +73,48 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 })
-                .addOnFailureListener(e -> {
-                    tvUserName.setText("Bệnh nhân 👋");
-                });
-        // ==========================================
+                .addOnFailureListener(e -> tvUserName.setText("Bệnh nhân 👋"));
 
-
-        ImageView imgUserAvatar = findViewById(R.id.imgUserAvatar);
         ImageView imgMapPreview = findViewById(R.id.imgMapPreview);
-
-        ImageLoader.load(AVATAR_URL, imgUserAvatar);
         ImageLoader.load(MAP_PREVIEW_URL, imgMapPreview);
 
+        setupDynamicCalendar();
 
         LinearLayout btnQuickBook = findViewById(R.id.btnQuickBook);
-        btnQuickBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToAppointments();
-            }
-        });
+        btnQuickBook.setOnClickListener(v -> navigateToAppointments());
 
         LinearLayout btnQuickCheckup = findViewById(R.id.btnQuickCheckup);
-        btnQuickCheckup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Khám sức khỏe tổng quát đã sẵn sàng!", Toast.LENGTH_SHORT).show();
-                navigateToAppointments();
-            }
+        btnQuickCheckup.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this, "Khám sức khỏe tổng quát đã sẵn sàng!", Toast.LENGTH_SHORT).show();
+            navigateToAppointments();
         });
-
 
         TextView btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
-        btnViewAllAppointments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToAppointments();
-            }
-        });
-
+        btnViewAllAppointments.setOnClickListener(v -> navigateToAppointments());
 
         LinearLayout cardAppointment = findViewById(R.id.cardAppointment);
-        cardAppointment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Chi tiết cuộc hẹn: BS. Lê Hoàng Nam khoa Tim mạch, ngày 24 vào lúc 09:30", Toast.LENGTH_LONG).show();
-            }
-        });
-
+        cardAppointment.setOnClickListener(v -> Toast.makeText(MainActivity.this, "Chi tiết cuộc hẹn: BS. Lê Hoàng Nam khoa Tim mạch, ngày 24 vào lúc 09:30", Toast.LENGTH_LONG).show());
 
         LinearLayout cardLocation = findViewById(R.id.cardLocation);
-        cardLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToDirections();
-            }
-        });
+        cardLocation.setOnClickListener(v -> navigateToDirections());
 
         TextView btnOpenDirections = findViewById(R.id.btnOpenDirections);
-        btnOpenDirections.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToDirections();
-            }
-        });
-
+        btnOpenDirections.setOnClickListener(v -> navigateToDirections());
 
         LinearLayout navHome = findViewById(R.id.navHome);
-        navHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        navHome.setOnClickListener(v -> {});
 
         LinearLayout navAppointments = findViewById(R.id.navAppointments);
-        navAppointments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToAppointments();
-            }
-        });
-
+        navAppointments.setOnClickListener(v -> navigateToAppointments());
 
         LinearLayout navPackages = findViewById(R.id.navPackages);
-        navPackages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, PackageActivity.class);
-                startActivity(intent);
-            }
+        navPackages.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, PackageActivity.class);
+            startActivity(intent);
         });
 
         LinearLayout navProfile = findViewById(R.id.navProfile);
-        navProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, com.example.ltmb_nhom11.ui.ProfileActivity.class));
-            }
-        });
-
-        ImageView btnNotification = findViewById(R.id.btnNotification);
-        btnNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Bạn không có thông báo mới!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        navProfile.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
     }
 
     private void navigateToDirections() {
@@ -189,5 +126,92 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, DoctorSearchActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
+    }
+
+    private void setupDynamicCalendar() {
+        currentMonth = Calendar.getInstance();
+
+        RecyclerView recyclerCalendar = findViewById(R.id.recyclerHomeCalendar);
+        recyclerCalendar.setLayoutManager(new GridLayoutManager(this, 7));
+
+        daysInMonth = new ArrayList<>();
+        bookedDays = new ArrayList<>();
+        calendarAdapter = new HomeCalendarAdapter(daysInMonth, bookedDays);
+        recyclerCalendar.setAdapter(calendarAdapter);
+
+        findViewById(R.id.btnPrevMonth).setOnClickListener(v -> {
+            currentMonth.add(Calendar.MONTH, -1);
+            loadCalendarData();
+        });
+
+        findViewById(R.id.btnNextMonth).setOnClickListener(v -> {
+            currentMonth.add(Calendar.MONTH, 1);
+            loadCalendarData();
+        });
+
+        loadCalendarData();
+    }
+
+    private void loadCalendarData() {
+        TextView tvMonthYear = findViewById(R.id.tvMonthYear);
+        int month = currentMonth.get(Calendar.MONTH) + 1;
+        int year = currentMonth.get(Calendar.YEAR);
+        tvMonthYear.setText(String.format("Lịch tháng %02d/%d", month, year));
+
+        daysInMonth.clear();
+        bookedDays.clear();
+
+        Calendar cal = (Calendar) currentMonth.clone();
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+
+        int firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        int offset = firstDayOfWeek - Calendar.MONDAY;
+        if (offset < 0) offset += 7;
+
+        for (int i = 0; i < offset; i++) {
+            daysInMonth.add("");
+        }
+
+        int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        for (int i = 1; i <= maxDays; i++) {
+            daysInMonth.add(String.valueOf(i));
+        }
+
+        int currentDisplayedMonth = month;
+        int currentDisplayedYear = year;
+
+        FirebaseUser currentUser = SessionManager.getCurrentUser();
+        if (currentUser != null) {
+            FirebaseFirestore.getInstance().collection("appointments")
+                    .whereEqualTo("userId", currentUser.getUid())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            String fullDateStr = document.getString("date");
+
+                            if (fullDateStr != null && fullDateStr.contains(",")) {
+                                try {
+                                    String datePart = fullDateStr.split(",")[1].trim();
+                                    String[] parts = datePart.split("/");
+
+                                    if (parts.length == 3) {
+                                        int appointmentDay = Integer.parseInt(parts[0]);
+                                        int appointmentMonth = Integer.parseInt(parts[1]);
+                                        int appointmentYear = Integer.parseInt(parts[2]);
+
+                                        if (appointmentMonth == currentDisplayedMonth && appointmentYear == currentDisplayedYear) {
+                                            bookedDays.add(String.valueOf(appointmentDay));
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    Log.e("Calendar", e.getMessage());
+                                }
+                            }
+                        }
+                        calendarAdapter.notifyDataSetChanged();
+                    });
+        } else {
+            calendarAdapter.notifyDataSetChanged();
+        }
     }
 }
