@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ltmb_nhom11.MainActivity;
 import com.example.ltmb_nhom11.R;
+import com.example.ltmb_nhom11.ui.adminRoleDoctor.AdminOverviewActivity;
 import com.example.ltmb_nhom11.util.SessionManager;
 import com.example.ltmb_nhom11.ui.adminRoleDoctor.MyScheduleActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -212,6 +213,8 @@ public class LoginActivity extends AppCompatActivity {
                 intent = new Intent(LoginActivity.this, MyScheduleActivity.class);
                 break;
             case "admin":
+                intent = new Intent(LoginActivity.this, AdminOverviewActivity.class);
+                break;
             case "user":
             default:
                 intent = new Intent(LoginActivity.this, MainActivity.class);
