@@ -35,17 +35,12 @@ public class DoctorScheduleActivity extends AppCompatActivity {
 
     private static final String TAG = "DoctorSchedule";
     private static final TimeZone VN_TIMEZONE = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
-
     private RecyclerView rvDoctors;
     private TextView tvTotalDoctors, tvActiveCount, tvEmpty, tvSelectedDate;
     private EditText etSearch;
-
     private DoctorScheduleAdapter adapter;
-
-    // Giữ fullList gốc để filter — giống pattern của ScheduleAdapter cũ
-    private final List<DoctorScheduleItem> fullList     = new ArrayList<>();
+    private final List<DoctorScheduleItem> fullList = new ArrayList<>();
     private final List<DoctorScheduleItem> filteredList = new ArrayList<>();
-
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
 
@@ -57,7 +52,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db    = FirebaseFirestore.getInstance();
 
-        // Giống MyScheduleActivity: kiểm tra đăng nhập
         if (mAuth.getCurrentUser() == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -75,8 +69,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
                 Toast.makeText(this, "Thêm ca làm mới", Toast.LENGTH_SHORT).show());
     }
 
-    // ==================== INIT ====================
-
     private void initViews() {
         rvDoctors       = findViewById(R.id.rvDoctors);
         tvTotalDoctors  = findViewById(R.id.tvTotalDoctors);
@@ -91,8 +83,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
         sdf.setTimeZone(VN_TIMEZONE);
         tvSelectedDate.setText(sdf.format(Calendar.getInstance(VN_TIMEZONE).getTime()));
     }
-
-    // ==================== RECYCLERVIEW ====================
 
     private void setupRecyclerView() {
         adapter = new DoctorScheduleAdapter(filteredList,
@@ -125,8 +115,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
         rvDoctors.setAdapter(adapter);
     }
 
-    // ==================== SEARCH ====================
-
     private void setupSearch() {
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int i, int i1, int i2) {}
@@ -157,12 +145,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
         tvEmpty.setVisibility(filteredList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    // ==================== LOAD DOCTORS TỪ FIRESTORE ====================
-
-    /**
-     * Bước 1: lấy tất cả users có role == "doctor"
-     * Bước 2: với mỗi doctor, đếm appointments hôm nay (giống loadTodaySchedule)
-     */
     private void loadDoctors() {
         String todayStr = getTodayString(); // "02/07/2026"
 
@@ -184,8 +166,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
                         DoctorScheduleItem item = new DoctorScheduleItem();
                         item.setUid(doc.getId());
 
-                        // Lấy tên — ưu tiên fullName, fallback sang name
-                        // (giống loadDoctorProfile trong MyScheduleActivity)
                         String fullName = doc.getString("fullName");
                         String name     = doc.getString("name");
                         item.setFullName(fullName != null ? fullName : name);
@@ -193,15 +173,12 @@ public class DoctorScheduleActivity extends AppCompatActivity {
                         item.setDept(doc.getString("dept"));
                         item.setAvatarUrl(doc.getString("avatarUrl"));
 
-                        // Status từ Firestore: "Sẵn sàng" / "On Leave" / khác
                         String rawStatus = doc.getString("status");
                         item.setStatus(rawStatus != null ? rawStatus : "Off Duty");
 
-                        // Mặc định 17 slot (khớp với timeSlots[] trong MyScheduleActivity)
-                        item.setTotalSlots(17);
-                        item.setTimeSlot("08:00 - 17:00");
+                        item.setTotalSlots(6);
+                        item.setTimeSlot("08:00 - 16:00");
 
-                        // Đếm appointments hôm nay của bác sĩ này
                         final String doctorId = doc.getId();
                         db.collection("appointments")
                                 .whereEqualTo("doctorId", doctorId)
@@ -210,7 +187,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
                                     int countToday = 0;
                                     for (QueryDocumentSnapshot appt : apptSnap) {
                                         String date = appt.getString("date");
-                                        // filter client-side giống loadTodaySchedule
                                         if (date != null && date.contains(todayStr)) {
                                             countToday++;
                                         }
@@ -238,7 +214,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
                 });
     }
 
-    /** Sắp xếp: Sẵn sàng → On Leave → Off Duty */
     private void sortAndRefreshUI() {
         fullList.sort((a, b) ->
                 Integer.compare(statusRank(a.getStatus()), statusRank(b.getStatus())));
@@ -267,11 +242,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
         tvEmpty.setVisibility(filteredList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    // ==================== CẬP NHẬT TRẠNG THÁI ====================
-
-    /**
-     * Cập nhật status lên Firestore — giống saveScheduleSlots() trong MyScheduleActivity
-     */
     private void updateStatusOnFirestore(DoctorScheduleItem item,
                                          String newStatus, int position) {
         db.collection("users").document(item.getUid())
@@ -280,7 +250,6 @@ public class DoctorScheduleActivity extends AppCompatActivity {
                     item.setStatus(newStatus);
                     adapter.notifyItemChanged(position);
 
-                    // Cập nhật lại số bác sĩ đang hoạt động
                     int activeDocs = 0;
                     for (DoctorScheduleItem d : fullList) {
                         if ("Sẵn sàng".equals(d.getStatus())) activeDocs++;
@@ -296,16 +265,11 @@ public class DoctorScheduleActivity extends AppCompatActivity {
                 });
     }
 
-    // ==================== HELPER ====================
-
-    /** Trả về "dd/MM/yyyy" theo giờ VN — giống getTodayDateString trong AdminOverviewActivity */
     private String getTodayString() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         sdf.setTimeZone(VN_TIMEZONE);
         return sdf.format(Calendar.getInstance(VN_TIMEZONE).getTime());
     }
-
-    // ==================== BOTTOM NAVIGATION ====================
 
     private void setupBottomNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -323,7 +287,7 @@ public class DoctorScheduleActivity extends AppCompatActivity {
                 return true;
             }
             else if (id == R.id.nav_doctors) {
-                return true; // Đang ở trang Lịch Bác sĩ rồi, không làm gì cả
+                return true;
             }
             else if (id == R.id.nav_logout) {
                 mAuth.signOut();
