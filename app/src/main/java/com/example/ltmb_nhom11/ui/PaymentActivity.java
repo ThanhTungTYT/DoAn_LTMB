@@ -135,8 +135,7 @@ public class PaymentActivity extends AppCompatActivity {
 
         ((TextView)findViewById(R.id.tvPayDateTime)).setText(dt);
 
-        int realPrice = getIntent().getIntExtra("price", (int) DEPOSIT);
-        String formatted = formatPrice(realPrice);
+        String formatted = formatPrice(DEPOSIT);
 
         ((TextView)findViewById(R.id.tvPayTotal)).setText(formatted);
         ((TextView)findViewById(R.id.tvPayTotalBottom)).setText(formatted);
