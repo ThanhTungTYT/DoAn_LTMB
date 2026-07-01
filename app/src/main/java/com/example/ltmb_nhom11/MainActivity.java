@@ -78,16 +78,16 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> tvUserName.setText("Bệnh nhân 👋"));
 
-        // Lấy lịch sắp tới đổ lên thẻ trên cùng
+
         loadUpcomingAppointment(currentUser.getUid());
 
         ImageView imgMapPreview = findViewById(R.id.imgMapPreview);
         ImageLoader.load(MAP_PREVIEW_URL, imgMapPreview);
 
-        // Nạp lưới lịch ô vuông
+
         setupDynamicCalendar();
 
-        // CHUYỂN SANG TÌM BÁC SĨ (ĐẶT LỊCH)
+
         LinearLayout btnQuickBook = findViewById(R.id.btnQuickBook);
         btnQuickBook.setOnClickListener(v -> navigateToAppointments());
 
@@ -97,21 +97,22 @@ public class MainActivity extends AppCompatActivity {
             navigateToAppointments();
         });
 
-        // CHUYỂN SANG LỊCH SỬ KHÁM (HISTORY)
+
         TextView btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
         btnViewAllAppointments.setOnClickListener(v -> navigateToAppointmentHistory());
 
         LinearLayout navAppointments = findViewById(R.id.navAppointments);
-        navAppointments.setOnClickListener(v -> navigateToAppointmentHistory());
 
-        // CHUYỂN SANG CHỈ ĐƯỜNG (MAP)
+        navAppointments.setOnClickListener(v -> navigateToAppointments());
+
+
         LinearLayout cardLocation = findViewById(R.id.cardLocation);
         cardLocation.setOnClickListener(v -> navigateToDirections());
 
         TextView btnOpenDirections = findViewById(R.id.btnOpenDirections);
         btnOpenDirections.setOnClickListener(v -> navigateToDirections());
 
-        // CHUYỂN SANG CÁC TRANG KHÁC TỪ BOTTOM NAV
+
         LinearLayout navHome = findViewById(R.id.navHome);
         navHome.setOnClickListener(v -> {});
 
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         navProfile.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
     }
 
-    // --- CÁC HÀM ĐIỀU HƯỚNG ---
+
     private void navigateToDirections() {
         Intent intent = new Intent(MainActivity.this, DirectionsActivity.class);
         startActivity(intent);
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // --- LOGIC LỊCH Ô VUÔNG ---
+
     private void setupDynamicCalendar() {
         currentMonth = Calendar.getInstance();
 
