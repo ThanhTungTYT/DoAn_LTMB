@@ -45,8 +45,9 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@drawable/ic_bell"
+            android:visibility="gone"
             android:contentDescription="Notifications" />
-        android:visibility="gone"
+
     </LinearLayout>
 
     <!-- Scrollable main body details to fit both screen heights -->
