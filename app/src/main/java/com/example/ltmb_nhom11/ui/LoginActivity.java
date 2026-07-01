@@ -126,7 +126,6 @@ public class LoginActivity extends AppCompatActivity {
 
     if (hasError) return;
 
-    // Loại bỏ mọi ký tự không phải số
     String phoneInput = phoneRaw.replaceAll("[^0-9]", "");
 
     btnLogin.setEnabled(false);

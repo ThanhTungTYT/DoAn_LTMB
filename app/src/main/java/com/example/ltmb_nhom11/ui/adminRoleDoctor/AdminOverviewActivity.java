@@ -36,18 +36,14 @@ public class AdminOverviewActivity extends AppCompatActivity {
 
     private static final String TAG = "AdminOverview";
     private static final TimeZone VN_TIMEZONE = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
-
     private ImageButton btnMenu;
     private RecyclerView rvSchedule;
     private TextView tvEmptySchedule;
     private ScheduleAdapter scheduleAdapter;
     private final List<PatientSchedule> scheduleList = new ArrayList<>();
-
     private FloatingActionButton fabAdd;
     private BottomNavigationView bottomNavigation;
-
     private TextView tvAppointmentsValue, tvPatientsValue, tvRevenueValue;
-
     private FirebaseFirestore db;
 
     @Override
@@ -66,8 +62,6 @@ public class AdminOverviewActivity extends AppCompatActivity {
         setupActions();
         setupBottomNavigation();
     }
-
-    // ==================== INIT ====================
 
     private void initViews() {
         btnMenu = findViewById(R.id.btnMenu);
@@ -88,8 +82,6 @@ public class AdminOverviewActivity extends AppCompatActivity {
                 Toast.makeText(this, "Đang mở Sidebar Menu", Toast.LENGTH_SHORT).show());
     }
 
-    // ==================== SCHEDULE (APPOINTMENTS HÔM NAY) ====================
-
     private void setupScheduleRecyclerView() {
         scheduleAdapter = new ScheduleAdapter(scheduleList, (item, position) ->
                 Toast.makeText(this, "Chi tiết: " + item.getName(), Toast.LENGTH_SHORT).show());
@@ -97,10 +89,6 @@ public class AdminOverviewActivity extends AppCompatActivity {
         rvSchedule.setAdapter(scheduleAdapter);
     }
 
-    /**
-     * Build chuỗi date khớp đúng với format Firestore: "T5, 02/07/2026"
-     * Set timezone Asia/Ho_Chi_Minh để tránh lệch ngày
-     */
     private String getTodayDateString() {
         Calendar cal = Calendar.getInstance(VN_TIMEZONE);
 
@@ -116,18 +104,13 @@ public class AdminOverviewActivity extends AppCompatActivity {
     }
 
     private void loadTodaySchedule() {
-        // Chỉ lấy phần ngày tháng năm thuần túy, không lấy tên thứ
-        // để tránh mismatch ký tự ngày (T4/T5/CN...)
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         sdf.setTimeZone(VN_TIMEZONE);
         String todayDDMMYYYY = sdf.format(Calendar.getInstance(VN_TIMEZONE).getTime());
 
-        // In ra để kiểm tra trực tiếp trên thiết bị
         Log.d(TAG, "Querying appointments with date containing: " + todayDDMMYYYY);
         Toast.makeText(this, "Tìm lịch ngày: " + todayDDMMYYYY, Toast.LENGTH_LONG).show();
 
-        // Lấy tất cả appointments, filter client-side theo "dd/MM/yyyy"
-        // Tránh hoàn toàn lỗi mismatch chuỗi tên thứ
         db.collection("appointments")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -136,7 +119,6 @@ public class AdminOverviewActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         String date = doc.getString("date"); // "T5, 02/07/2026"
 
-                        // Bỏ qua nếu date null hoặc không chứa "dd/MM/yyyy" hôm nay
                         if (date == null || !date.contains(todayDDMMYYYY)) continue;
 
                         String id = doc.getId();
@@ -179,12 +161,6 @@ public class AdminOverviewActivity extends AppCompatActivity {
                 });
     }
 
-    // ==================== SỐ BỆNH NHÂN MỚI HÔM NAY ====================
-
-    /**
-     * Đếm số user có role == "user" được tạo trong ngày hôm nay (theo giờ VN).
-     * createdAt lưu dạng timestamp milliseconds (long).
-     */
     private void loadNewPatientsToday() {
         Calendar startOfDay = Calendar.getInstance(VN_TIMEZONE);
         startOfDay.set(Calendar.HOUR_OF_DAY, 0);
@@ -220,12 +196,6 @@ public class AdminOverviewActivity extends AppCompatActivity {
                 });
     }
 
-    // ==================== DOANH THU THÁNG HIỆN TẠI ====================
-
-    /**
-     * Tổng price của appointments có status == "upcoming"
-     * và date thuộc tháng/năm hiện tại (lọc theo chuỗi "MM/yyyy" trong field date).
-     */
     private void loadMonthlyRevenue() {
         Calendar cal = Calendar.getInstance(VN_TIMEZONE);
 
@@ -262,11 +232,6 @@ public class AdminOverviewActivity extends AppCompatActivity {
                 });
     }
 
-    // ==================== HELPERS ====================
-
-    /**
-     * Format tiền VNĐ: 200000 → "200,000 VNĐ"
-     */
     private String formatCurrency(long amount) {
         NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
         return nf.format(amount) + " VNĐ";
@@ -306,8 +271,6 @@ public class AdminOverviewActivity extends AppCompatActivity {
         }
     }
 
-    // ==================== ACTIONS & NAVIGATION ====================
-
     private void setupActions() {
         fabAdd.setOnClickListener(v ->
                 Toast.makeText(this, "Thêm cuộc hẹn mới", Toast.LENGTH_SHORT).show());
@@ -325,13 +288,12 @@ public class AdminOverviewActivity extends AppCompatActivity {
             else if (id == R.id.nav_doctors) {
                 Intent intent = new Intent(this, DoctorScheduleActivity.class);
                 startActivity(intent);
-                overridePendingTransition(0, 0); // Chuyển trang không hiệu ứng giật lag
+                overridePendingTransition(0, 0);
                 return true;
             }
             else if (id == R.id.nav_logout) {
                 FirebaseAuth.getInstance().signOut();
 
-                // Điều hướng về màn hình Đăng nhập và xóa sạch lịch sử các trang trước
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

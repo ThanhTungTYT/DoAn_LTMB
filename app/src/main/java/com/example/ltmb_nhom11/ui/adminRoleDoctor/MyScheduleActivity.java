@@ -45,18 +45,14 @@ public class MyScheduleActivity extends AppCompatActivity {
 
     private static final String TAG = "MyScheduleActivity";
     private static final TimeZone VN_TIMEZONE = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
-
     private final String[] timeSlots = {
             "08:00", "09:00", "10:00",
             "14:00", "15:00", "16:00"
     };
-
     private final String[] slotKeys = {
             "slot_08_00", "slot_09_00", "slot_10_00",
             "slot_14_00", "slot_15_00", "slot_16_00"
     };
-
-    // ===== Views =====
     private LinearLayout containerSlots;
     private final Map<String, SwitchCompat> switchMap = new HashMap<>();
     private Button btnSave;
@@ -64,29 +60,18 @@ public class MyScheduleActivity extends AppCompatActivity {
     private TextView tvDoctorName, tvTitle, tvViewAll, tvScheduleDate;
     private ImageView imgAvatar;
     private CoordinatorLayout rootLayout;
-
-    // ===== Upcoming Appointments =====
     private RecyclerView rvUpcomingAppointments;
     private TextView tvNoAppointments;
     private final List<AppointmentItem> appointmentList = new ArrayList<>();
     private UpcomingAdapter upcomingAdapter;
-
-    // ===== Firebase =====
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private String currentDoctorUid;
-
     private final List<Calendar> clickableDays = new ArrayList<>();
     private int selectedDayIndex = 0;
-
-    // ==================== MODEL NỘI BỘ ====================
-
     static class AppointmentItem {
         String time, ampm, userId, type, status, appointmentId;
     }
-
-    // ==================== ADAPTER NỘI BỘ ====================
-
     class UpcomingAdapter extends RecyclerView.Adapter<UpcomingAdapter.VH> {
         private final List<AppointmentItem> items;
 
@@ -110,7 +95,6 @@ public class MyScheduleActivity extends AppCompatActivity {
             h.tvAmPm.setText(item.ampm);
             h.tvType.setText(item.type != null ? capitalize(item.type) : "Khám");
 
-            // Load tên bệnh nhân từ userId
             if (item.userId != null) {
                 db.collection("users").document(item.userId).get()
                         .addOnSuccessListener(doc -> {
@@ -128,7 +112,6 @@ public class MyScheduleActivity extends AppCompatActivity {
                 h.tvPatientName.setText("Bệnh nhân");
             }
 
-            // Badge trạng thái
             h.tvStatus.setText(getStatusLabel(item.status));
             int[] colors = getStatusColors(item.status);
             GradientDrawable bg = new GradientDrawable();
@@ -156,8 +139,6 @@ public class MyScheduleActivity extends AppCompatActivity {
             }
         }
     }
-
-    // ==================== LIFECYCLE ====================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,7 +173,7 @@ public class MyScheduleActivity extends AppCompatActivity {
             if (selectedDayIndex > 0) {
                 selectedDayIndex--;
                 updateScheduleDateLabel();
-                generateSlotViews();   // Rebuild để áp dụng trạng thái CN
+                generateSlotViews();
                 loadScheduleSlots();
             } else {
                 Toast.makeText(this, "Không thể xem lịch của quá khứ!", Toast.LENGTH_SHORT).show();
@@ -203,7 +184,7 @@ public class MyScheduleActivity extends AppCompatActivity {
             if (selectedDayIndex < clickableDays.size() - 1) {
                 selectedDayIndex++;
                 updateScheduleDateLabel();
-                generateSlotViews();   // Rebuild để áp dụng trạng thái CN
+                generateSlotViews();
                 loadScheduleSlots();
             } else {
                 Toast.makeText(this, "Chỉ có thể cấu hình lịch trước 6 ngày!", Toast.LENGTH_SHORT).show();
@@ -212,8 +193,6 @@ public class MyScheduleActivity extends AppCompatActivity {
 
         setupBottomNavigation();
     }
-
-    // ==================== INIT ====================
 
     private void initViews() {
         rootLayout             = findViewById(R.id.rootLayout);
@@ -237,14 +216,10 @@ public class MyScheduleActivity extends AppCompatActivity {
         rvUpcomingAppointments.setAdapter(upcomingAdapter);
     }
 
-    // ==================== KIỂM TRA CHỦ NHẬT ====================
-
     private boolean isSelectedDaySunday() {
         Calendar selectedCal = clickableDays.get(selectedDayIndex);
         return selectedCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
     }
-
-    // ==================== UPCOMING APPOINTMENTS ====================
 
     private void loadUpcomingAppointments() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -266,13 +241,10 @@ public class MyScheduleActivity extends AppCompatActivity {
                         String time   = doc.getString("time");
                         String status = doc.getString("status");
 
-                        // Lọc: đúng ngày hôm nay
                         if (date == null || !date.contains(todayStr)) continue;
 
-                        // Lọc: sau giờ hiện tại
                         if (time == null || time.compareTo(currentTime) <= 0) continue;
 
-                        // Lọc: bỏ cancelled và completed
                         if ("cancelled".equalsIgnoreCase(status)
                                 || "completed".equalsIgnoreCase(status)) continue;
 
@@ -303,8 +275,6 @@ public class MyScheduleActivity extends AppCompatActivity {
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Không tải được lịch hẹn.", Toast.LENGTH_SHORT).show());
     }
-
-    // ==================== SLOT VIEWS ====================
 
     private void updateSlotUI(boolean isChecked, TextView tvStatus, TextView tvDesc) {
         if (isChecked) {
@@ -340,7 +310,6 @@ public class MyScheduleActivity extends AppCompatActivity {
             tvTime.setText(timeLabel);
 
             if (isSunday) {
-                // Chủ nhật: luôn tắt, không cho bật
                 sw.setChecked(false);
                 sw.setEnabled(false);
                 sw.setAlpha(0.4f);
@@ -360,8 +329,6 @@ public class MyScheduleActivity extends AppCompatActivity {
             containerSlots.addView(slotView);
         }
     }
-
-    // ==================== CALENDAR ====================
 
     private void generateClickableDays() {
         clickableDays.clear();
@@ -409,8 +376,6 @@ public class MyScheduleActivity extends AppCompatActivity {
         }
     }
 
-    // ==================== FIREBASE ====================
-
     private void loadDoctorProfile() {
         db.collection("users").document(currentDoctorUid).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -442,7 +407,6 @@ public class MyScheduleActivity extends AppCompatActivity {
     }
 
     private void loadScheduleSlots() {
-        // Chủ nhật: không load, giữ trạng thái đã khóa
         if (isSelectedDaySunday()) return;
 
         String dateId = getTargetDateId();
@@ -476,7 +440,6 @@ public class MyScheduleActivity extends AppCompatActivity {
     }
 
     private void saveScheduleSlots() {
-        // Chặn lưu ngày Chủ Nhật
         if (isSelectedDaySunday()) {
             Toast.makeText(this, "Không thể lưu lịch ngày Chủ Nhật!", Toast.LENGTH_SHORT).show();
             return;
@@ -500,8 +463,6 @@ public class MyScheduleActivity extends AppCompatActivity {
                     showRetrySnackbar("Lưu thất bại.", this::saveScheduleSlots);
                 });
     }
-
-    // ==================== HELPERS ====================
 
     private boolean parseBooleanValue(Object value) {
         if (value instanceof Boolean) return (Boolean) value;
@@ -543,8 +504,6 @@ public class MyScheduleActivity extends AppCompatActivity {
                 return new int[]{Color.parseColor("#D1E4FF"), Color.parseColor("#1565C0")};
         }
     }
-
-    // ==================== BOTTOM NAVIGATION ====================
 
     private void setupBottomNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
