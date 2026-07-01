@@ -46,6 +46,7 @@
             android:padding="8dp"
             android:src="@drawable/ic_bell"
             android:contentDescription="Notifications" />
+        android:visibility="gone"
     </LinearLayout>
 
     <!-- Scrollable main body details to fit both screen heights -->

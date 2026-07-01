@@ -84,7 +84,7 @@ public class DoctorSearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
 
                 searchRunnable = () -> filterDoctors(s.toString());
-                searchHandler.postDelayed(searchRunnable, 400);
+                searchHandler.postDelayed(searchRunnable, 800);
             }
         });
     }
