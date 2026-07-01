@@ -38,8 +38,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
         setupPasswordToggle(edtNewPassword, findViewById(R.id.btnToggleNew));
         setupPasswordToggle(edtConfirmPassword, findViewById(R.id.btnToggleConfirm));
     }
-
-    /** Ẩn/hiện mật khẩu cho 1 ô (tái dùng cách dat làm ở Đăng nhập/Đăng ký). */
     private void setupPasswordToggle(EditText edt, ImageButton btn) {
         btn.setOnClickListener(v -> {
             boolean hidden = edt.getInputType()
@@ -60,7 +58,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
         String newPass = edtNewPassword.getText().toString().trim();
         String confirmPass = edtConfirmPassword.getText().toString().trim();
 
-        // ===== Validation =====
         if (oldPass.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return;
@@ -86,7 +83,6 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         btnChangePassword.setEnabled(false);
 
-        // ===== Xác thực lại mật khẩu cũ rồi mới đổi =====
         AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), oldPass);
         user.reauthenticate(credential)
                 .addOnSuccessListener(unused -> user.updatePassword(newPass)
