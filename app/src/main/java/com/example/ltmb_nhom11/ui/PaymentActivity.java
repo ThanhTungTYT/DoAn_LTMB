@@ -44,15 +44,14 @@ import okhttp3.Response;
 
 public class PaymentActivity extends AppCompatActivity {
 
-    // Tài khoản nhận tiền (VietQR)
     private static final String BANK_ID = "mbbank";
     private static final String ACCOUNT_NO = "0933652267";
     private static final String ACCOUNT_NAME = "NGUYEN HUY BAO";
     private static final long DEPOSIT = 200000;
 
     private static final String SEPAY_API = "https://my.sepay.vn/userapi/transactions/list?limit=20";
-    private static final long POLL_INTERVAL_MS = 3000;   // 3s/lần
-    private static final long POLL_TIMEOUT_MS = 30000;   // tối đa 30s
+    private static final long POLL_INTERVAL_MS = 3000;
+    private static final long POLL_TIMEOUT_MS = 30000;
 
     private ImageButton btnBackPayment;
     private MaterialCardView cardPayDirect, cardPayBank;
@@ -83,8 +82,6 @@ public class PaymentActivity extends AppCompatActivity {
         buildQr();
 
         btnBackPayment.setOnClickListener(v -> finish());
-        findViewById(R.id.btnNotificationsPayment).setOnClickListener(v ->
-                Toast.makeText(this, "Không có thông báo mới", Toast.LENGTH_SHORT).show());
 
         cardPayDirect.setOnClickListener(v -> selectDirect());
         radioDirect.setOnClickListener(v -> selectDirect());
@@ -130,7 +127,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void buildQr() {
         tvQrContent.setText(transferCode);
-        imgQr.setImageTintList(null); // bỏ tint xám của ảnh placeholder
+        imgQr.setImageTintList(null);
 
         String url = "https://img.vietqr.io/image/" + BANK_ID + "-" + ACCOUNT_NO + "-compact2.png"
                 + "?amount=" + DEPOSIT
@@ -203,8 +200,6 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
 
-    // ===== SePay: tự kiểm tra liên tục tối đa 30s =====
-
     private void startSepayPolling() {
         if (BuildConfig.SEPAY_TOKEN == null || BuildConfig.SEPAY_TOKEN.isEmpty()) {
             Toast.makeText(this, "Chưa cấu hình SEPAY_TOKEN trong local.properties", Toast.LENGTH_LONG).show();
@@ -228,7 +223,6 @@ public class PaymentActivity extends AppCompatActivity {
         httpClient.newCall(req).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                // Lỗi mạng tạm thời -> cứ thử lại đến khi hết 30s
                 runOnUiThread(PaymentActivity.this::scheduleNextOrTimeout);
             }
 
@@ -304,7 +298,7 @@ public class PaymentActivity extends AppCompatActivity {
 
         checkingDialog = new AlertDialog.Builder(this)
                 .setView(layout)
-                .setCancelable(false)   // bấm back không tắt được -> chặn thoát
+                .setCancelable(false)
                 .create();
         checkingDialog.setCanceledOnTouchOutside(false);
         checkingDialog.show();

@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class DoctorDetailActivity extends AppCompatActivity {
 
-    private ImageButton btnBack, btnNotifications;
+    private ImageButton btnBack;
     private RecyclerView rvCalendarDates;
     private Button btnTime0800, btnTime0830, btnTime0900;
     private Button btnTime1400, btnTime1500, btnTime1630;
@@ -45,19 +45,11 @@ public class DoctorDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_detail);
 
-        // Khởi tạo views
         initViews();
-
-        // Cập nhật cấu hình lịch chọn ngày cuộn ngang
         setupCalendarRecyclerView();
-
-        // Đăng ký tương tác sự kiện click các Slot Giờ & Đặt lịch
         setupTimeSlotInteractions();
-
-        // Xử lý sự kiện nút back & đặt lịch chính thức
         btnBack.setOnClickListener(v -> finish());
 
-        // Nhận thông tin bác sĩ từ màn Tìm bác sĩ (nếu có) và hiển thị lên tiêu đề
         String incomingDoctor = getIntent().getStringExtra("doctorName");
         if (incomingDoctor != null) {
             doctorName = incomingDoctor;
@@ -65,13 +57,11 @@ public class DoctorDetailActivity extends AppCompatActivity {
             if (txtDoctorName != null) txtDoctorName.setText(doctorName);
         }
 
-        // Lấy thông tin bác sĩ thật từ Firestore theo uid được truyền sang
         doctorId = getIntent().getStringExtra("doctorUid");
         if (doctorId == null) doctorId = "";
         loadDoctorInfo();
 
         btnBook.setOnClickListener(v -> {
-            // Chuyển hướng sang màn hình Thanh Toán (PaymentActivity), kèm dữ liệu đã chọn
             Intent intent = new Intent(DoctorDetailActivity.this, PaymentActivity.class);
             intent.putExtra("doctorId", doctorId);
             intent.putExtra("doctorName", doctorName);
@@ -81,7 +71,6 @@ public class DoctorDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Thông tin người dùng (bệnh nhân) + nút Thay đổi -> màn Cá nhân
         loadPatientInfo();
         findViewById(R.id.btnChangePatient).setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class)));
@@ -131,10 +120,8 @@ public class DoctorDetailActivity extends AppCompatActivity {
 
     private void initViews() {
         btnBack = findViewById(R.id.btnBack);
-        btnNotifications = findViewById(R.id.btnNotifications);
         rvCalendarDates = findViewById(R.id.rvCalendarDates);
 
-        // Buttons Khung giờ
         btnTime0800 = findViewById(R.id.btnTime0800);
         btnTime0830 = findViewById(R.id.btnTime0830);
         btnTime0900 = findViewById(R.id.btnTime0900);
@@ -149,13 +136,12 @@ public class DoctorDetailActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         rvCalendarDates.setLayoutManager(layoutManager);
 
-        // Sinh 14 ngày bắt đầu từ NGÀY MAI; Chủ nhật không cho chọn
         List<CalendarDate> dateList = new ArrayList<>();
-        String[] vnDays = {"CN", "T2", "T3", "T4", "T5", "T6", "T7"}; // index = DAY_OF_WEEK - 1
+        String[] vnDays = {"CN", "T2", "T3", "T4", "T5", "T6", "T7"};
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_MONTH, 1); // bắt đầu từ ngày mai
+        cal.add(Calendar.DAY_OF_MONTH, 1);
         for (int i = 0; i < 14; i++) {
             int dow = cal.get(Calendar.DAY_OF_WEEK);
             String dayName = vnDays[dow - 1];
@@ -166,7 +152,6 @@ public class DoctorDetailActivity extends AppCompatActivity {
             cal.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        // Mặc định chọn ngày đầu tiên có thể đặt
         for (CalendarDate d : dateList) {
             if (d.isSelectable()) {
                 selectedDate = d.getDayName() + ", " + d.getFullDate();
@@ -182,7 +167,6 @@ public class DoctorDetailActivity extends AppCompatActivity {
     private void setupTimeSlotInteractions() {
         View.OnClickListener timeSlotListener = view -> {
             Button clickedBtn = (Button) view;
-            // Bỏ tô nút đã chọn trước đó, rồi tô nút mới
             if (selectedTimeButton != null && selectedTimeButton != clickedBtn) {
                 styleTimeSlot(selectedTimeButton, false);
             }
@@ -198,12 +182,10 @@ public class DoctorDetailActivity extends AppCompatActivity {
         btnTime1500.setOnClickListener(timeSlotListener);
         btnTime1630.setOnClickListener(timeSlotListener);
 
-        // Mặc định tô sẵn khung 08:00
         styleTimeSlot(btnTime0800, true);
         selectedTimeButton = btnTime0800;
     }
 
-    /** Tô màu (selected=true) hoặc trả về mặc định (false) cho một nút khung giờ. */
     private void styleTimeSlot(Button button, boolean selected) {
         int bgColor = selected ? Color.parseColor("#00685F") : Color.parseColor("#F1F5F9");
         int textColor = selected ? Color.WHITE : Color.parseColor("#0B1C30");
@@ -211,7 +193,6 @@ public class DoctorDetailActivity extends AppCompatActivity {
 
         button.setBackgroundTintList(ColorStateList.valueOf(bgColor));
         button.setTextColor(textColor);
-        // Đổi cả viền để nút bỏ chọn không còn giữ viền teal
         if (button instanceof MaterialButton) {
             ((MaterialButton) button).setStrokeColor(ColorStateList.valueOf(strokeColor));
         }

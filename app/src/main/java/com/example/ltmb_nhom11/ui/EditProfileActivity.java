@@ -81,7 +81,6 @@ public class EditProfileActivity extends AppCompatActivity {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Nếu đã có ngày sinh thì mở lịch ngay tại ngày đó
         String current = edtDob.getText().toString().trim();
         if (current.matches("^\\d{2}/\\d{2}/\\d{4}$")) {
             String[] parts = current.split("/");

@@ -38,7 +38,7 @@ import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    private ImageButton btnMenuHistory, btnNotificationsHistory;
+    private ImageButton btnMenuHistory;
     private MaterialCardView chipAll, chipUpcoming, chipDone;
     private FloatingActionButton fabAddAppointment;
     private RecyclerView rvAppointments;
@@ -54,7 +54,6 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
         btnMenuHistory = findViewById(R.id.btnMenuHistory);
-        btnNotificationsHistory = findViewById(R.id.btnNotificationsHistory);
         chipAll = findViewById(R.id.chipAll);
         chipUpcoming = findViewById(R.id.chipUpcoming);
         chipDone = findViewById(R.id.chipDone);
@@ -62,31 +61,23 @@ public class HistoryActivity extends AppCompatActivity {
         rvAppointments = findViewById(R.id.rvAppointments);
         tvEmpty = findViewById(R.id.tvEmpty);
 
-        // RecyclerView + adapter
         rvAppointments.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AppointmentAdapter();
         adapter.setOnCancelClickListener(this::confirmCancel);
         rvAppointments.setAdapter(adapter);
 
-        // Sự kiện lọc
         chipAll.setOnClickListener(v -> handleFilterTabChange("Tất cả", chipAll));
         chipUpcoming.setOnClickListener(v -> handleFilterTabChange("Sắp tới", chipUpcoming));
         chipDone.setOnClickListener(v -> handleFilterTabChange("Đã xong", chipDone));
 
-        // FAB -> mở màn tìm bác sĩ để đặt lịch mới
         fabAddAppointment.setOnClickListener(v ->
                 startActivity(new Intent(HistoryActivity.this, DoctorSearchActivity.class)));
 
-        // Nút back (sau này màn này vào từ Profile)
         btnMenuHistory.setOnClickListener(v -> finish());
-
-        btnNotificationsHistory.setOnClickListener(v ->
-                Toast.makeText(this, "Không có thông báo mới", Toast.LENGTH_SHORT).show());
 
         setupBottomNav();
     }
 
-    /** Thanh điều hướng dưới — đồng bộ hành vi với Trang chủ. */
     private void setupBottomNav() {
         LinearLayout navHome = findViewById(R.id.navHome);
         LinearLayout navAppointments = findViewById(R.id.navAppointments);
@@ -97,9 +88,9 @@ public class HistoryActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
-        navAppointments.setOnClickListener(v -> { /* đang ở màn lịch hẹn */ });
-        navPackages.setOnClickListener(v ->
-                Toast.makeText(this, "Chức năng Gói khám đang được xây dựng!", Toast.LENGTH_SHORT).show());
+        navAppointments.setOnClickListener(v -> { });
+        navPackages.setOnClickListener( v ->
+                startActivity(new Intent(this, PackageActivity.class)));
         navProfile.setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class)));
     }
@@ -107,7 +98,7 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        loadAppointments(); // tải lại mỗi khi quay về để thấy lịch mới đặt
+        loadAppointments();
     }
 
     private void loadAppointments() {
@@ -130,7 +121,6 @@ public class HistoryActivity extends AppCompatActivity {
 
     private static final String SUPPORT_PHONE = "0933652267";
 
-    /** Hộp thoại xác nhận hủy lịch, có số điện thoại hỗ trợ bấm để sao chép. */
     private void confirmCancel(@NonNull Appointment a) {
         String prefix = "Bạn có chắc muốn hủy đặt lịch?\n\nNếu đã đặt cọc trước, hãy liên hệ với chúng tôi qua số điện thoại ";
         String suffix = " để được hỗ trợ hoàn trả.";
@@ -191,7 +181,6 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
-    /** Lọc danh sách theo chip đang chọn rồi đổ vào RecyclerView. */
     private void applyFilter() {
         List<Appointment> filtered = new ArrayList<>();
         for (Appointment a : allAppointments) {
@@ -203,7 +192,7 @@ public class HistoryActivity extends AppCompatActivity {
                 case "Đã xong":
                     if ("done".equals(status)) filtered.add(a);
                     break;
-                default: // "Tất cả"
+                default:
                     filtered.add(a);
             }
         }
@@ -225,7 +214,7 @@ public class HistoryActivity extends AppCompatActivity {
         int white = getResources().getColor(android.R.color.white);
         int darkText = Color.parseColor("#3D4947");
         int strokeGray = Color.parseColor("#BCC9C6");
-        int strokePx = Math.round(getResources().getDisplayMetrics().density); // 1dp
+        int strokePx = Math.round(getResources().getDisplayMetrics().density);
 
         for (MaterialCardView chip : new MaterialCardView[]{chipAll, chipUpcoming, chipDone}) {
             chip.setCardBackgroundColor(white);

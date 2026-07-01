@@ -45,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        loadUserInfo(); // refresh để hiện thông tin mới sau khi sửa
+        loadUserInfo();
     }
 
     private void setupBottomNav() {
@@ -63,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(i);
             finish();
         });
-        findViewById(R.id.navProfile).setOnClickListener(v -> { /* đang ở màn Cá nhân */ });
+        findViewById(R.id.navProfile).setOnClickListener(v -> { });
     }
 
     private void loadUserInfo() {
