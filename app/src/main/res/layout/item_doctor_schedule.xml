@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Row 1: Avatar + Name/Dept + Edit -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:id="@+id/imgDoctorAvatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerVertical="true"
+                android:contentDescription="avatar"
+                android:src="@android:drawable/ic_menu_myplaces" />
+
+            <LinearLayout
+                android:id="@+id/llDoctorInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/imgDoctorAvatar"
+                android:layout_toStartOf="@id/btnEdit"
+                android:layout_marginStart="12dp"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvDoctorName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dr. Name"
+                    android:textColor="#1A1A2E"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDoctorDept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DEPARTMENT"
+                    android:textColor="#9AA0A6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="edit"
+                android:src="@android:drawable/ic_menu_edit"
+                app:tint="@color/primary" />
+        </RelativeLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F0F0F0"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Row 2: Status dot + Status + Time slot -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/viewStatusDot"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/bg_status_dot"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTimeSlot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="08:00 - 17:00"
+                android:textColor="#9AA0A6"
+                android:textSize="12sp" />
+        </RelativeLayout>
+
+        <!-- Leave note -->
+        <TextView
+            android:id="@+id/tvLeaveNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#9AA0A6"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
+        <!-- Progress row -->
+        <RelativeLayout
+            android:id="@+id/llProgressRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvProgressLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Appointments"
+                android:textColor="#9AA0A6"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvProgressPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="0/17"
+                android:textColor="#1A1A2E"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <!-- Progress bar -->
+        <ProgressBar
+            android:id="@+id/progressDoctor"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginBottom="12dp"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/bg_progress_doctor"
+            android:visibility="gone" />
+
+        <!-- Action Button -->
+        <Button
+            android:id="@+id/btnAction"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="MARK LEAVE"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:background="@drawable/bg_btn_outline"
+            android:textColor="@color/primary" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

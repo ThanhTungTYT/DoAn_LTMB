@@ -1,5 +1,6 @@
 package com.example.ltmb_nhom11.ui.adminRoleDoctor;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.model.PatientSchedule;
 import com.example.ltmb_nhom11.model.ScheduleAdapter;
+import com.example.ltmb_nhom11.ui.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -311,18 +314,28 @@ public class AdminOverviewActivity extends AppCompatActivity {
     }
 
     private void setupBottomNavigation() {
+        bottomNavigation.setSelectedItemId(R.id.nav_dashboard);
+
         bottomNavigation.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_home) {
+
+            if (id == R.id.nav_dashboard) {
                 return true;
-            } else if (id == R.id.navAppointments) {
-                Toast.makeText(this, "Chuyển tới Appointments", Toast.LENGTH_SHORT).show();
+            }
+            else if (id == R.id.nav_doctors) {
+                Intent intent = new Intent(this, DoctorScheduleActivity.class);
+                startActivity(intent);
+                overridePendingTransition(0, 0); // Chuyển trang không hiệu ứng giật lag
                 return true;
-            } else if (id == R.id.navPackages) {
-                Toast.makeText(this, "Chuyển tới Packages", Toast.LENGTH_SHORT).show();
-                return true;
-            } else if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Chuyển tới Profile", Toast.LENGTH_SHORT).show();
+            }
+            else if (id == R.id.nav_logout) {
+                FirebaseAuth.getInstance().signOut();
+
+                // Điều hướng về màn hình Đăng nhập và xóa sạch lịch sử các trang trước
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
                 return true;
             }
             return false;
