@@ -3,6 +3,7 @@ package com.example.ltmb_nhom11;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ltmb_nhom11.ui.DirectionsActivity;
 import com.example.ltmb_nhom11.ui.DoctorSearchActivity;
+import com.example.ltmb_nhom11.ui.HistoryActivity;
 import com.example.ltmb_nhom11.ui.LoginActivity;
 import com.example.ltmb_nhom11.ui.PackageActivity;
 import com.example.ltmb_nhom11.ui.ProfileActivity;
@@ -26,7 +28,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FirebaseUser currentUser = SessionManager.getCurrentUser();
-
         if (currentUser == null) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
@@ -75,11 +78,16 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> tvUserName.setText("Bệnh nhân 👋"));
 
+        // Lấy lịch sắp tới đổ lên thẻ trên cùng
+        loadUpcomingAppointment(currentUser.getUid());
+
         ImageView imgMapPreview = findViewById(R.id.imgMapPreview);
         ImageLoader.load(MAP_PREVIEW_URL, imgMapPreview);
 
+        // Nạp lưới lịch ô vuông
         setupDynamicCalendar();
 
+        // CHUYỂN SANG TÌM BÁC SĨ (ĐẶT LỊCH)
         LinearLayout btnQuickBook = findViewById(R.id.btnQuickBook);
         btnQuickBook.setOnClickListener(v -> navigateToAppointments());
 
@@ -89,23 +97,23 @@ public class MainActivity extends AppCompatActivity {
             navigateToAppointments();
         });
 
+        // CHUYỂN SANG LỊCH SỬ KHÁM (HISTORY)
         TextView btnViewAllAppointments = findViewById(R.id.btnViewAllAppointments);
-        btnViewAllAppointments.setOnClickListener(v -> navigateToAppointments());
+        btnViewAllAppointments.setOnClickListener(v -> navigateToAppointmentHistory());
 
-        LinearLayout cardAppointment = findViewById(R.id.cardAppointment);
-        cardAppointment.setOnClickListener(v -> Toast.makeText(MainActivity.this, "Chi tiết cuộc hẹn: BS. Lê Hoàng Nam khoa Tim mạch, ngày 24 vào lúc 09:30", Toast.LENGTH_LONG).show());
+        LinearLayout navAppointments = findViewById(R.id.navAppointments);
+        navAppointments.setOnClickListener(v -> navigateToAppointmentHistory());
 
+        // CHUYỂN SANG CHỈ ĐƯỜNG (MAP)
         LinearLayout cardLocation = findViewById(R.id.cardLocation);
         cardLocation.setOnClickListener(v -> navigateToDirections());
 
         TextView btnOpenDirections = findViewById(R.id.btnOpenDirections);
         btnOpenDirections.setOnClickListener(v -> navigateToDirections());
 
+        // CHUYỂN SANG CÁC TRANG KHÁC TỪ BOTTOM NAV
         LinearLayout navHome = findViewById(R.id.navHome);
         navHome.setOnClickListener(v -> {});
-
-        LinearLayout navAppointments = findViewById(R.id.navAppointments);
-        navAppointments.setOnClickListener(v -> navigateToAppointments());
 
         LinearLayout navPackages = findViewById(R.id.navPackages);
         navPackages.setOnClickListener(v -> {
@@ -117,8 +125,15 @@ public class MainActivity extends AppCompatActivity {
         navProfile.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
     }
 
+    // --- CÁC HÀM ĐIỀU HƯỚNG ---
     private void navigateToDirections() {
         Intent intent = new Intent(MainActivity.this, DirectionsActivity.class);
+        startActivity(intent);
+    }
+
+    private void navigateToAppointmentHistory() {
+        Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 
@@ -128,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // --- LOGIC LỊCH Ô VUÔNG ---
     private void setupDynamicCalendar() {
         currentMonth = Calendar.getInstance();
 
@@ -213,5 +229,76 @@ public class MainActivity extends AppCompatActivity {
         } else {
             calendarAdapter.notifyDataSetChanged();
         }
+    }
+
+    // --- LOGIC TÌM LỊCH GẦN NHẤT ---
+    private void loadUpcomingAppointment(String userId) {
+        FirebaseFirestore.getInstance().collection("appointments")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("status", "upcoming")
+                .get() // Bỏ limit() để lấy toàn bộ về lọc bằng Java
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    LinearLayout cardAppointment = findViewById(R.id.cardAppointment);
+
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        QueryDocumentSnapshot closestDoc = null;
+                        long minDiff = Long.MAX_VALUE;
+                        long currentTime = System.currentTimeMillis();
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            String dateStr = doc.getString("date");
+                            String timeStr = doc.getString("time");
+
+                            if (dateStr != null && timeStr != null && dateStr.contains(",")) {
+                                try {
+                                    String datePart = dateStr.split(",")[1].trim();
+                                    Date apptDate = sdf.parse(datePart + " " + timeStr);
+                                    long apptTime = apptDate.getTime();
+
+                                    if (apptTime >= currentTime) {
+                                        long diff = apptTime - currentTime;
+                                        if (diff < minDiff) {
+                                            minDiff = diff;
+                                            closestDoc = doc;
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    Log.e("LoadUpcoming", "Lỗi parse thời gian: " + e.getMessage());
+                                }
+                            }
+                        }
+
+                        if (closestDoc != null) {
+                            String dateStr = closestDoc.getString("date");
+                            String timeStr = closestDoc.getString("time");
+                            String doctorName = closestDoc.getString("doctorName");
+
+                            String[] dateParts = dateStr.split(",");
+                            String dayName = dateParts[0].trim();
+                            String dayValue = dateParts[1].trim().split("/")[0];
+
+                            TextView tvApptDayName = findViewById(R.id.tvApptDayName);
+                            TextView tvApptDayValue = findViewById(R.id.tvApptDayValue);
+                            TextView tvApptDoctorName = findViewById(R.id.tvApptDoctorName);
+                            TextView tvApptDeptTime = findViewById(R.id.tvApptDeptTime);
+
+                            tvApptDayName.setText(dayName);
+                            tvApptDayValue.setText(dayValue);
+                            tvApptDoctorName.setText(doctorName != null ? doctorName : "Bác sĩ");
+                            tvApptDeptTime.setText("Khám bệnh • " + (timeStr != null ? timeStr : ""));
+
+                            cardAppointment.setVisibility(View.VISIBLE);
+                            cardAppointment.setOnClickListener(v ->
+                                    Toast.makeText(MainActivity.this, "Chi tiết cuộc hẹn: " + doctorName + " lúc " + timeStr, Toast.LENGTH_LONG).show()
+                            );
+                        } else {
+                            cardAppointment.setVisibility(View.GONE);
+                        }
+                    } else {
+                        cardAppointment.setVisibility(View.GONE);
+                    }
+                })
+                .addOnFailureListener(e -> findViewById(R.id.cardAppointment).setVisibility(View.GONE));
     }
 }
