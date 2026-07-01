@@ -18,11 +18,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -33,13 +35,17 @@ import com.example.ltmb_nhom11.model.Appointment;
 import com.example.ltmb_nhom11.repository.AppointmentRepository;
 import com.example.ltmb_nhom11.ui.adapter.AppointmentAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class HistoryActivity extends AppCompatActivity {
 
     private ImageButton btnMenuHistory;
-    private MaterialCardView chipAll, chipUpcoming, chipDone;
+    private MaterialCardView chipAll, chipUpcoming, chipDone, chipCancelled;
     private FloatingActionButton fabAddAppointment;
     private RecyclerView rvAppointments;
     private TextView tvEmpty;
@@ -57,6 +63,7 @@ public class HistoryActivity extends AppCompatActivity {
         chipAll = findViewById(R.id.chipAll);
         chipUpcoming = findViewById(R.id.chipUpcoming);
         chipDone = findViewById(R.id.chipDone);
+        chipCancelled = findViewById(R.id.chipCancelled);
         fabAddAppointment = findViewById(R.id.fabAddAppointment);
         rvAppointments = findViewById(R.id.rvAppointments);
         tvEmpty = findViewById(R.id.tvEmpty);
@@ -69,6 +76,7 @@ public class HistoryActivity extends AppCompatActivity {
         chipAll.setOnClickListener(v -> handleFilterTabChange("Tất cả", chipAll));
         chipUpcoming.setOnClickListener(v -> handleFilterTabChange("Sắp tới", chipUpcoming));
         chipDone.setOnClickListener(v -> handleFilterTabChange("Đã xong", chipDone));
+        chipCancelled.setOnClickListener(v -> handleFilterTabChange("Đã hủy", chipCancelled));
 
         fabAddAppointment.setOnClickListener(v ->
                 startActivity(new Intent(HistoryActivity.this, DoctorSearchActivity.class)));
@@ -88,9 +96,9 @@ public class HistoryActivity extends AppCompatActivity {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
-        navAppointments.setOnClickListener(v -> { });
-        navPackages.setOnClickListener( v ->
-                startActivity(new Intent(this, PackageActivity.class)));
+        navAppointments.setOnClickListener(v -> {});
+        navPackages.setOnClickListener(v ->
+                Toast.makeText(this, "Chức năng Gói khám đang được xây dựng!", Toast.LENGTH_SHORT).show());
         navProfile.setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class)));
     }
@@ -104,10 +112,48 @@ public class HistoryActivity extends AppCompatActivity {
     private void loadAppointments() {
         String userId = SessionManager.getCurrentUser() != null
                 ? SessionManager.getCurrentUser().getUid() : "test_user";
+
         new AppointmentRepository().getByUser(userId, new AppointmentRepository.OnList() {
             @Override
             public void onLoaded(List<Appointment> list) {
                 allAppointments.clear();
+
+                long now = System.currentTimeMillis();
+
+                for (Appointment a : list) {
+                    if ("upcoming".equals(a.getStatus())) {
+                        long apptTime = getApptTimestamp(a);
+                        if (apptTime > 0 && apptTime < now) {
+                            a.setStatus("done");
+                            if (a.getId() != null) {
+                                new AppointmentRepository().updateStatus(a.getId(), "done", new AppointmentRepository.OnDone() {
+                                    @Override public void onSuccess() {}
+                                    @Override public void onError(Exception e) {}
+                                });
+                            }
+                        }
+                    }
+                }
+
+                Collections.sort(list, (a1, a2) -> {
+                    String s1 = a1.getStatus() != null ? a1.getStatus() : "";
+                    String s2 = a2.getStatus() != null ? a2.getStatus() : "";
+
+                    int p1 = getStatusPriority(s1);
+                    int p2 = getStatusPriority(s2);
+
+                    if (p1 != p2) return Integer.compare(p1, p2);
+
+                    long t1 = getApptTimestamp(a1);
+                    long t2 = getApptTimestamp(a2);
+
+                    if (p1 == 1) {
+                        return Long.compare(t1, t2);
+                    } else {
+                        return Long.compare(t2, t1);
+                    }
+                });
+
                 allAppointments.addAll(list);
                 applyFilter();
             }
@@ -118,7 +164,28 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
+    private int getStatusPriority(String status) {
+        if ("upcoming".equals(status)) return 1;
+        if ("done".equals(status)) return 2;
+        if ("cancelled".equals(status)) return 3;
+        return 4;
+    }
+    private long getApptTimestamp(Appointment a) {
+        try {
+            String rawDate = a.getDate() != null ? a.getDate() : "";
+            if (rawDate.contains(", ")) {
+                String[] parts = rawDate.split(", ");
+                rawDate = parts[parts.length - 1];
+            }
+            String rawTime = a.getTime() != null ? a.getTime() : "00:00";
 
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            Date d = sdf.parse(rawDate + " " + rawTime);
+            return d != null ? d.getTime() : 0;
+        } catch (Exception e) {
+            return a.getCreatedAt();
+        }
+    }
     private static final String SUPPORT_PHONE = "0933652267";
 
     private void confirmCancel(@NonNull Appointment a) {
@@ -153,7 +220,6 @@ public class HistoryActivity extends AppCompatActivity {
                 .setPositiveButton("Hủy lịch", (d, w) -> doCancel(a))
                 .show();
     }
-
     private void copyPhone() {
         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         if (cm != null) {
@@ -173,7 +239,6 @@ public class HistoryActivity extends AppCompatActivity {
                 Toast.makeText(HistoryActivity.this, "Đã hủy lịch khám.", Toast.LENGTH_SHORT).show();
                 loadAppointments();
             }
-
             @Override
             public void onError(Exception e) {
                 Toast.makeText(HistoryActivity.this, "Hủy lịch thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -191,6 +256,9 @@ public class HistoryActivity extends AppCompatActivity {
                     break;
                 case "Đã xong":
                     if ("done".equals(status)) filtered.add(a);
+                    break;
+                case "Đã hủy":
+                    if ("cancelled".equals(status)) filtered.add(a);
                     break;
                 default:
                     filtered.add(a);
@@ -216,7 +284,7 @@ public class HistoryActivity extends AppCompatActivity {
         int strokeGray = Color.parseColor("#BCC9C6");
         int strokePx = Math.round(getResources().getDisplayMetrics().density);
 
-        for (MaterialCardView chip : new MaterialCardView[]{chipAll, chipUpcoming, chipDone}) {
+        for (MaterialCardView chip : new MaterialCardView[]{chipAll, chipUpcoming, chipDone, chipCancelled}) {
             chip.setCardBackgroundColor(white);
             chip.setStrokeColor(strokeGray);
             chip.setStrokeWidth(strokePx);
