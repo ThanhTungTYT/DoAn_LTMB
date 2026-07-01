@@ -3,12 +3,10 @@
 
     <item
         android:id="@+id/nav_schedule"
-        android:icon="@android:drawable/ic_menu_today"
         android:title="Lịch trình"/>
 
     <item
         android:id="@+id/nav_logout"
-        android:icon="@android:drawable/ic_lock_power_off"
         android:title="Đăng xuất"/>
 
 </menu>

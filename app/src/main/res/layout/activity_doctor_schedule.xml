@@ -134,7 +134,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Total Doctors"
-                            android:textColor="#9AA0A6"
+                            android:textColor="#080A0B"
                             android:textSize="11sp" />
 
                         <LinearLayout
@@ -183,7 +183,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Currently Active"
-                            android:textColor="#9AA0A6"
+                            android:textColor="#000000"
                             android:textSize="11sp" />
 
                         <LinearLayout
@@ -206,7 +206,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="6dp"
                                 android:text="on floor"
-                                android:textColor="#9AA0A6"
+                                android:textColor="#000000"
                                 android:textSize="11sp" />
                         </LinearLayout>
                     </LinearLayout>

@@ -257,15 +257,6 @@
                             android:layout_centerInParent="true"
                             android:background="#BCC9C6" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:background="#FFFFFF"
-                            android:paddingHorizontal="12dp"
-                            android:text="Hoặc đăng nhập với"
-                            android:textColor="#3D4947"
-                            android:textSize="13sp" />
                     </RelativeLayout>
 
                     <!-- Google & Facebook Buttons -->
