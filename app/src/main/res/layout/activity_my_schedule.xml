@@ -30,7 +30,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:fontFamily="sans-serif-black"
                     android:text="Lịch trình của tôi"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
@@ -44,6 +43,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="16dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="notification"
                     android:src="@android:drawable/ic_popup_reminder" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -61,6 +61,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- ===== LỊCH HẸN SẮP TỚI ===== -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,7 +70,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
                     android:text="Lịch hẹn sắp tới"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
@@ -97,113 +97,30 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:orientation="vertical">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:id="@+id/imgAvatar"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:background="@android:drawable/btn_default"
-                            android:scaleType="centerCrop" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/imgAvatar"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tvDoctorName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Nguyễn Văn An"
-                                android:textColor="@android:color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Khám tổng quát"
-                                android:textColor="@android:color/darker_gray"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:background="@android:color/holo_blue_light"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="SẮP TỚI"
-                            android:textColor="@android:color/white"
-                            android:textSize="10sp"
-                            android:textStyle="bold" />
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginVertical="12dp"
-                        android:background="@android:color/darker_gray" />
-
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvUpcomingAppointments"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never"
+                        tools:listitem="@layout/item_upcoming_appointment" />
 
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@android:drawable/ic_menu_myplaces" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="6dp"
-                                android:text="08:30 - 09:00"
-                                android:textColor="@android:color/darker_gray"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical|end"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:src="@android:drawable/ic_menu_today" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="6dp"
-                                android:text="Hôm nay"
-                                android:textColor="@android:color/darker_gray"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvNoAppointments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="24dp"
+                        android:text="Không có lịch hẹn nào sắp tới hôm nay"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="13sp"
+                        android:visibility="gone" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ===== ĐIỀU CHỈNH NGÀY KHÁM ===== -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -240,6 +157,7 @@
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="prev"
                                 android:src="@android:drawable/ic_media_previous" />
 
                             <ImageButton
@@ -247,6 +165,7 @@
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="next"
                                 android:src="@android:drawable/ic_media_next" />
                         </LinearLayout>
                     </RelativeLayout>
@@ -255,7 +174,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:columnCount="7"
-                        android:alignmentMode="alignBounds"
                         android:rowCount="1">
 
                         <TextView android:text="T2" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
@@ -264,7 +182,7 @@
                         <TextView android:text="T5" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
                         <TextView android:text="T6" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
                         <TextView android:text="T7" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
-                        <TextView android:text="CN" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+                        <TextView android:text="CN" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="#F44336"/>
                     </GridLayout>
 
                     <TextView
@@ -301,6 +219,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- ===== QUẢN LÝ THỜI GIAN ===== -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -327,7 +246,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_gravity="center_vertical"
-                        android:text="— Thứ 7, 27/06"
+                        android:text="— Thứ 2, 02/07"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -344,8 +263,7 @@
                         android:layout_height="wrap_content"
                         android:divider="?android:attr/dividerHorizontal"
                         android:showDividers="middle"
-                        android:orientation="vertical">
-                    </LinearLayout>
+                        android:orientation="vertical" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -356,8 +274,9 @@
                     android:text="Lưu thay đổi"
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
-                    app:cornerRadius="16dp"/>
+                    app:cornerRadius="16dp" />
             </LinearLayout>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
