@@ -114,7 +114,7 @@
                         android:gravity="center"
                         android:padding="24dp"
                         android:text="Không có lịch hẹn nào sắp tới hôm nay"
-                        android:textColor="@android:color/darker_gray"
+                        android:textColor="@color/dark_card"
                         android:textSize="13sp"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -176,12 +176,12 @@
                         android:columnCount="7"
                         android:rowCount="1">
 
-                        <TextView android:text="T2" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
-                        <TextView android:text="T3" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
-                        <TextView android:text="T4" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
-                        <TextView android:text="T5" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
-                        <TextView android:text="T6" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
-                        <TextView android:text="T7" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+                        <TextView android:text="T2" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/dark_card"/>
+                        <TextView android:text="T3" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/dark_card"/>
+                        <TextView android:text="T4" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/dark_card"/>
+                        <TextView android:text="T5" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/dark_card"/>
+                        <TextView android:text="T6" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/dark_card"/>
+                        <TextView android:text="T7" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="@color/dark_card"/>
                         <TextView android:text="CN" android:layout_gravity="fill_horizontal" android:gravity="center" android:layout_columnWeight="1" android:textStyle="bold" android:textColor="#F44336"/>
                     </GridLayout>
 
@@ -247,8 +247,8 @@
                         android:layout_marginStart="8dp"
                         android:layout_gravity="center_vertical"
                         android:text="— Thứ 2, 02/07"
-                        android:textColor="@android:color/darker_gray"
-                        android:textSize="13sp" />
+                        android:textColor="@color/dark_card"
+                        android:textSize="17sp" />
                 </LinearLayout>
 
                 <androidx.cardview.widget.CardView
