@@ -19,7 +19,6 @@ import java.util.List;
 /** Hiển thị danh sách lịch hẹn trong màn Lịch sử khám. */
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.VH> {
 
-    /** Sự kiện bấm nút "Hủy lịch khám". */
     public interface OnCancelClick {
         void onCancel(Appointment appointment);
     }
@@ -55,7 +54,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         String date = a.getDate() != null ? a.getDate() : "";
         h.tvDateTime.setText((time + "  •  " + date).trim());
 
-        // Nhãn + màu theo trạng thái
         String status = a.getStatus() != null ? a.getStatus() : "";
         String label;
         int color;
@@ -63,7 +61,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             case "upcoming":
                 label = "Sắp tới"; color = Color.parseColor("#00685F"); break;
             case "done":
-                label = "Đã hoàn thành"; color = Color.parseColor("#059669"); break;
+                label = "Đã xong"; color = Color.parseColor("#059669"); break;
             case "cancelled":
                 label = "Đã hủy"; color = Color.parseColor("#BA1A1A"); break;
             default:
@@ -73,7 +71,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         h.tvStatus.setTextColor(color);
         h.viewAccent.setBackgroundColor(color);
 
-        // Nút hủy chỉ hiện với lịch sắp tới
         if ("upcoming".equals(status)) {
             h.btnCancel.setVisibility(View.VISIBLE);
             h.btnCancel.setOnClickListener(v -> {

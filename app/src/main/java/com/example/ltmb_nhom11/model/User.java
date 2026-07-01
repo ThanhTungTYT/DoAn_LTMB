@@ -7,11 +7,11 @@ public class User {
     private String email;
     private String gender;
     private String dob;
-    private String role; // "user" hoặc "doctor"
+    private String role;
     private boolean verified;
     private long createdAt;
 
-    public User() {} // cần constructor rỗng cho Firestore
+    public User() {}
 
     public User(String uid, String fullName, String phone, String email,
                 String gender, String dob, String role) {

@@ -1,12 +1,7 @@
 package com.example.ltmb_nhom11.model;
 
-/**
- * Model một lịch hẹn khám. Dùng chung cho cả luồng đặt bác sĩ cá nhân (type="doctor")
- * và luồng gói khám combo (type="package").
- * Firestore yêu cầu có constructor rỗng + getter/setter công khai.
- */
 public class Appointment {
-    private String id;          // id document Firestore (gán sau khi đọc)
+    private String id;
     private String userId;
     private String type;        // "doctor" | "package"
     private String doctorId;
@@ -17,7 +12,7 @@ public class Appointment {
     private String status;      // "upcoming" | "done" | "cancelled"
     private long createdAt;     // thời điểm đặt lịch (millis)
 
-    public Appointment() {}     // BẮT BUỘC cho Firestore
+    public Appointment() {}
 
     public Appointment(String userId, String type, String doctorId, String doctorName,
                        String date, String time, long price, String status) {

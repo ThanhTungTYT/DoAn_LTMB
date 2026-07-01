@@ -51,7 +51,6 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Main Scrollable Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -65,7 +64,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Profile Info Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,7 +114,6 @@
 
             </LinearLayout>
 
-            <!-- Giới thiệu dịch vụ khi đặt khám (chung) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,7 +147,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Booking Section Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -160,7 +156,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Horizontal Calendar RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCalendarDates"
                 android:layout_width="match_parent"
@@ -170,7 +165,6 @@
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_calendar_date" />
 
-            <!-- Morning Schedule Slots -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -180,7 +174,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
-            <!-- Grid Layout of Buttons -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -202,7 +195,7 @@
                     app:strokeWidth="1dp" />
 
                 <Button
-                    android:id="@+id/btnTime0830"
+                    android:id="@+id/btnTime0900"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -214,7 +207,7 @@
                     app:strokeColor="#E2E8F0" />
 
                 <Button
-                    android:id="@+id/btnTime0900"
+                    android:id="@+id/btnTime1000"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -226,7 +219,6 @@
                     app:strokeColor="#E2E8F0" />
             </GridLayout>
 
-            <!-- Afternoon Schedule Slots -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -268,7 +260,7 @@
                     app:strokeColor="#E2E8F0" />
 
                 <Button
-                    android:id="@+id/btnTime1630"
+                    android:id="@+id/btnTime1600"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -280,7 +272,6 @@
                     app:strokeColor="#E2E8F0" />
             </GridLayout>
 
-            <!-- Patient Profile Info Box -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -362,7 +353,6 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- Bottom Action Floating Booking Layout -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
