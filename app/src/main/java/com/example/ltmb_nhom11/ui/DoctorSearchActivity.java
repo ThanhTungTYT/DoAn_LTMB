@@ -179,9 +179,10 @@ public class DoctorSearchActivity extends AppCompatActivity {
         navAppointments.setOnClickListener(v -> { });
 
         LinearLayout navPackages = findViewById(R.id.navPackages);
-        navPackages.setOnClickListener(v ->
-                Toast.makeText(DoctorSearchActivity.this, "Chức năng Gói khám (Packages) đang được xây dựng!", Toast.LENGTH_SHORT).show()
-        );
+        navPackages.setOnClickListener(v -> {
+            startActivity(new Intent(DoctorSearchActivity.this, PackageActivity.class));
+            finish();
+        });
 
         LinearLayout navProfile = findViewById(R.id.navProfile);
         navProfile.setOnClickListener(v ->

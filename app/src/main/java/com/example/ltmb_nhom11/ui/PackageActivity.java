@@ -64,29 +64,22 @@ public class PackageActivity extends AppCompatActivity {
         LinearLayout navProfile = findViewById(R.id.navProfile);
 
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(
-                    PackageActivity.this,
-                    MainActivity.class
-            ));
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         });
 
         navAppointments.setOnClickListener(v -> {
-            startActivity(new Intent(
-                    PackageActivity.this,
-                    AppointmentBookingActivity.class
-            ));
+            startActivity(new Intent(this, DoctorSearchActivity.class));
             finish();
         });
 
         navPackages.setOnClickListener(v -> {
+            startActivity(new Intent(this, PackageActivity.class));
+            finish();
         });
 
         navProfile.setOnClickListener(v -> {
-            startActivity(new Intent(
-                    PackageActivity.this,
-                    ProfileActivity.class
-            ));
+            startActivity(new Intent(this, ProfileActivity.class));
             finish();
         });
     }

@@ -33,7 +33,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="170dp"
+            android:paddingBottom="100dp"
             android:clipToPadding="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -290,118 +290,5 @@
                 android:background="@drawable/bg_button_primary"/>
 
         </FrameLayout>
-
-        <LinearLayout
-            android:id="@+id/bottomNav"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="4dp">
-
-            <LinearLayout
-                android:id="@+id/navHome"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_home"
-                    app:tint="@color/secondary"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Home"
-                    android:textSize="11sp"
-                    android:textColor="@color/secondary"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/navAppointments"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_calendar"
-                    app:tint="@color/secondary"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Appointment"
-                    android:textSize="11sp"
-                    android:textColor="@color/secondary"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/navPackages"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_packages"
-                    app:tint="@color/primary"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Packages"
-                    android:textStyle="bold"
-                    android:textSize="11sp"
-                    android:textColor="@color/primary"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/navProfile"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_profile"
-                    app:tint="@color/secondary"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Profile"
-                    android:textSize="11sp"
-                    android:textColor="@color/secondary"/>
-            </LinearLayout>
-
-        </LinearLayout>
-
     </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
