@@ -269,46 +269,7 @@
                     </RelativeLayout>
 
                     <!-- Google & Facebook Buttons -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <Button
-                            android:id="@+id/btnGoogle"
-                            style="?attr/borderlessButtonStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
-                            android:background="@drawable/bg_accent_teal_lightest"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="Google"
-                            android:textAllCaps="false"
-                            android:textColor="#0B1C30"
-                            android:textSize="14sp"
-                            app:icon="@drawable/ic_google"
-                            app:iconGravity="textStart"
-                            app:iconTint="@android:color/transparent" />
-
-                        <Button
-                            android:id="@+id/btnFacebook"
-                            style="?attr/borderlessButtonStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:layout_marginStart="6dp"
-                            android:background="@drawable/bg_btn_social"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="Facebook"
-                            android:textAllCaps="false"
-                            android:textColor="#0B1C30"
-                            android:textSize="14sp"
-                            app:icon="@drawable/ic_facebook"
-                            app:iconGravity="textStart"
-                            app:iconTint="#1877F2" />
-                    </LinearLayout>
+                    
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
