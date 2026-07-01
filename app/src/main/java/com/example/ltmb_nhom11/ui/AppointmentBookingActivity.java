@@ -2,8 +2,11 @@ package com.example.ltmb_nhom11.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -16,6 +19,8 @@ import com.example.ltmb_nhom11.model.CalendarDate;
 import com.example.ltmb_nhom11.model.TimeSlot;
 import com.example.ltmb_nhom11.ui.adapter.CalendarAdapter;
 import com.example.ltmb_nhom11.ui.adapter.TimeSlotAdapter;
+import com.example.ltmb_nhom11.util.SessionManager;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -45,6 +50,7 @@ public class AppointmentBookingActivity extends AppCompatActivity {
 
         rvCalendarHorizontal = findViewById(R.id.rvCalendarHorizontal);
         rvTimeSlotsGrid = findViewById(R.id.rvTimeSlotsGrid);
+        Button btnConfirmBooking = findViewById(R.id.btnConfirmBooking);
 
         String packageName = getIntent().getStringExtra("packageName");
         double price = getIntent().getDoubleExtra("price", 0);
@@ -131,14 +137,11 @@ public class AppointmentBookingActivity extends AppCompatActivity {
         List<TimeSlot> timeList = new ArrayList<>();
 
         timeList.add(new TimeSlot("08:00"));
-        timeList.add(new TimeSlot("08:30"));
         timeList.add(new TimeSlot("09:00"));
-        timeList.add(new TimeSlot("09:30"));
         timeList.add(new TimeSlot("10:00"));
-        timeList.add(new TimeSlot("10:30"));
         timeList.add(new TimeSlot("14:00"));
-        timeList.add(new TimeSlot("14:30"));
         timeList.add(new TimeSlot("15:00"));
+        timeList.add(new TimeSlot("16:00"));
 
         selectedTime = "08:00";
 
@@ -154,60 +157,105 @@ public class AppointmentBookingActivity extends AppCompatActivity {
 
         rvTimeSlotsGrid.setAdapter(adapter);
 
-        LinearLayout navHome =
-                findViewById(R.id.navHome);
+        loadPatientInfo();
 
-        LinearLayout navAppointments =
-                findViewById(R.id.navAppointments);
-
-        LinearLayout navPackages =
-                findViewById(R.id.navPackages);
-
-        LinearLayout navProfile =
-                findViewById(R.id.navProfile);
-
-        navHome.setOnClickListener(v -> {
-
-            startActivity(
-                    new Intent(
-                            this,
-                            MainActivity.class
-                    )
-            );
-
+        findViewById(R.id.tvChangePatient).setOnClickListener(v -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        navAppointments.setOnClickListener(v -> {
+        Toolbar toolbar = findViewById(R.id.toolbarBooking);
+        setSupportActionBar(toolbar);
 
-            startActivity(
-                    new Intent(
-                            this,
-                            DoctorSearchActivity.class
-                    )
-            );
+        toolbar.setNavigationOnClickListener(v -> finish());
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("");
+        }
+        btnConfirmBooking.setOnClickListener(v -> {
+
+            if (selectedDate.isEmpty() || selectedTime.isEmpty()) {
+                Toast.makeText(this,
+                        "Vui lòng chọn ngày và giờ khám",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            com.google.firebase.auth.FirebaseUser user = SessionManager.getCurrentUser();
+
+            if (user == null) {
+                Toast.makeText(this,
+                        "Vui lòng đăng nhập",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            java.util.Map<String, Object> data = new java.util.HashMap<>();
+
+            data.put("userId", user.getUid());
+            data.put("packageName", packageName);
+            data.put("price", price);
+            data.put("date", selectedDate);
+            data.put("time", selectedTime);
+            data.put("createdAt",
+                    com.google.firebase.Timestamp.now());
+            data.put("status", "pending");
+
+            FirebaseFirestore.getInstance()
+                    .collection("appointments")
+                    .add(data)
+                    .addOnSuccessListener(documentReference -> {
+
+                        Intent intent = new Intent(
+                                AppointmentBookingActivity.this,
+                                MedicalSummaryActivity.class);
+
+                        intent.putExtra("packageName", packageName);
+                        intent.putExtra("price", price);
+                        intent.putExtra("date", selectedDate);
+                        intent.putExtra("time", selectedTime);
+                        intent.putExtra("medicalId", documentReference.getId());
+
+                        startActivity(intent);
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this,
+                                "Lưu lịch hẹn thất bại: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    });
         });
+    }
+    private void loadPatientInfo() {
 
-        navPackages.setOnClickListener(v -> {
+        com.google.firebase.auth.FirebaseUser user = SessionManager.getCurrentUser();
 
-            startActivity(
-                    new Intent(
-                            this,
-                            PackageActivity.class
-                    )
-            );
+        if (user == null) return;
 
-        });
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(doc -> {
 
-        navProfile.setOnClickListener(v -> {
+                    String name = doc.getString("fullName");
+                    String phone = doc.getString("phone");
 
-            startActivity(
-                    new Intent(
-                            this,
-                            ProfileActivity.class
-                    )
-            );
+                    TextView txtName = findViewById(R.id.tvPatientName);
+                    TextView txtInfo = findViewById(R.id.tvPatientSubInfo);
 
-        });
+                    if (name != null && !name.isEmpty()) {
+                        txtName.setText(name);
+                    }
+
+                    if (phone != null && !phone.isEmpty()) {
+                        txtInfo.setText(phone);
+                    }
+                });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPatientInfo();
     }
 }

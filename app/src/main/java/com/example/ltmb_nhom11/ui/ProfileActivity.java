@@ -57,8 +57,12 @@ public class ProfileActivity extends AppCompatActivity {
         });
         findViewById(R.id.navAppointments).setOnClickListener(v ->
                 startActivity(new Intent(this, DoctorSearchActivity.class)));
-        findViewById(R.id.navPackages).setOnClickListener(v ->
-                Toast.makeText(this, "Chức năng Gói khám đang được xây dựng!", Toast.LENGTH_SHORT).show());
+        findViewById(R.id.navPackages).setOnClickListener(v -> {
+            Intent i = new Intent(ProfileActivity.this, PackageActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(i);
+            finish();
+        });
         findViewById(R.id.navProfile).setOnClickListener(v -> { /* đang ở màn Cá nhân */ });
     }
 

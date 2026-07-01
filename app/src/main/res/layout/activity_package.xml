@@ -24,12 +24,6 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_gravity="center"/>
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_notification"
-                android:layout_gravity="end"
-                android:layout_marginRight="16dp"/> <!-- Icon chuông bên phải -->
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

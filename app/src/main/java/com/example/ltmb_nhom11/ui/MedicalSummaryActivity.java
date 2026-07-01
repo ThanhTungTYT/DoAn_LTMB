@@ -1,5 +1,7 @@
 package com.example.ltmb_nhom11.ui;
+import com.example.ltmb_nhom11.MainActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,56 +76,67 @@ public class MedicalSummaryActivity extends AppCompatActivity {
         String packageName = getIntent().getStringExtra("packageName");
         String date = getIntent().getStringExtra("date");
         String time = getIntent().getStringExtra("time");
+        double price = getIntent().getDoubleExtra("price", 0);
         String medicalId = getIntent().getStringExtra("medicalId");
 
-        if (packageName == null) packageName = "Khám Nội Tổng Quát";
-        if (date == null) date = "24/10/2026";
-        if (time == null) time = "14:30";
-        if (medicalId == null) medicalId = "#MED-001";
+        if (packageName == null) packageName = "Khám sức khỏe tổng quát";
+        if (date == null) date = "Chưa chọn";
+        if (time == null) time = "Chưa chọn";
+
+        if (medicalId == null) {
+            medicalId = "#MED-" + (1000 + (int)(Math.random() * 9000));
+        }
 
         tvPackageName.setText(packageName);
         tvDateTime.setText(time + " - " + date);
         tvMedicalId.setText("Mã hồ sơ: " + medicalId);
 
         tvDoctorName.setText("BS. Nguyễn Thanh Tùng");
-        tvDoctorMajor.setText("Khoa Nội Tổng Quát");
+        tvDoctorMajor.setText("Chuyên khoa Nội tổng quát");
 
         tvBloodPressure.setText("Huyết áp: 120/80 mmHg");
         tvTemperature.setText("Nhiệt độ: 36.6°C");
         tvWeight.setText("Cân nặng: 68 kg");
 
-        tvDiagnosis.setText("Viêm dạ dày cấp nhẹ do thói quen ăn uống.");
+        tvDiagnosis.setText(
+                "Sức khỏe ổn định, chưa phát hiện bất thường đáng kể."
+        );
 
         tvMedicine.setText(
-                "• Nexium 40mg\n" +
-                        "• Gaviscon Dual Action\n" +
-                        "• Motilium M"
+                "• Vitamin tổng hợp\n" +
+                        "• Không kê đơn thuốc đặc trị"
         );
 
-        // Advice
         tvAdvice.setText(
-                "• Ăn đúng giờ\n" +
-                        "• Hạn chế đồ cay nóng\n" +
-                        "• Tái khám sau 2 tuần"
+                "• Duy trì chế độ ăn uống lành mạnh\n" +
+                        "• Tập thể dục tối thiểu 30 phút mỗi ngày\n" +
+                        "• Khám sức khỏe định kỳ mỗi 6 - 12 tháng"
         );
 
-        // Files
-        tvFile1.setText("📄 Phieu_Noi_Soi.pdf");
-        tvFile2.setText("🖼️ Hinh_XQuang.jpg");
+        tvFile1.setText("📄 Kết quả khám tổng quát.pdf");
+        tvFile2.setText("📄 Phiếu xét nghiệm.pdf");
     }
 
     private void setupBottomNav() {
 
         navHome.setOnClickListener(v -> {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
         });
 
         navAppointments.setOnClickListener(v -> {
+            startActivity(new Intent(this, DoctorSearchActivity.class));
+            finish();
         });
 
         navPackages.setOnClickListener(v -> {
+            startActivity(new Intent(this, PackageActivity.class));
+            finish();
         });
 
         navProfile.setOnClickListener(v -> {
+            startActivity(new Intent(this, ProfileActivity.class));
+            finish();
         });
     }
 }
