@@ -44,30 +44,17 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <!-- Chỉ giữ Avatar, bỏ nút thông báo -->
+                <ImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:scaleType="centerCrop"
+                    android:src="@android:drawable/btn_default_small" />
 
-                    <ImageButton
-                        android:id="@+id/btnNotification"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@android:drawable/ic_popup_reminder" />
-
-                    <ImageView
-                        android:id="@+id/imgAvatar"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="8dp"
-                        android:scaleType="centerCrop"
-                        android:src="@android:drawable/btn_default_small" />
-                </LinearLayout>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -116,7 +103,6 @@
                     android:padding="16dp">
 
                     <ImageView
-                        android:id="@+id/iconAppointments"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="#80FFFFFF"
@@ -132,7 +118,7 @@
                         android:background="#33000000"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="4dp"
-                        android:text="+12%"
+                        android:text="Hôm nay"
                         android:textColor="#001D36"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -141,8 +127,7 @@
                         android:id="@+id/lblAppointments"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/iconAppointments"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="56dp"
                         android:text="Total Appointments"
                         android:textColor="#001D36"
                         android:textSize="13sp" />
@@ -152,7 +137,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/lblAppointments"
-                        android:text="42"
+                        android:text="0"
                         android:textColor="#001D36"
                         android:textSize="32sp"
                         android:textStyle="bold" />
@@ -174,7 +159,6 @@
                     android:padding="16dp">
 
                     <ImageView
-                        android:id="@+id/iconPatients"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="#80FFFFFF"
@@ -190,7 +174,7 @@
                         android:background="#33000000"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="4dp"
-                        android:text="+5 today"
+                        android:text="Hôm nay"
                         android:textColor="#101C2B"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -199,8 +183,7 @@
                         android:id="@+id/lblPatients"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/iconPatients"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="56dp"
                         android:text="New Patients"
                         android:textColor="#101C2B"
                         android:textSize="13sp" />
@@ -210,7 +193,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/lblPatients"
-                        android:text="128"
+                        android:text="0"
                         android:textColor="#101C2B"
                         android:textSize="32sp"
                         android:textStyle="bold" />
@@ -231,7 +214,6 @@
                     android:padding="16dp">
 
                     <ImageView
-                        android:id="@+id/iconRevenue"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="#D1E4FF"
@@ -247,7 +229,7 @@
                         android:background="#D1E4FF"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="4dp"
-                        android:text="Target: 90%"
+                        android:text="Tháng này"
                         android:textColor="@color/primary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -256,8 +238,7 @@
                         android:id="@+id/lblRev"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/iconRevenue"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="56dp"
                         android:text="Daily Revenue"
                         android:textColor="@color/on_surface_muted"
                         android:textSize="13sp" />
@@ -267,7 +248,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/lblRev"
-                        android:text="$3,840"
+                        android:text="0 VNĐ"
                         android:textColor="@color/on_surface"
                         android:textSize="28sp"
                         android:textStyle="bold" />
@@ -298,7 +279,7 @@
                     android:textSize="13sp" />
             </RelativeLayout>
 
-            <!-- Schedule List (Firestore: appointments) -->
+            <!-- Schedule List -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -329,73 +310,6 @@
                         android:textColor="@color/on_surface_muted"
                         android:textSize="13sp"
                         android:visibility="gone" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Clinic Capacity Card -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#111418"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="18dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CLINIC CAPACITY"
-                        android:textColor="#9AA0A6"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.05"
-                        android:layout_marginBottom="8dp" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp">
-
-                        <TextView
-                            android:id="@+id/tvCapacityPercent"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="84%"
-                            android:textColor="@android:color/white"
-                            android:textSize="30sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:text="Busy"
-                            android:textColor="#9AA0A6"
-                            android:textSize="13sp" />
-                    </RelativeLayout>
-
-                    <ProgressBar
-                        android:id="@+id/progressCapacity"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_marginBottom="10dp"
-                        android:max="100"
-                        android:progress="84"
-                        android:progressDrawable="@drawable/bg_progress_capacity" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Expect a high volume of patients between 2:00 PM and 4:00 PM."
-                        android:textColor="#9AA0A6"
-                        android:textSize="12sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

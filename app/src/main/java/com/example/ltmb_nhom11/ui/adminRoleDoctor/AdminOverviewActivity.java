@@ -2,6 +2,8 @@ package com.example.ltmb_nhom11.ui.adminRoleDoctor;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,15 +21,20 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class AdminOverviewActivity extends AppCompatActivity {
 
-    private ImageButton btnMenu, btnNotification;
+    private static final String TAG = "AdminOverview";
+    private static final TimeZone VN_TIMEZONE = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+
+    private ImageButton btnMenu;
     private RecyclerView rvSchedule;
     private TextView tvEmptySchedule;
     private ScheduleAdapter scheduleAdapter;
@@ -36,8 +43,7 @@ public class AdminOverviewActivity extends AppCompatActivity {
     private FloatingActionButton fabAdd;
     private BottomNavigationView bottomNavigation;
 
-    private TextView tvAppointmentsValue, tvPatientsValue, tvRevenueValue, tvCapacityPercent;
-    private ProgressBar progressCapacity;
+    private TextView tvAppointmentsValue, tvPatientsValue, tvRevenueValue;
 
     private FirebaseFirestore db;
 
@@ -52,14 +58,16 @@ public class AdminOverviewActivity extends AppCompatActivity {
         setupToolbar();
         setupScheduleRecyclerView();
         loadTodaySchedule();
-        loadStats();
+        loadNewPatientsToday();
+        loadMonthlyRevenue();
         setupActions();
         setupBottomNavigation();
     }
 
+    // ==================== INIT ====================
+
     private void initViews() {
         btnMenu = findViewById(R.id.btnMenu);
-        btnNotification = findViewById(R.id.btnNotification);
 
         rvSchedule = findViewById(R.id.rvSchedule);
         tvEmptySchedule = findViewById(R.id.tvEmptySchedule);
@@ -70,45 +78,64 @@ public class AdminOverviewActivity extends AppCompatActivity {
         tvAppointmentsValue = findViewById(R.id.tvAppointmentsValue);
         tvPatientsValue = findViewById(R.id.tvPatientsValue);
         tvRevenueValue = findViewById(R.id.tvRevenueValue);
-        tvCapacityPercent = findViewById(R.id.tvCapacityPercent);
-        progressCapacity = findViewById(R.id.progressCapacity);
     }
 
     private void setupToolbar() {
         btnMenu.setOnClickListener(v ->
                 Toast.makeText(this, "Đang mở Sidebar Menu", Toast.LENGTH_SHORT).show());
-        btnNotification.setOnClickListener(v ->
-                Toast.makeText(this, "Thông báo", Toast.LENGTH_SHORT).show());
     }
+
+    // ==================== SCHEDULE (APPOINTMENTS HÔM NAY) ====================
 
     private void setupScheduleRecyclerView() {
         scheduleAdapter = new ScheduleAdapter(scheduleList, (item, position) ->
-                Toast.makeText(this, "Chi tiết lịch hẹn: " + item.getName(), Toast.LENGTH_SHORT).show());
+                Toast.makeText(this, "Chi tiết: " + item.getName(), Toast.LENGTH_SHORT).show());
         rvSchedule.setLayoutManager(new LinearLayoutManager(this));
         rvSchedule.setAdapter(scheduleAdapter);
     }
 
     /**
-     * Trả về chuỗi date đúng định dạng đang lưu trong Firestore: "T5, 02/07/2026"
+     * Build chuỗi date khớp đúng với format Firestore: "T5, 02/07/2026"
+     * Set timezone Asia/Ho_Chi_Minh để tránh lệch ngày
      */
     private String getTodayDateString() {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(VN_TIMEZONE);
+
         String[] dayAbbr = {"CN", "T2", "T3", "T4", "T5", "T6", "T7"};
         String day = dayAbbr[cal.get(Calendar.DAY_OF_WEEK) - 1];
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return day + ", " + sdf.format(cal.getTime());
+        sdf.setTimeZone(VN_TIMEZONE);
+
+        String dateStr = day + ", " + sdf.format(cal.getTime());
+        Log.d(TAG, "Today date string: " + dateStr);
+        return dateStr;
     }
 
     private void loadTodaySchedule() {
-        String todayDate = getTodayDateString();
+        // Chỉ lấy phần ngày tháng năm thuần túy, không lấy tên thứ
+        // để tránh mismatch ký tự ngày (T4/T5/CN...)
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        sdf.setTimeZone(VN_TIMEZONE);
+        String todayDDMMYYYY = sdf.format(Calendar.getInstance(VN_TIMEZONE).getTime());
 
+        // In ra để kiểm tra trực tiếp trên thiết bị
+        Log.d(TAG, "Querying appointments with date containing: " + todayDDMMYYYY);
+        Toast.makeText(this, "Tìm lịch ngày: " + todayDDMMYYYY, Toast.LENGTH_LONG).show();
+
+        // Lấy tất cả appointments, filter client-side theo "dd/MM/yyyy"
+        // Tránh hoàn toàn lỗi mismatch chuỗi tên thứ
         db.collection("appointments")
-                .whereEqualTo("date", todayDate)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     scheduleList.clear();
 
                     for (QueryDocumentSnapshot doc : querySnapshot) {
+                        String date = doc.getString("date"); // "T5, 02/07/2026"
+
+                        // Bỏ qua nếu date null hoặc không chứa "dd/MM/yyyy" hôm nay
+                        if (date == null || !date.contains(todayDDMMYYYY)) continue;
+
                         String id = doc.getId();
                         String time = doc.getString("time");
                         String doctorName = doc.getString("doctorName");
@@ -117,37 +144,129 @@ public class AdminOverviewActivity extends AppCompatActivity {
 
                         if (time == null) time = "--:--";
                         String ampm = "AM";
-                        String[] parts = time.split(":");
-                        if (parts.length > 0) {
-                            try {
-                                int hour = Integer.parseInt(parts[0]);
-                                ampm = hour >= 12 ? "PM" : "AM";
-                            } catch (NumberFormatException ignored) {}
-                        }
+                        try {
+                            int hour = Integer.parseInt(time.split(":")[0]);
+                            ampm = hour >= 12 ? "PM" : "AM";
+                        } catch (Exception ignored) {}
 
                         String name = (doctorName != null && !doctorName.isEmpty())
                                 ? doctorName : "Bệnh nhân";
                         String detail = (type != null ? capitalize(type) : "Khám") + " • " + time;
-
                         int[] colors = getStatusColors(status);
 
                         scheduleList.add(new PatientSchedule(
                                 id, time, ampm, name, detail,
-                                getStatusLabel(status),
-                                colors[0], colors[1]));
+                                getStatusLabel(status), colors[0], colors[1]));
                     }
 
                     scheduleList.sort((a, b) -> a.getTime().compareTo(b.getTime()));
-
                     scheduleAdapter.notifyDataSetChanged();
+
                     tvAppointmentsValue.setText(String.valueOf(scheduleList.size()));
 
                     boolean isEmpty = scheduleList.isEmpty();
-                    tvEmptySchedule.setVisibility(isEmpty ? android.view.View.VISIBLE : android.view.View.GONE);
-                    rvSchedule.setVisibility(isEmpty ? android.view.View.GONE : android.view.View.VISIBLE);
+                    tvEmptySchedule.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+                    rvSchedule.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+
+                    Log.d(TAG, "Appointments found today: " + scheduleList.size());
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Không tải được lịch trình hôm nay.", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "loadTodaySchedule error: " + e.getMessage());
+                    Toast.makeText(this, "Không tải được lịch trình.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // ==================== SỐ BỆNH NHÂN MỚI HÔM NAY ====================
+
+    /**
+     * Đếm số user có role == "user" được tạo trong ngày hôm nay (theo giờ VN).
+     * createdAt lưu dạng timestamp milliseconds (long).
+     */
+    private void loadNewPatientsToday() {
+        Calendar startOfDay = Calendar.getInstance(VN_TIMEZONE);
+        startOfDay.set(Calendar.HOUR_OF_DAY, 0);
+        startOfDay.set(Calendar.MINUTE, 0);
+        startOfDay.set(Calendar.SECOND, 0);
+        startOfDay.set(Calendar.MILLISECOND, 0);
+
+        Calendar endOfDay = Calendar.getInstance(VN_TIMEZONE);
+        endOfDay.set(Calendar.HOUR_OF_DAY, 23);
+        endOfDay.set(Calendar.MINUTE, 59);
+        endOfDay.set(Calendar.SECOND, 59);
+        endOfDay.set(Calendar.MILLISECOND, 999);
+
+        long startMs = startOfDay.getTimeInMillis();
+        long endMs = endOfDay.getTimeInMillis();
+
+        Log.d(TAG, "New patients range: " + startMs + " → " + endMs);
+
+        db.collection("users")
+                .whereEqualTo("role", "user")
+                .whereGreaterThanOrEqualTo("createdAt", startMs)
+                .whereLessThanOrEqualTo("createdAt", endMs)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int count = querySnapshot.size();
+                    Log.d(TAG, "New patients today: " + count);
+                    tvPatientsValue.setText(String.valueOf(count));
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "loadNewPatientsToday error: " + e.getMessage());
+                    tvPatientsValue.setText("--");
+                    Toast.makeText(this, "Không tải được số bệnh nhân mới.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // ==================== DOANH THU THÁNG HIỆN TẠI ====================
+
+    /**
+     * Tổng price của appointments có status == "upcoming"
+     * và date thuộc tháng/năm hiện tại (lọc theo chuỗi "MM/yyyy" trong field date).
+     */
+    private void loadMonthlyRevenue() {
+        Calendar cal = Calendar.getInstance(VN_TIMEZONE);
+
+        SimpleDateFormat monthYearFmt = new SimpleDateFormat("MM/yyyy", Locale.getDefault());
+        monthYearFmt.setTimeZone(VN_TIMEZONE);
+        String currentMonthYear = monthYearFmt.format(cal.getTime());
+
+        Log.d(TAG, "Current month/year: " + currentMonthYear);
+
+        db.collection("appointments")
+                .whereEqualTo("status", "upcoming")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    long totalRevenue = 0;
+
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        String date = doc.getString("date"); // "T5, 02/07/2026"
+
+                        if (date != null && date.contains(currentMonthYear)) {
+                            Object priceObj = doc.get("price");
+                            if (priceObj instanceof Number) {
+                                totalRevenue += ((Number) priceObj).longValue();
+                            }
+                        }
+                    }
+
+                    Log.d(TAG, "Monthly revenue: " + totalRevenue);
+                    tvRevenueValue.setText(formatCurrency(totalRevenue));
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "loadMonthlyRevenue error: " + e.getMessage());
+                    tvRevenueValue.setText("--");
+                    Toast.makeText(this, "Không tải được doanh thu.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    // ==================== HELPERS ====================
+
+    /**
+     * Format tiền VNĐ: 200000 → "200,000 VNĐ"
+     */
+    private String formatCurrency(long amount) {
+        NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
+        return nf.format(amount) + " VNĐ";
     }
 
     private String capitalize(String s) {
@@ -159,17 +278,11 @@ public class AdminOverviewActivity extends AppCompatActivity {
         if (status == null) return "SẮP TỚI";
         switch (status.toLowerCase()) {
             case "checked-in":
-            case "checkedin":
-                return "ĐÃ CHECK-IN";
-            case "completed":
-                return "HOÀN THÀNH";
-            case "waiting":
-                return "CHỜ KHÁM";
-            case "cancelled":
-                return "ĐÃ HỦY";
-            case "upcoming":
-            default:
-                return "SẮP TỚI";
+            case "checkedin":  return "ĐÃ CHECK-IN";
+            case "completed":  return "HOÀN THÀNH";
+            case "waiting":    return "CHỜ KHÁM";
+            case "cancelled":  return "ĐÃ HỦY";
+            default:           return "SẮP TỚI";
         }
     }
 
@@ -185,21 +298,12 @@ public class AdminOverviewActivity extends AppCompatActivity {
                 return new int[]{Color.parseColor("#FFF1C2"), Color.parseColor("#8A6D00")};
             case "cancelled":
                 return new int[]{Color.parseColor("#FBD5D5"), Color.parseColor("#9B1C1C")};
-            case "upcoming":
             default:
                 return new int[]{Color.parseColor("#E0E7FF"), Color.parseColor("#3730A3")};
         }
     }
 
-    private void loadStats() {
-        // TODO: New Patients / Doanh thu / Clinic Capacity -> nối collection tương ứng khi cần
-        tvPatientsValue.setText("128");
-        tvRevenueValue.setText("$3,840");
-
-        int capacity = 84;
-        tvCapacityPercent.setText(capacity + "%");
-        progressCapacity.setProgress(capacity);
-    }
+    // ==================== ACTIONS & NAVIGATION ====================
 
     private void setupActions() {
         fabAdd.setOnClickListener(v ->
