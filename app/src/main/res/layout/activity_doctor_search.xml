@@ -27,14 +27,7 @@
             android:textSize="22sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/btnNotification"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/ic_bell"
-            android:contentDescription="Notifications" />
+
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
