@@ -24,11 +24,22 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         void onCancel(Appointment appointment);
     }
 
+    // --- THÊM CHỖ NÀY: Định nghĩa Interface sự kiện Click vào dòng lịch hẹn ---
+    public interface OnItemClickListener {
+        void onItemClick(Appointment appointment);
+    }
+
     private final List<Appointment> items = new ArrayList<>();
     private OnCancelClick cancelListener;
+    private OnItemClickListener itemClickListener; // Biến lưu listener click dòng
 
     public void setOnCancelClickListener(OnCancelClick listener) {
         this.cancelListener = listener;
+    }
+
+    // --- THÊM CHỖ NÀY: Hàm để HistoryActivity truyền sự kiện click vào ---
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.itemClickListener = listener;
     }
 
     public void setData(List<Appointment> data) {
@@ -49,7 +60,19 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public void onBindViewHolder(@NonNull VH h, int position) {
         Appointment a = items.get(position);
 
-        h.tvDoctorName.setText(a.getDoctorName() != null ? a.getDoctorName() : "Lịch khám");
+        if ("package".equals(a.getType())) {
+            h.tvDoctorName.setText(
+                    a.getPackageName() != null
+                            ? a.getPackageName()
+                            : "Gói khám"
+            );
+        } else {
+            h.tvDoctorName.setText(
+                    a.getDoctorName() != null
+                            ? a.getDoctorName()
+                            : "Lịch khám"
+            );
+        }
 
         String time = a.getTime() != null ? a.getTime() : "";
         String date = a.getDate() != null ? a.getDate() : "";
@@ -83,6 +106,13 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             h.btnCancel.setVisibility(View.GONE);
             h.btnCancel.setOnClickListener(null);
         }
+
+        // --- THÊM CHỖ NÀY: Bắt sự kiện click vào trọn vẹn một item lịch hẹn ---
+        h.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(a);
+            }
+        });
     }
 
     @Override

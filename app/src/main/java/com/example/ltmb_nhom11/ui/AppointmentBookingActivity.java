@@ -52,8 +52,9 @@ public class AppointmentBookingActivity extends AppCompatActivity {
         rvTimeSlotsGrid = findViewById(R.id.rvTimeSlotsGrid);
         Button btnConfirmBooking = findViewById(R.id.btnConfirmBooking);
 
+        String packageId = getIntent().getStringExtra("packageId");
         String packageName = getIntent().getStringExtra("packageName");
-        double price = getIntent().getDoubleExtra("price", 0);
+        int price = getIntent().getIntExtra("price", 0);
 
         if (packageName != null) {
             tvMainPackageName.setText(packageName);
@@ -63,7 +64,7 @@ public class AppointmentBookingActivity extends AppCompatActivity {
                 NumberFormat.getInstance(new Locale("vi", "VN"));
 
         tvPackagePrice.setText(
-                formatter.format((long) price) + " VNĐ"
+                formatter.format(price) + " VNĐ"
         );
 
         List<CalendarDate> dateList = new ArrayList<>();
@@ -191,39 +192,18 @@ public class AppointmentBookingActivity extends AppCompatActivity {
                 return;
             }
 
-            java.util.Map<String, Object> data = new java.util.HashMap<>();
+            Intent intent = new Intent(
+                    AppointmentBookingActivity.this,
+                    PaymentActivity.class
+            );
 
-            data.put("userId", user.getUid());
-            data.put("packageName", packageName);
-            data.put("price", price);
-            data.put("date", selectedDate);
-            data.put("time", selectedTime);
-            data.put("createdAt",
-                    com.google.firebase.Timestamp.now());
-            data.put("status", "pending");
+            intent.putExtra("packageId", packageId);
+            intent.putExtra("packageName", packageName);
+            intent.putExtra("price", price);
+            intent.putExtra("date", selectedDate);
+            intent.putExtra("time", selectedTime);
 
-            FirebaseFirestore.getInstance()
-                    .collection("appointments")
-                    .add(data)
-                    .addOnSuccessListener(documentReference -> {
-
-                        Intent intent = new Intent(
-                                AppointmentBookingActivity.this,
-                                MedicalSummaryActivity.class);
-
-                        intent.putExtra("packageName", packageName);
-                        intent.putExtra("price", price);
-                        intent.putExtra("date", selectedDate);
-                        intent.putExtra("time", selectedTime);
-                        intent.putExtra("medicalId", documentReference.getId());
-
-                        startActivity(intent);
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this,
-                                "Lưu lịch hẹn thất bại: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    });
+            startActivity(intent);
         });
     }
     private void loadPatientInfo() {

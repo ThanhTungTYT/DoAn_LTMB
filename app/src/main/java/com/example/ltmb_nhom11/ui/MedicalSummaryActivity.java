@@ -1,4 +1,5 @@
 package com.example.ltmb_nhom11.ui;
+
 import com.example.ltmb_nhom11.MainActivity;
 
 import android.content.Intent;
@@ -6,11 +7,13 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.ltmb_nhom11.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MedicalSummaryActivity extends AppCompatActivity {
 
@@ -72,60 +75,85 @@ public class MedicalSummaryActivity extends AppCompatActivity {
     }
 
     private void loadDataFromIntent() {
+        // 1. Nhận ID lịch hẹn truyền từ trang Lịch sử sang
+        String appointmentId = getIntent().getStringExtra("appointmentId");
 
-        String packageName = getIntent().getStringExtra("packageName");
-        String date = getIntent().getStringExtra("date");
-        String time = getIntent().getStringExtra("time");
-        double price = getIntent().getDoubleExtra("price", 0);
-        String medicalId = getIntent().getStringExtra("medicalId");
-
-        if (packageName == null) packageName = "Khám sức khỏe tổng quát";
-        if (date == null) date = "Chưa chọn";
-        if (time == null) time = "Chưa chọn";
-
-        if (medicalId == null) {
-            medicalId = "#MED-" + (1000 + (int)(Math.random() * 9000));
+        if (appointmentId == null || appointmentId.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy mã hồ sơ khám!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        tvPackageName.setText(packageName);
-        tvDateTime.setText(time + " - " + date);
-        tvMedicalId.setText("Mã hồ sơ: " + medicalId);
+        tvMedicalId.setText("Mã hồ sơ: #" + appointmentId);
 
-        tvDoctorName.setText("BS. Nguyễn Thanh Tùng");
-        tvDoctorMajor.setText("Chuyên khoa Nội tổng quát");
+        // 2. Gọi Firestore đổ dữ liệu động thực tế của ca khám
+        FirebaseFirestore.getInstance()
+                .collection("appointments")
+                .document(appointmentId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
 
-        tvBloodPressure.setText("Huyết áp: 120/80 mmHg");
-        tvTemperature.setText("Nhiệt độ: 36.6°C");
-        tvWeight.setText("Cân nặng: 68 kg");
+                        String type = documentSnapshot.getString("type");
+                        String date = documentSnapshot.getString("date");
+                        String time = documentSnapshot.getString("time");
 
-        tvDiagnosis.setText(
-                "Sức khỏe ổn định, chưa phát hiện bất thường đáng kể."
-        );
+                        if ("package".equals(type)) {
+                            tvPackageName.setText(documentSnapshot.getString("packageName"));
+                        } else {
+                            tvPackageName.setText("Khám với Bác sĩ: " + documentSnapshot.getString("doctorName"));
+                        }
+                        tvDateTime.setText(time + " - " + date);
 
-        tvMedicine.setText(
-                "• Vitamin tổng hợp\n" +
-                        "• Không kê đơn thuốc đặc trị"
-        );
+                        // Đọc thông tin kết quả do bác sĩ cập nhật
+                        String doctorName = documentSnapshot.getString("resultDoctorName");
+                        String doctorMajor = documentSnapshot.getString("resultDoctorMajor");
+                        String bloodPressure = documentSnapshot.getString("bloodPressure");
+                        String temperature = documentSnapshot.getString("temperature");
+                        String weight = documentSnapshot.getString("weight");
+                        String diagnosis = documentSnapshot.getString("diagnosis");
+                        String medicine = documentSnapshot.getString("medicine");
+                        String advice = documentSnapshot.getString("advice");
 
-        tvAdvice.setText(
-                "• Duy trì chế độ ăn uống lành mạnh\n" +
-                        "• Tập thể dục tối thiểu 30 phút mỗi ngày\n" +
-                        "• Khám sức khỏe định kỳ mỗi 6 - 12 tháng"
-        );
+                        // Xử lý logic dự phòng nếu thông tin bác sĩ phụ trách kết quả bị null
+                        if (doctorName == null || doctorName.isEmpty()) {
+                            doctorName = "doctor".equals(type) ? documentSnapshot.getString("doctorName") : "Bác sĩ phụ trách";
+                        }
+                        if (doctorMajor == null || doctorMajor.isEmpty()) {
+                            doctorMajor = "Phòng khám tổng quát";
+                        }
 
-        tvFile1.setText("📄 Kết quả khám tổng quát.pdf");
-        tvFile2.setText("📄 Phiếu xét nghiệm.pdf");
+                        // Hiển thị dữ liệu lên giao diện
+                        tvDoctorName.setText(doctorName);
+                        tvDoctorMajor.setText(doctorMajor);
+                        tvBloodPressure.setText("Huyết áp: " + (bloodPressure != null ? bloodPressure : "--- mmHg"));
+                        tvTemperature.setText("Nhiệt độ: " + (temperature != null ? temperature : "--- °C"));
+                        tvWeight.setText("Cân nặng: " + (weight != null ? weight : "--- kg"));
+
+                        tvDiagnosis.setText(diagnosis != null ? diagnosis : "Chưa có chẩn đoán từ bác sĩ.");
+                        tvMedicine.setText(medicine != null ? medicine : "Chưa có đơn thuốc kê khai.");
+                        tvAdvice.setText(advice != null ? advice : "Chưa có dặn dò.");
+
+                        tvFile1.setText("📄 Kết quả khám tổng quát.pdf");
+                        tvFile2.setText("📄 Phiếu xét nghiệm.pdf");
+                    } else {
+                        Toast.makeText(this, "Hồ sơ không tồn tại trên hệ thống!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Lỗi tải dữ liệu: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void setupBottomNav() {
-
+        // Đồng bộ hành vi chuyển đổi intent giống hệt như các màn hình chính khác
         navHome.setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });
 
         navAppointments.setOnClickListener(v -> {
-            startActivity(new Intent(this, DoctorSearchActivity.class));
+            startActivity(new Intent(this, HistoryActivity.class));
             finish();
         });
 

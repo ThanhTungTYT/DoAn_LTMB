@@ -64,6 +64,31 @@ public class HistoryActivity extends AppCompatActivity {
         rvAppointments.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AppointmentAdapter();
         adapter.setOnCancelClickListener(this::confirmCancel);
+        adapter.setOnItemClickListener(appointment -> {
+            if ("done".equals(appointment.getStatus()) || "completed".equals(appointment.getStatus())) {
+
+                Intent intent = new Intent(HistoryActivity.this, MedicalSummaryActivity.class);
+                intent.putExtra("appointmentId", appointment.getId());
+                startActivity(intent);
+
+            }
+            else if ("upcoming".equals(appointment.getStatus())) {
+
+                // Cách 1: Cho quay lại trang PaymentActivity để họ xem lại thông tin, mã QR nếu cần
+                Intent intent = new Intent(HistoryActivity.this, PaymentActivity.class);
+
+                intent.putExtra("packageName", appointment.getPackageName());
+                intent.putExtra("doctorName", appointment.getDoctorName());
+                intent.putExtra("date", appointment.getDate());
+                intent.putExtra("time", appointment.getTime());
+                intent.putExtra("price", (int) appointment.getPrice());
+                intent.putExtra("packageId", appointment.getPackageId());
+                intent.putExtra("doctorId", appointment.getDoctorId());
+
+                startActivity(intent);
+
+            }
+        });
         rvAppointments.setAdapter(adapter);
 
         chipAll.setOnClickListener(v -> handleFilterTabChange("Tất cả", chipAll));

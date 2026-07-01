@@ -1,15 +1,16 @@
 package com.example.ltmb_nhom11.model;
 
 public class Package {
+
     private String id;
     private String name;
     private String description;
-    private long price;
+    private int price;
 
-    public Package(){}
+    public Package() {
+    }
 
-    public Package(String id, String name,
-                   String description, long price) {
+    public Package(String id, String name, String description, int price) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,23 +29,23 @@ public class Package {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public long getPrice() {
-        return price;
-    }
-
-    public void setPrice(long price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 }
