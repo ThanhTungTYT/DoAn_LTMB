@@ -31,20 +31,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Lịch trình của tôi"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <ImageButton
-                    android:id="@+id/btnNotification"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="notification"
-                    android:src="@android:drawable/ic_popup_reminder" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -75,16 +65,6 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvViewAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="Xem tất cả"
-                    android:textColor="@android:color/holo_blue_dark"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
             </RelativeLayout>
 
             <androidx.cardview.widget.CardView
@@ -201,20 +181,7 @@
                         android:orientation="horizontal"
                         android:paddingTop="12dp">
 
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginEnd="12dp" android:gravity="center_vertical">
-                            <View android:layout_width="8dp" android:layout_height="8dp" android:background="@android:color/holo_blue_dark" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Có lịch hẹn" android:textSize="10sp" android:textColor="@android:color/darker_gray"/>
-                        </LinearLayout>
 
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginEnd="12dp" android:gravity="center_vertical">
-                            <View android:layout_width="8dp" android:layout_height="8dp" android:background="@android:color/holo_blue_light" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Cao điểm" android:textSize="10sp" android:textColor="@android:color/darker_gray"/>
-                        </LinearLayout>
-
-                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
-                            <View android:layout_width="8dp" android:layout_height="8dp" android:background="#E2E8F0" />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" Đã khóa" android:textSize="10sp" android:textColor="@android:color/darker_gray"/>
-                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
