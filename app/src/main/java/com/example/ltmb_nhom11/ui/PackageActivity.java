@@ -3,6 +3,7 @@ package com.example.ltmb_nhom11.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,14 +12,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ltmb_nhom11.MainActivity;
 import com.example.ltmb_nhom11.R;
 import com.example.ltmb_nhom11.model.Package;
-import com.example.ltmb_nhom11.repository.PackageRepository;
 import com.example.ltmb_nhom11.ui.adapter.PackageAdapter;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PackageActivity extends AppCompatActivity {
 
     private RecyclerView rvMedicalPackages;
+    private PackageAdapter adapter;
+    private List<Package> packages = new ArrayList<>();
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +34,9 @@ public class PackageActivity extends AppCompatActivity {
 
         rvMedicalPackages = findViewById(R.id.rvMedicalPackages);
 
-        PackageRepository repository = new PackageRepository();
-        List<Package> packages = repository.getPackages();
-
         rvMedicalPackages.setLayoutManager(new LinearLayoutManager(this));
 
-        PackageAdapter adapter = new PackageAdapter(
+        adapter = new PackageAdapter(
                 packages,
                 medicalPackage -> {
 
@@ -42,21 +45,16 @@ public class PackageActivity extends AppCompatActivity {
                             AppointmentBookingActivity.class
                     );
 
-                    intent.putExtra(
-                            "packageName",
-                            medicalPackage.getName()
-                    );
-
-                    intent.putExtra(
-                            "price",
-                            medicalPackage.getPrice()
-                    );
+                    intent.putExtra("packageId", medicalPackage.getId());
+                    intent.putExtra("packageName", medicalPackage.getName());
+                    intent.putExtra("price", medicalPackage.getPrice());
 
                     startActivity(intent);
                 });
 
         rvMedicalPackages.setAdapter(adapter);
-
+        db = FirebaseFirestore.getInstance();
+        loadPackages();
 
         LinearLayout navHome = findViewById(R.id.navHome);
         LinearLayout navAppointments = findViewById(R.id.navAppointments);
@@ -82,5 +80,34 @@ public class PackageActivity extends AppCompatActivity {
             startActivity(new Intent(this, ProfileActivity.class));
             finish();
         });
+    }
+    private void loadPackages() {
+
+        db.collection("packages")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    packages.clear();
+
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+
+                        Package medicalPackage = doc.toObject(Package.class);
+
+                        if (medicalPackage != null) {
+                            medicalPackage.setId(doc.getId());
+                            packages.add(medicalPackage);
+                        }
+                    }
+
+                    adapter.notifyDataSetChanged();
+
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(
+                            PackageActivity.this,
+                            "Lỗi tải dữ liệu: " + e.getMessage(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
     }
 }

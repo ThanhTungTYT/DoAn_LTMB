@@ -6,11 +6,13 @@ public class Appointment {
     private String type;        // "doctor" | "package"
     private String doctorId;
     private String doctorName;
+    private String packageId;
+    private String packageName;
     private String date;        // vd "15/10/2023"
     private String time;        // vd "08:00"
     private long price;
     private String status;      // "upcoming" | "done" | "cancelled"
-    private long createdAt;     // thời điểm đặt lịch (millis)
+    private long createdAt;// thời điểm đặt lịch (millis)
 
     public Appointment() {}
 
@@ -41,6 +43,21 @@ public class Appointment {
 
     public String getDoctorName() { return doctorName; }
     public void setDoctorName(String doctorName) { this.doctorName = doctorName; }
+    public String getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(String packageId) {
+        this.packageId = packageId;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
 
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }

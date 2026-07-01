@@ -109,20 +109,37 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void bindAppointmentInfo() {
-        String doctorName = getIntent().getStringExtra("doctorName");
-        String date = getIntent().getStringExtra("selected_date");
-        String time = getIntent().getStringExtra("selected_time");
 
-        if (doctorName != null && !doctorName.isEmpty()) {
-            ((TextView) findViewById(R.id.tvPayDoctorName)).setText(doctorName);
+        String packageName = getIntent().getStringExtra("packageName");
+        String doctorName = getIntent().getStringExtra("doctorName");
+
+        String date = getIntent().getStringExtra("date");
+        if (date == null) {
+            date = getIntent().getStringExtra("selected_date");
         }
-        String dt = ((time != null ? time : "") + "  •  " + (date != null ? date : "")).trim();
-        if (!dt.equals("•")) {
-            ((TextView) findViewById(R.id.tvPayDateTime)).setText(dt);
+
+        String time = getIntent().getStringExtra("time");
+        if (time == null) {
+            time = getIntent().getStringExtra("selected_time");
         }
-        String formatted = formatPrice(DEPOSIT);
-        ((TextView) findViewById(R.id.tvPayTotal)).setText(formatted);
-        ((TextView) findViewById(R.id.tvPayTotalBottom)).setText(formatted);
+
+        if (packageName != null) {
+            ((TextView)findViewById(R.id.tvPayDoctorName)).setText(packageName);
+        } else {
+            ((TextView)findViewById(R.id.tvPayDoctorName)).setText(doctorName);
+        }
+
+        String dt = (time == null ? "" : time)
+                + " • "
+                + (date == null ? "" : date);
+
+        ((TextView)findViewById(R.id.tvPayDateTime)).setText(dt);
+
+        int realPrice = getIntent().getIntExtra("price", (int) DEPOSIT);
+        String formatted = formatPrice(realPrice);
+
+        ((TextView)findViewById(R.id.tvPayTotal)).setText(formatted);
+        ((TextView)findViewById(R.id.tvPayTotalBottom)).setText(formatted);
     }
 
     private void buildQr() {
@@ -316,20 +333,45 @@ public class PaymentActivity extends AppCompatActivity {
         String userId = SessionManager.getCurrentUser() != null
                 ? SessionManager.getCurrentUser().getUid() : "test_user";
 
-        Appointment a = new Appointment(
-                userId,
-                "doctor",
-                getIntent().getStringExtra("doctorId"),
-                getIntent().getStringExtra("doctorName"),
-                getIntent().getStringExtra("selected_date"),
-                getIntent().getStringExtra("selected_time"),
-                DEPOSIT,
-                "upcoming"
-        );
+        Appointment a = new Appointment();
+        a.setUserId(userId);
+
+        int realPrice = getIntent().getIntExtra("price", (int) DEPOSIT);
+        a.setPrice(realPrice);
+
+        String packageName = getIntent().getStringExtra("packageName");
+
+        if (packageName != null) {
+            a.setType("package");
+            a.setPackageId(getIntent().getStringExtra("packageId"));
+            a.setPackageName(packageName);
+
+            a.setDate(getIntent().getStringExtra("date"));
+            a.setTime(getIntent().getStringExtra("time"));
+
+            a.setDoctorId("");
+            a.setDoctorName("");
+
+        } else {
+            a.setType("doctor");
+            a.setDoctorId(getIntent().getStringExtra("doctorId"));
+            a.setDoctorName(getIntent().getStringExtra("doctorName"));
+
+            a.setDate(getIntent().getStringExtra("selected_date"));
+            a.setTime(getIntent().getStringExtra("selected_time"));
+
+            a.setPackageId("");
+            a.setPackageName("");
+        }
+
+        a.setStatus("upcoming");
+        a.setCreatedAt(System.currentTimeMillis());
 
         btnConfirmPayment.setEnabled(false);
+
         new AppointmentRepository().create(a, new AppointmentRepository.OnDone() {
             @Override public void onSuccess() {
+
                 String method = bankSelected ? "Đã nhận chuyển khoản đặt cọc" : "Thanh toán trực tiếp tại phòng khám";
                 Toast.makeText(PaymentActivity.this, "Đặt lịch thành công! (" + method + ")", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(PaymentActivity.this, HistoryActivity.class));
